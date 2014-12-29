@@ -1,0 +1,136 @@
+<!-- language file start -->
+admin_common#:#Allgemein
+admin_eula#:#EULA
+admin_eula_text#:#EULA
+admin_form_button_cancel#:#Abbrechen
+admin_form_button_save#:#Speichern
+admin_form_title#:#Einstellungen
+admin_mail#:#E-Mail
+admin_mail_moved#:#Mailtext beim Verschieben in Bibliothek
+admin_mail_new_request#:#Mailtext bei neuem Antrag
+admin_mail_rejected#:#Mailtext abgelehnter Antrage
+admin_mail_textes#:#Mail-Texte
+admin_mail_uploaded#:#Mailtext bei hochgeladener Datei
+admin_max_digilits#:#Maximale Anzahl DigiLits im Kurs
+admin_own_library_only#:#Nur eigene Bibliothek anzeigen
+admin_permission#:#Admin-Rollen
+admin_permission_manager#:#Manager-Rollen
+admin_placeholders#:#Platzhalter
+admin_use_libraries#:#Mehrere Bibliotheken verwenden
+common_actions#:#Aktionen
+common_bool_0#:#Nein
+common_bool_1#:#Ja
+common_cmd_delete#:#L̦schen
+crs_create_xdgl#:#DigiLits erstellen
+filter_librarian#:#Bearbeiter/in
+filter_library#:#Bibliothek
+filter_mine#:#Mir zugewiesen
+filter_none#:#Niemandem zugewiesen
+filter_status#:#Status
+fold_create_xdgl#:#DigiLits erstellen
+form_usr_placeholder#:#Benutzer suchen
+grp_create_xdgl#:#DigiLits erstellen
+librarian_back#:#Zurück
+librarian_form_title#:#Bearbeiter/innen/Librarians
+librarian_none#:#Keine
+librarian_return#:#Zurück zur Übersicht
+librarian_select#:#Bearbeiter/in auswählen
+librarian_update_assignements#:#Speichern
+librarian_users#:#Benutzeraccounts
+library_actions#:#Aktionen
+library_add#:#Bibliothek hinzufügen
+library_assign#:#Bearbeiter/innen zuordnen
+library_back#:#Zurück
+library_cancel#:#Abbrechen
+library_create#:#Erstellen
+library_delete#:#Löschen
+library_description#:#Beschreibung
+library_edit#:#Bearbeiten
+library_email#:#E-Mailadresse
+library_form_title#:#Bibliothek
+library_librarian_count#:#Anzahl zugewiesener Bearbeiter/innen
+library_perform_assignment#:#Bibliothek zuordnen
+library_request_count#:#Anzahl zugewiesener Requests
+library_select#:#Bibliothek auswählen
+library_title#:#Name
+library_update#:#Speichern
+library_view#:#Details
+main_menu_button#:#DigiLit-Admin
+msg_confirm_delete_library#:#Möchten Sie die folgende Bibliothek wirklich löschen?
+msg_success_add#:#Erfolgreich gespeichert
+msg_success_edit#:#Erfolgreich gespeichert
+msg_success_upload#:#Datei hochgeladen
+notification_subject_mail_new_request#:#Neuer DigiLit-Antrag
+notification_subject_mail_rejected#:#DigiLit-Antrag abgelehnt
+notification_subject_mail_uploaded#:#DigiLit hochgeladen
+obj_list_page#:#Seite(n)
+obj_xdgl#:#DigiLit
+obj_xdgl_admin_title#:#DigiLit Administration
+obj_xdgl_edit#:#Antragsdaten bearbeiten
+obj_xdgl_title#:#DigiLit beantragen
+obj_xdgls#:#DigiLits
+objs_xdgl#:#DigiLits
+request_assign#:#Bibliothek zuordnen
+request_assigned_librarian#:#Zugewiesene/r Bearbeiter/in
+request_assigned_library#:#Zugewiesene Bibliothek
+request_author#:#Autor des Artikels
+request_book#:#Zeitschrift/Buch
+request_cancel#:#Abbrechen
+request_change_status_to_wip#:#Antrag zur Bearbeitung sperren
+request_confirm_eula#:#Nutzungsvereinbarung
+request_confirm_eula_show#:#Anzeigen
+request_confirm_eula_title#:#Ich akzeptiere die Nutzungsvereinbarung
+request_confirm_eula_warning#:#Bitte lesen und akzeptieren Sie die Nutzungsvereinbarung
+request_count#:#Anzahl DigiLits im Kurs
+request_course_name#:#Kurs-Nummer/Kurs-Titel
+request_create#:#Antrag stellen
+request_create_date#:#Bestelldatum
+request_creation_date#:#Anfragedatum
+request_edit#:#Metadaten bearbeiten
+request_edition_relevant#:#Nur diese Auflage
+request_editor#:#Autor/Herausgeber
+request_internal_notice#:#Interne Bemerkungen
+request_issn#:#ISSN/ISBN
+request_last_status_change#:#Letzte Bearbeitung
+request_last_status_update#:#Letzter Statuswechsel
+request_location#:#Ort
+request_metadata#:#Metadaten
+request_modified_by#:#Bearbeiter(in)
+request_notice#:#Bemerkungen
+request_pages#:#Seiten
+request_publisher#:#Verlag
+request_publishing_year#:#Jahr
+request_refuse#:#Ablehnen
+request_refuse_reason#:#Grund
+request_refusing_date#:#Abgelehnt am
+request_requester_fullname#:#Antragsteller
+request_requester_mailto#:#E-Mail
+request_status#:#Status
+request_status_-1#:#Gelöscht
+request_status_1#:#Neu
+request_status_2#:#In Bearbeitung
+request_status_3#:#Dokument vorhanden
+request_status_4#:#Antrag abgelehnt
+request_status_5#:#Kopiert
+request_title#:#Artikeltitel
+request_update#:#Speichern
+request_upload_date#:#Hochgeladen
+request_view#:#Anzeigen
+request_volume#:#Band/Heft
+status_no_access_to_download#:#Aufgrund rechtlicher Restriktionen kann dieses DigiLit nicht heruntergeladen werden
+tab_content#:#Antragsverwaltung
+tab_libraries#:#Bibliotheken
+tab_requests#:#Bestellungen verwalten
+tab_settings#:#Einstellungen
+upload_cancel#:#Abbrechen
+upload_file#:#Datei
+upload_save#:#Hochladen
+upload_title#:#PDF hochladen
+validation_failure_4_digits_required#:#Format YYYY
+validation_failure_digits_only#:#Nur Zahlen erlaubt
+xdgl_delete#:#Löschen
+xdgl_edit_permission#:#Rechte einstellen
+xdgl_icon#:#Icon
+xdgl_read#:#Herunterladen
+xdgl_visible#:#Sichtbar
+xdgl_write#:#Bearbeiten
