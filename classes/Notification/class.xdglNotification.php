@@ -78,6 +78,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_ISSN,
 			xdglNotification::R_ASSIGNED_LIBRARY,
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
+			xdglNotification::R_ALL,
 		),
 		self::TYPE_REJECTED => array(
 			xdglNotification::R_TITLE,
@@ -95,6 +96,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_ISSN,
 			xdglNotification::R_ASSIGNED_LIBRARY,
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
+			xdglNotification::R_ALL,
 		),
 		self::TYPE_MOVED => array(
 			xdglNotification::R_TITLE,
@@ -115,6 +117,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
 			xdglNotification::R_INTERNAL_NOTICE,
 			xdglNotification::R_NOTICE,
+			xdglNotification::R_ALL,
 		)
 	);
 
@@ -186,6 +189,20 @@ class xdglNotification extends ilMailNotification {
 
 
 	/**
+	 * @param xdglRequest $xdglRequest
+	 *
+	 * @return bool
+	 */
+	public static function sendMoved(xdglRequest $xdglRequest) {
+		$obj = new self();
+		$obj->setType(self::TYPE_MOVED);
+		$obj->setXdglRequest($xdglRequest);
+
+		return $obj->send();
+	}
+
+
+	/**
 	 * @param $field
 	 *
 	 * @return string
@@ -202,7 +219,7 @@ class xdglNotification extends ilMailNotification {
 				$return = '';
 				foreach (self::$placeholders[$this->getType()] as $v) {
 					if ($v != self::R_ALL) {
-						$return .= $v . ': ' . self::getReplace($v) . '\n';
+						$return .= $v . ': ' . self::getReplace($v) . "\n";
 					}
 				}
 
@@ -254,6 +271,7 @@ class xdglNotification extends ilMailNotification {
 				$obj = new ilObjUser($usr_id);
 
 				return $obj->getFullname();
+				break;
 			case self::R_ASSIGNED_LIBRARY:
 				$lib_id = $this->getXdglRequest()->getLibraryId();
 				/**
@@ -276,7 +294,7 @@ class xdglNotification extends ilMailNotification {
 					$usr_id = $xdglLibrarian->getUsrId();
 					$obj = new ilObjUser($usr_id);
 
-					return $obj->getFullname();
+					return $obj->getFullname() . ' (' . $obj->getEmail() . ')';
 				}
 		}
 
@@ -331,10 +349,16 @@ class xdglNotification extends ilMailNotification {
 	 * @return bool
 	 */
 	public function send() {
+		global $ilUser;
+		/**
+		 * @var $ilUser ilObjUser
+		 */
+		$this->setSender($ilUser->getId());
 		$this->initUser();
 		$this->initLanguage($this->ilObjUser->getId());
 		$this->initMail();
-		$this->setSubject(ilDigiLitPlugin::getInstance()->txt('notification_subject_' . $this->getType()));
+		$a_subject = $this->getXdglRequest()->getExtId() . ': ' . ilDigiLitPlugin::getInstance()->txt('notification_subject_' . $this->getType());
+		$this->setSubject($a_subject);
 		$this->replaceBody();
 
 		$this->sendMail(array( $this->getAdress() ), array( 'email' ), false);

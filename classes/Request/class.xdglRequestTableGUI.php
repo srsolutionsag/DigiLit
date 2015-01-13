@@ -65,10 +65,13 @@ class xdglRequestTableGUI extends ilTable2GUI {
 	 * @param array $a_set
 	 */
 	public function fillRow($a_set) {
+		$obj = xdglRequest::find($a_set['id']);
+		$this->tpl->setVariable('VAL_EXT_ID', $obj->getExtId());
 		$this->tpl->setVariable('VAL_TITLE', $a_set['title']);
 		$this->tpl->setVariable('VAL_BOOK', $a_set['book']);
 		$this->tpl->setVariable('VAL_PUBLISHING_YEAR', $a_set['publishing_year']);
 		$this->tpl->setVariable('VAL_CREATE_DATE', $a_set['create_date']);
+		$this->tpl->setVariable('VAL_LAST_UPDATE', $a_set['last_change']);
 		$this->tpl->setVariable('VAL_REQUESTER_EMAIL', $a_set['usr_data_email']);
 		$this->tpl->setVariable('VAL_STATUS', $this->pl->txt('request_status_' . $a_set['status']));
 		$this->tpl->setVariable('VAL_LIBRARY', $a_set['xdgl_library_title']);
@@ -79,10 +82,12 @@ class xdglRequestTableGUI extends ilTable2GUI {
 
 
 	protected function initColums() {
+		$this->addColumn($this->pl->txt('request_ext_id'), NULL);
 		$this->addColumn($this->pl->txt('request_title'), 'title');
 		$this->addColumn($this->pl->txt('request_book'), 'book');
 		$this->addColumn($this->pl->txt('request_publishing_year'), 'publishing_year');
 		$this->addColumn($this->pl->txt('request_creation_date'), 'create_date');
+		$this->addColumn($this->pl->txt('request_date_last_status_change'), 'date_last_status_change');
 		$this->addColumn($this->pl->txt('request_status'), 'status');
 		$this->addColumn($this->pl->txt('request_requester_mailto'), 'usr_data_email');
 		$this->addColumn($this->pl->txt('request_assigned_library'), 'xdgl_library_title');
@@ -124,6 +129,8 @@ class xdglRequestTableGUI extends ilTable2GUI {
 			case xdglRequest::STATUS_RELEASED:
 				$current_selection_list->addItem($this->pl->txt('request_view'), 'view_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_VIEW));
 				$current_selection_list->addItem($this->pl->txt('request_edit'), 'edit_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_EDIT));
+				$current_selection_list->addItem($this->pl->txt('request_replace_file'), 'request_replace_file', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_REPLACE_FILE));
+				$current_selection_list->addItem($this->pl->txt('request_delete_file'), 'request_delete_file', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_DELETE_FILE));
 				break;
 			case xdglRequest::STATUS_REFUSED:
 			case xdglRequest::STATUS_COPY:
@@ -224,7 +231,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		}
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
-		$xdglRequestList->debug();
+//		$xdglRequestList->debug();
 		$this->setData($xdglRequestList->getArray());
 	}
 

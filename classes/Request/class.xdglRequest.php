@@ -21,6 +21,8 @@ class xdglRequest extends ActiveRecord {
 	const STATUS_ASSIGNED = 6;
 	const LIBRARIAN_ID_NONE = 1;
 	const LIBRARIAN_ID_MINE = 2;
+	const EXT_ID_PREFIX = '';
+	const UNKNOWN_PREFIX = 'UNKNOWN-';
 	/**
 	 * @var array
 	 */
@@ -178,6 +180,14 @@ class xdglRequest extends ActiveRecord {
 	 */
 	protected $create_date;
 	/**
+	 * @var int
+	 *
+	 * @db_has_field        true
+	 * @db_fieldtype        timestamp
+	 * @db_is_notnull       true
+	 */
+	protected $last_change;
+	/**
 	 * @var String saves a timestamp, when the request date changed the last time
 	 *
 	 * @db_has_field        true
@@ -279,29 +289,38 @@ class xdglRequest extends ActiveRecord {
 	protected $ext_id = '';
 
 
-	/**
-	 * @param int         $primary_key
-	 * @param arConnector $connector
-	 */
-	public function __construct($primary_key = 0, arConnector $connector = NULL) {
-		parent::__construct($primary_key, $connector);
-
-		preg_match("/([0-9]{5}-[0-9]{2})/uim", $this->getCourseNumber(), $matches);
-
-//		echo '<pre>' . print_r($matches, 1) . '</pre>';
-
+	public function afterObjectLoad() {
+		if (xdglConfig::get(xdglConfig::F_USE_REGEX)) {
+			preg_match(xdglConfig::get(xdglConfig::F_REGEX), $this->getCourseNumber(), $matches);
+			$form_id = sprintf('%05d', $this->getId());
+			if ($matches[1]) {
+				$this->setExtId(self::EXT_ID_PREFIX . $matches[1] . '-' . $form_id);
+			} else {
+				$this->setExtId(self::EXT_ID_PREFIX . self::UNKNOWN_PREFIX . $form_id);
+			}
+		} else {
+			$this->setExtId('DGL-' . $this->getId());
+		}
 	}
 
 
-	public function update() {
-		global $ilUser;
+	/**
+	 * @param bool $prevent_last_change
+	 * @param bool $update_title
+	 */
+	public function update($prevent_last_change = false, $update_title = true) {
 		if ($this->getLibrarianId() === NULL) {
 			$this->setLibrarianId(self::LIBRARIAN_ID_NONE);
 		}
-		$this->setLastModifiedByUsrId($ilUser->getId());
-		$this->setDateLastStatusChange(time());
+		if (!$prevent_last_change) {
+			global $ilUser;
+			$this->setLastChange(time());
+			$this->setLastModifiedByUsrId($ilUser->getId());
+		}
 		parent::update();
-		$this->updateIliasObjTitle();
+		if ($update_title) {
+			$this->updateIliasObjTitle();
+		}
 	}
 
 
@@ -312,6 +331,7 @@ class xdglRequest extends ActiveRecord {
 		}
 		$this->setRequesterUsrId($ilUser->getId());
 		$this->setCreateDate(time());
+		$this->setLastChange(time());
 		$this->setDateLastStatusChange(time());
 		$this->setLibraryId(xdglLibrary::getPrimaryId());
 		parent::create();
@@ -327,6 +347,7 @@ class xdglRequest extends ActiveRecord {
 		$this->setLibraryId($xdglLibrarian->getLibraryId());
 		$this->setStatus(self::STATUS_NEW);
 		$this->update();
+		xdglNotification::sendMoved($this);
 	}
 
 
@@ -337,6 +358,7 @@ class xdglRequest extends ActiveRecord {
 		$this->setLibraryId($xdglLibrary->getId());
 		$this->setStatus(self::STATUS_NEW);
 		$this->update();
+		xdglNotification::sendMoved($this);
 	}
 
 
@@ -360,7 +382,6 @@ class xdglRequest extends ActiveRecord {
 		$new_request = clone($old_request);
 		$new_request->setId(0);
 		$new_request->setDigiLitObjectId($obj_id);
-		$new_request->setDateLastStatusChange(time());
 		$new_request->setCreateDate(time());
 		$new_request->setCopyId($old_request->getId());
 		$new_request->setStatus(self::STATUS_COPY);
@@ -401,6 +422,9 @@ class xdglRequest extends ActiveRecord {
 	 */
 	protected static function getAmoutOfDigiLitsInContainer($count, $ref_id) {
 		global $tree;
+		/**
+		 * @var $tree ilTree
+		 */
 
 		foreach ($tree->getChildsByType($ref_id, ilDigiLitPlugin::XDGL) as $dig) {
 			if (xdglRequest::getInstanceForDigiLitObjectId($dig['obj_id'])->doesCount()) {
@@ -494,16 +518,58 @@ class xdglRequest extends ActiveRecord {
 	}
 
 
+	/**
+	 * @param xdglUploadFormGUI $xdglUploadFormGUI
+	 *
+	 * @return bool
+	 */
+	public function uploadFileFromForm(xdglUploadFormGUI $xdglUploadFormGUI) {
+		$this->createDir();
+
+		if (ilUtil::moveUploadedFile($xdglUploadFormGUI->getUploadTempName(), $xdglUploadFormGUI->getUploadTempName(), $this->getAbsoluteFilePath())) {
+			global $ilUser;
+			/**
+			 * @var $ilUser ilObjUser
+			 */
+			$xdglLibrarian = xdglLibrarian::find($ilUser->getId());
+			$this->assignToLibrarian($xdglLibrarian);
+			$this->setStatus(self::STATUS_RELEASED);
+			$this->update();
+
+			return true;
+		}
+	}
+
+
+	/**
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function deleteFile() {
+		if (@unlink($this->getAbsoluteFilePath())) {
+			$this->setStatus(self::STATUS_IN_PROGRRESS);
+			$this->update();
+
+			return true;
+		}
+		throw new Exception('An Error occured during file-deletion');
+	}
+
+
 
 	// ------------------------------------ //
 	//       Sleep & Wakeup Function        //
 	// ------------------------------------ //
-
+	/**
+	 * @param $field_name
+	 * @param $field_value
+	 *
+	 * @return int
+	 */
 	public function wakeUp($field_name, $field_value) {
 		switch ($field_name) {
 			case 'create_date':
-				return strtotime($field_value);
-				break;
+			case 'last_change':
 			case 'date_last_status_change':
 				return strtotime($field_value);
 				break;
@@ -511,15 +577,135 @@ class xdglRequest extends ActiveRecord {
 	}
 
 
+	/**
+	 * @param $field_name
+	 *
+	 * @return bool|string
+	 */
 	public function sleep($field_name) {
 		switch ($field_name) {
-			case 'create_date':
-				return date(DATE_ISO8601, $this->create_date);
-				break;
 			case 'date_last_status_change':
-				return date(DATE_ISO8601, $this->date_last_status_change);
+			case 'create_date':
+			case 'last_change':
+				return date(DATE_ISO8601, $this->{$field_name});
 				break;
 		}
+	}
+
+
+	/**
+	 * Create a path from an id: e.g 12345 will be converted to 1/23/45
+	 *
+	 * @access public
+	 * @static
+	 *
+	 * @param int $id
+	 *
+	 * @return string
+	 */
+	public static function createPathFromId($id) {
+		$path = array();
+		$found = false;
+		$id = (int)$id;
+		for ($i = 2; $i >= 0; $i --) {
+			$factor = pow(100, $i);
+			if (($tmp = (int)($id / $factor)) or $found) {
+				$path[] = $tmp;
+				$id = $id % $factor;
+				$found = true;
+			}
+		}
+
+		$path_string = '';
+		if (count($path)) {
+			$path_string = implode(DIRECTORY_SEPARATOR, $path);
+		}
+
+		return $path_string;
+	}
+
+
+	protected function updateIliasObjTitle() {
+		if ($this->getDigiLitObjectId()) {
+			/**
+			 * @var $ilObjDigiLit ilObjDigiLit
+			 */
+			$ilObjDigiLit = ilObjectFactory::getInstanceByObjId($this->getDigiLitObjectId());
+			$ilObjDigiLit->setTitle($this->getTitle());
+			$ilObjDigiLit->update();
+		}
+	}
+
+
+	/**
+	 * @return string
+	 */
+	protected function returnFileName() {
+		return ilDigiLitPlugin::getStaticPluginName() . '_' . $this->getVersion() . '.pdf';
+	}
+
+
+	/**
+	 * @param        $value
+	 *
+	 * @param string $appendix
+	 *
+	 * @return string
+	 */
+	public static function boolTextRepresentation($value, $appendix = '') {
+		$value = (int)$value;
+		if ($appendix) {
+			$appendix = '_' . $appendix;
+		}
+
+		return ilDigiLitPlugin::getInstance()->txt('common_bool_' . $value . $appendix);
+	}
+
+	// ------------------------------------ //
+	//           Static Functions           //
+	// ------------------------------------ //
+
+	/**
+	 * @param int $digilit_obj_id
+	 *
+	 * @return int request id
+	 */
+	public static function getIdByDigiLitObjectId($digilit_obj_id) {
+		/**
+		 * @var ilDB $ilDB
+		 */
+		global $ilDB;
+
+		$set = $ilDB->query('SELECT id FROM  ' . self::returnDbTableName() . ' WHERE digi_lit_object_id = '
+			. $ilDB->quote($digilit_obj_id, "integer"));
+		$row = $ilDB->fetchAssoc($set);
+
+		return $row['id'];
+	}
+
+
+	/**
+	 * @param $digilit_obj_id
+	 *
+	 * @return xdglRequest
+	 */
+	public static function getInstanceForDigiLitObjectId($digilit_obj_id) {
+		return self::find(self::getIdByDigiLitObjectId($digilit_obj_id));
+	}
+
+
+	/**
+	 * Set the status of one specific digilit object
+	 *
+	 * @param int $request_id
+	 * @param int $status
+	 *
+	 * @deprecated
+	 */
+	public static function setDigilitStatus($request_id, $status) {
+		$request = new self($request_id);
+		$request->setStatus($status);
+		$request->update();
 	}
 
 
@@ -898,122 +1084,6 @@ class xdglRequest extends ActiveRecord {
 
 
 	/**
-	 * Create a path from an id: e.g 12345 will be converted to 1/23/45
-	 *
-	 * @access public
-	 * @static
-	 *
-	 * @param int $id
-	 *
-	 * @return string
-	 */
-	public static function createPathFromId($id) {
-		$path = array();
-		$found = false;
-		$id = (int)$id;
-		for ($i = 2; $i >= 0; $i --) {
-			$factor = pow(100, $i);
-			if (($tmp = (int)($id / $factor)) or $found) {
-				$path[] = $tmp;
-				$id = $id % $factor;
-				$found = true;
-			}
-		}
-
-		$path_string = '';
-		if (count($path)) {
-			$path_string = implode(DIRECTORY_SEPARATOR, $path);
-		}
-
-		return $path_string;
-	}
-
-
-
-	// ------------------------------------ //
-	//           Static Functions           //
-	// ------------------------------------ //
-
-	/**
-	 * @param int $digilit_obj_id
-	 *
-	 * @return int request id
-	 */
-	public static function getIdByDigiLitObjectId($digilit_obj_id) {
-		/**
-		 * @var ilDB $ilDB
-		 */
-		global $ilDB;
-
-		$set = $ilDB->query('SELECT id FROM  ' . self::returnDbTableName() . ' WHERE digi_lit_object_id = '
-			. $ilDB->quote($digilit_obj_id, "integer"));
-		$row = $ilDB->fetchAssoc($set);
-
-		return $row['id'];
-	}
-
-
-	/**
-	 * @param $digilit_obj_id
-	 *
-	 * @return xdglRequest
-	 */
-	public static function getInstanceForDigiLitObjectId($digilit_obj_id) {
-		return self::find(self::getIdByDigiLitObjectId($digilit_obj_id));
-	}
-
-
-	/**
-	 * Set the status of one specific digilit object
-	 *
-	 * @param int $request_id
-	 * @param int $status
-	 */
-	public static function setDigilitStatus($request_id, $status) {
-		$request = new self($request_id);
-		$request->setStatus($status);
-		$request->update();
-	}
-
-
-	protected function updateIliasObjTitle() {
-		if ($this->getDigiLitObjectId()) {
-			/**
-			 * @var $ilObjDigiLit ilObjDigiLit
-			 */
-			$ilObjDigiLit = ilObjectFactory::getInstanceByObjId($this->getDigiLitObjectId());
-			$ilObjDigiLit->setTitle($this->getTitle());
-			$ilObjDigiLit->update();
-		}
-	}
-
-
-	/**
-	 * @return string
-	 */
-	protected function returnFileName() {
-		return ilDigiLitPlugin::getStaticPluginName() . '_' . $this->getVersion() . '.pdf';
-	}
-
-
-	/**
-	 * @param        $value
-	 *
-	 * @param string $appendix
-	 *
-	 * @return string
-	 */
-	public static function boolTextRepresentation($value, $appendix = '') {
-		$value = (int)$value;
-		if ($appendix) {
-			$appendix = '_' . $appendix;
-		}
-
-		return ilDigiLitPlugin::getInstance()->txt('common_bool_' . $value . $appendix);
-	}
-
-
-	/**
 	 * @return int
 	 */
 	public function getLibraryId() {
@@ -1090,5 +1160,21 @@ class xdglRequest extends ActiveRecord {
 	 */
 	public function setExtId($ext_id) {
 		$this->ext_id = $ext_id;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getLastChange() {
+		return $this->last_change;
+	}
+
+
+	/**
+	 * @param int $last_change
+	 */
+	public function setLastChange($last_change) {
+		$this->last_change = $last_change;
 	}
 }

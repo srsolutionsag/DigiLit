@@ -261,12 +261,12 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	 * @return ilPropertyFormGUI
 	 */
 	public function initCreateForm($type) {
+		$creation_form = new xdglRequestFormGUI($this, new xdglRequest());
+		$creation_form->fillForm(ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));
 		global $ilUser;
 		/**
 		 * @var $ilUser ilObjUser
 		 */
-		$creation_form = new xdglRequestFormGUI($this, new xdglRequest());
-		$creation_form->fillForm(ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));
 		if (strpos(gethostname(), '.local') AND $ilUser->getId() == 6) {
 			$creation_form->fillFormRandomized();
 		}

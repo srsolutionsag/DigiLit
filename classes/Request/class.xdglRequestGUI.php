@@ -25,6 +25,9 @@ class xdglRequestGUI {
 	const CMD_INDEX = 'index';
 	const CMD_UPLOAD = 'upload';
 	const CMD_EDIT = 'edit';
+	const CMD_REPLACE_FILE = 'replaceFile';
+	const CMD_DELETE_FILE = 'confirmDeleteFile';
+	const CMD_PERFORM_DELETE_FILE = 'deleteFile';
 	const CMD_SAVE = 'save';
 	const CMD_VIEW = 'view';
 	const CMD_UPDATE = 'update';
@@ -117,6 +120,9 @@ class xdglRequestGUI {
 			case self::CMD_APPLY_FILTER:
 			case self::CMD_RESET_FILTER:
 			case self::CMD_SELECT_FILE:
+			case self::CMD_REPLACE_FILE:
+			case self::CMD_DELETE_FILE:
+			case self::CMD_PERFORM_DELETE_FILE:
 			case self::CMD_SANDBOX:
 				$this->$cmd();
 				break;
@@ -221,7 +227,8 @@ class xdglRequestGUI {
 
 	protected function changeStatusToWip() {
 		ilObjDigiLitAccess::isManager(true);
-		xdglRequest::setDigilitStatus($this->xdglRequest->getId(), xdglRequest::STATUS_IN_PROGRRESS);
+		$this->xdglRequest->setStatus(xdglRequest::STATUS_IN_PROGRRESS);
+		$this->xdglRequest->update();
 		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 		$this->ctrl->redirect($this);
 	}
@@ -234,13 +241,45 @@ class xdglRequestGUI {
 	}
 
 
+	protected function replaceFile() {
+		ilObjDigiLitAccess::isManager(true);
+		$upload_form = new xdglUploadFormGUI($this, $this->xdglRequest);
+		$this->tpl->setContent($upload_form->getHTML());
+	}
+
+
 	protected function upload() {
 		ilObjDigiLitAccess::isManager(true);
 		$upload_form = new xdglUploadFormGUI($this, $this->xdglRequest);
 		$upload_form->uploadFile();
-		$this->xdglRequest->setStatus(xdglRequest::STATUS_RELEASED);
-		$this->xdglRequest->update();
 		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+		$this->ctrl->redirect($this);
+	}
+
+
+	protected function confirmDeleteFile() {
+		ilObjDigiLitAccess::isManager(true);
+		$ilConfirmationGUI = new ilConfirmationGUI();
+		$ilConfirmationGUI->setFormAction($this->ctrl->getFormAction($this));
+		$ilConfirmationGUI->setHeaderText($this->pl->txt('msg_request_delete_file'));
+		$ilConfirmationGUI->setCancel($this->pl->txt('request_cancel'), self::CMD_CANCEL);
+		$ilConfirmationGUI->setConfirm($this->pl->txt('request_delete_file'), self::CMD_PERFORM_DELETE_FILE);
+		$ilConfirmationGUI->addItem(self::XDGL_ID, $this->xdglRequest->getId(), $this->xdglRequest->getTitle());
+		$this->tpl->setContent($ilConfirmationGUI->getHTML());
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	protected function deleteFile() {
+		ilObjDigiLitAccess::isManager(true);
+		try {
+			$this->xdglRequest->deleteFile();
+			ilUtil::sendSuccess($this->pl->txt('msg_request_file_deleted'), true);
+		} catch (Exception $e) {
+			ilUtil::sendFailure($e->getMessage(), true);
+		}
 		$this->ctrl->redirect($this);
 	}
 

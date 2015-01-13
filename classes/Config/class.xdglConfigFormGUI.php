@@ -68,17 +68,26 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 			$this->addItem($h);
 		}
 		// Mehrere Bibliotheken verwenden
+		$use_regex = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_REGEX), xdglConfig::F_USE_REGEX);
+		$use_regex->setInfo($this->txt(xdglConfig::F_USE_REGEX . '_info'));
+		{
+			$te = new ilTextInputGUI($this->txt(xdglConfig::F_REGEX), xdglConfig::F_REGEX);
+			$te->setInfo($this->txt(xdglConfig::F_REGEX . '_info'));
+			$use_regex->addSubItem($te);
+		}
+		$this->addItem($use_regex);
+
 		$h = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_LIBRARIES), xdglConfig::F_USE_LIBRARIES);
-
-		$only_own = new ilCheckboxInputGUI($this->txt(xdglConfig::F_OWN_LIBRARY_ONLY), xdglConfig::F_OWN_LIBRARY_ONLY);
-		$h->addSubItem($only_own);
-
+		{
+			$only_own = new ilCheckboxInputGUI($this->txt(xdglConfig::F_OWN_LIBRARY_ONLY), xdglConfig::F_OWN_LIBRARY_ONLY);
+			$h->addSubItem($only_own);
+		}
 		$this->addItem($h);
 
 		// Anzahl DigiLits pro Kurs
-//		$h = new ilCheckboxInputGUI($this->txt(self::F_LIMIT), self::F_LIMIT);
+		//		$h = new ilCheckboxInputGUI($this->txt(self::F_LIMIT), self::F_LIMIT);
 		$te = new ilTextInputGUI($this->txt(xdglConfig::F_MAX_DIGILITS), xdglConfig::F_MAX_DIGILITS);
-//		$h->addSubItem($te);
+		//		$h->addSubItem($te);
 
 		$this->addItem($te);
 

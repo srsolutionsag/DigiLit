@@ -168,7 +168,6 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		);
 
 		switch ($request->getStatus()) {
-
 			case xdglRequest::STATUS_NEW:
 				$props[] = array(
 					'alert' => true,
@@ -232,7 +231,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				// the filename extension is missing
 				$file = $request->getAbsoluteFilePath();
 
-				if (! preg_match('/^\\.|\\.[a-zA-Z0-9]+$/', $file)) {
+				if (!preg_match('/^\\.|\\.[a-zA-Z0-9]+$/', $file)) {
 					$props[] = array(
 						'alert' => false,
 						'property' => $lng->txt('filename_interoperability'),
@@ -255,7 +254,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 					'propertyNameVisible' => true
 				);
 
-				if (! ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
+				if (!ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
 					$props[] = array(
 						'alert' => true,
 						'newline' => true,
@@ -264,7 +263,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 						'propertyNameVisible' => false
 					);
 				}
-
+				
 				break;
 		}
 

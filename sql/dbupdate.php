@@ -41,3 +41,15 @@ $ilDB->manipulate('UPDATE ' . xdglRequest::returnDbTableName() . ' SET librarian
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Librarian/class.xdglLibrarian.php');
 xdglLibrarian::installDB();
 ?>
+<#6>
+<?php
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php');
+xdglRequest::updateDB();
+foreach(xdglRequest::get() as $xdglRequest) {
+	/**
+	 * @var $xdglRequest xdglRequest
+	 */
+	$xdglRequest->setLastChange($xdglRequest->getDateLastStatusChange());
+	$xdglRequest->update(true, false);
+}
+?>

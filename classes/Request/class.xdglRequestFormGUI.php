@@ -301,7 +301,6 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			self::F_ISSN => $this->request->getIssn(),
 			self::F_COUNT => $this->request->getAmoutOfDigiLitsInCourse() . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS),
 			self::F_CRS_REF_ID => $this->request->getCrsRefId(),
-			self::F_COURSE_NAME => $this->request->getCourseTitle(),
 			self::F_REQUESTER_FULLNAME => $ilObjUserRequester->getPresentationTitle(),
 			self::F_REQUESTER_MAILTO => $ilObjUserRequester->getEmail(),
 			self::F_CREATE_DATE => date('d.m.Y - H:i:s', $this->request->getCreateDate()),
@@ -311,6 +310,9 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			self::F_NOTICE => $this->request->getNotice(),
 			self::F_INTERNAL_NOTICE => $this->request->getInternalNotice(),
 		);
+		if ($this->is_new) {
+			$array[self::F_COUNT] = $this->request->getAmoutOfDigiLitsInCourse() + 1 . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS);
+		}
 		if ($this->view) {
 			$array[self::F_EDITION_RELEVANT] = xdglRequest::boolTextRepresentation($this->request->getEditionRelevant());
 		} else {
@@ -402,8 +404,11 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			$this->setTitle($this->pl->txt('request_view'));
 			$this->addCommandButton('edit', $this->pl->txt('request_edit'));
 			if ($this->request->getStatus() != xdglRequest::STATUS_RELEASED) {
-				$this->addCommandButton(xdglRequestGUI::CMD_SELECT_FILE, $this->pl->txt('upload_title'));
 				$this->addCommandButton(xdglRequestGUI::CDM_CONFIRM_REFUSE, $this->pl->txt('request_refuse'));
+				$this->addCommandButton(xdglRequestGUI::CMD_SELECT_FILE, $this->pl->txt('upload_title'));
+			} else {
+				$this->addCommandButton(xdglRequestGUI::CMD_REPLACE_FILE, $this->pl->txt('request_replace_file'));
+				$this->addCommandButton(xdglRequestGUI::CMD_DELETE_FILE, $this->pl->txt('request_delete_file'));
 			}
 		} else {
 			if ($this->is_new) {
