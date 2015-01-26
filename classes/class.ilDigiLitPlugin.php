@@ -1,5 +1,5 @@
 <?php
-require_once('./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/Subscription/classes/class.ilDynamicLanguage.php');
+//require_once('./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/Subscription/classes/class.ilDynamicLanguage.php');
 require_once('./Services/Repository/classes/class.ilRepositoryObjectPlugin.php');
 require_once('class.ilObjDigiLitAccess.php');
 
@@ -13,7 +13,7 @@ require_once('class.ilObjDigiLitAccess.php');
  * @version 1.0.00
  *
  */
-class ilDigiLitPlugin extends ilRepositoryObjectPlugin implements ilDynamicLanguageInterface {
+class ilDigiLitPlugin extends ilRepositoryObjectPlugin {//} implements ilDynamicLanguageInterface {
 
 	const XDGL = 'xdgl';
 	/**
