@@ -218,9 +218,9 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->where(array( 'status' => 0 ), '>');
 		$xdglRequestList->leftjoin('usr_data', 'requester_usr_id', 'usr_id', array( 'email' ));
 		$xdglRequestList->leftjoin(xdglLibrary::TABLE_NAME, 'library_id', 'id', array( 'id', 'title' ));
-		//		$xdglRequestList->leftjoin(xdglLibrarian::TABLE_NAME, 'librarian_id', 'usr_id', array( 'usr_id', 'library_id' ));
-		$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array( 'email' ));
+		$xdglRequestList->leftjoin(xdglLibrarian::TABLE_NAME, 'librarian_id', 'usr_id', array( 'usr_id', 'library_id' ));
 		if (!ilObjDigiLitAccess::showAllLibraries()) {
+			$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array( 'email' ));
 			$xdglRequestList->where(array( 'xdgl_librarian.usr_id' => $usr_id ), '=');
 		}
 
@@ -231,7 +231,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		}
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
-//		$xdglRequestList->debug();
+		//		$xdglRequestList->debug();
 		$this->setData($xdglRequestList->getArray());
 	}
 
