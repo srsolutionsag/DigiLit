@@ -33,43 +33,43 @@ class ilDigiLitPlugin extends ilRepositoryObjectPlugin implements ilDynamicLangu
 		return self::$cache;
 	}
 
-
-	/**
-	 * @return string
-	 */
-	public function getCsvPath() {
-		$path = substr(__FILE__, 0, strpos(__FILE__, 'classes')) . 'lang/';
-		if (file_exists($path . 'lang_custom.csv')) {
-			$file = $path . 'lang_custom.csv';
-		} else {
-			$file = $path . 'lang.csv';
-		}
-
-		return $file;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getAjaxLink() {
-		return false;
-	}
-
-
-	/**
-	 * @param $a_var
-	 *
-	 * @return string
-	 */
-	public function txt($a_var, $direct = false) {
-		if ($direct) {
-			return parent::txt($a_var);
-		}
-		require_once('./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/Subscription/classes/class.ilDynamicLanguage.php');
-
-		return ilDynamicLanguage::getInstance($this, ilDynamicLanguage::MODE_DEV)->txt($a_var);
-	}
+//
+//	/**
+//	 * @return string
+//	 */
+//	public function getCsvPath() {
+//		$path = substr(__FILE__, 0, strpos(__FILE__, 'classes')) . 'lang/';
+//		if (file_exists($path . 'lang_custom.csv')) {
+//			$file = $path . 'lang_custom.csv';
+//		} else {
+//			$file = $path . 'lang.csv';
+//		}
+//
+//		return $file;
+//	}
+//
+//
+//	/**
+//	 * @return string
+//	 */
+//	public function getAjaxLink() {
+//		return false;
+//	}
+//
+//
+//	/**
+//	 * @param $a_var
+//	 *
+//	 * @return string
+//	 */
+//	public function txt($a_var, $direct = false) {
+//		if ($direct) {
+//			return parent::txt($a_var);
+//		}
+//		require_once('./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/Subscription/classes/class.ilDynamicLanguage.php');
+//
+//		return ilDynamicLanguage::getInstance($this, ilDynamicLanguage::MODE_DEV)->txt($a_var);
+//	}
 
 
 	/**
