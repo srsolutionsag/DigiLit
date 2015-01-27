@@ -77,6 +77,7 @@ class xdglRequestGUI {
 
 
 	public function __construct() {
+		xdglRequest::updateDB();
 		global $tpl, $ilCtrl, $ilToolbar, $ilAccess, $ilTabs;
 		$this->ilTabs = $ilTabs;
 		$this->pl = ilDigiLitPlugin::getInstance();

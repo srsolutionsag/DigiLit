@@ -182,7 +182,7 @@ class xdglRequest extends ActiveRecord {
 	/**
 	 * @var int
 	 *
-	 * @db_has_field        true
+	 * @db_has_field        false
 	 * @db_fieldtype        timestamp
 	 * @db_is_notnull       true
 	 */

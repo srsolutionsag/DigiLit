@@ -131,6 +131,10 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 		if (!xdglConfig::get(xdglConfig::F_USE_LIBRARIES)) {
 			return true;
 		}
+		if (self::isAdmin()) {
+			return true;
+		}
+
 		if (self::isGlobalAdmin()) {
 			return true;
 		}

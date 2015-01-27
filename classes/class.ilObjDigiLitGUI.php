@@ -268,7 +268,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		 * @var $ilUser ilObjUser
 		 */
 		if (strpos(gethostname(), '.local') AND $ilUser->getId() == 6) {
-			$creation_form->fillFormRandomized();
+//			$creation_form->fillFormRandomized();
 		}
 
 		return $creation_form->getAsPropertyFormGui();

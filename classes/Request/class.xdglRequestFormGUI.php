@@ -169,7 +169,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 		if ($this->is_new) {
 			$course_name->setDisabled(true);
 		}
-		$course_name->setRequired(true);
+//		$course_name->setRequired(true);
 		$this->addItem($course_name);
 
 		// Author
