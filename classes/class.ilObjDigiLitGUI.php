@@ -268,7 +268,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		 * @var $ilUser ilObjUser
 		 */
 		if (strpos(gethostname(), '.local') AND $ilUser->getId() == 6) {
-//			$creation_form->fillFormRandomized();
+			$creation_form->fillFormRandomized();
 		}
 
 		return $creation_form->getAsPropertyFormGui();
@@ -278,7 +278,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	public function save() {
 		$creation_form = new xdglRequestFormGUI($this, new xdglRequest());
 		$creation_form->setValuesByPost();
-		if ($request_id = $creation_form->saveObject()) {
+		if ($request_id = $creation_form->saveObject(ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']))) {
 			$this->saveObject($request_id);
 		} else {
 			$creation_form->setValuesByPost();

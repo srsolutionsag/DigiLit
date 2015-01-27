@@ -219,9 +219,15 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->leftjoin('usr_data', 'requester_usr_id', 'usr_id', array( 'email' ));
 		$xdglRequestList->leftjoin(xdglLibrary::TABLE_NAME, 'library_id', 'id', array( 'id', 'title' ));
 		$xdglRequestList->leftjoin(xdglLibrarian::TABLE_NAME, 'librarian_id', 'usr_id', array( 'usr_id', 'library_id' ));
+		$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array( 'email' ));
 		if (!ilObjDigiLitAccess::showAllLibraries()) {
-			$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array( 'email' ));
-			$xdglRequestList->where(array( 'xdgl_librarian.usr_id' => $usr_id ), '=');
+			/**
+			 * @var xdglLibrarian $xdglLibrarian
+			 */
+			$xdglLibrarian = xdglLibrarian::find($ilUser->getId());
+			if ($xdglLibrarian instanceof xdglLibrarian) {
+				$xdglRequestList->where(array( 'xdgl_library.id' => $xdglLibrarian->getLibraryId() ), '=');
+			}
 		}
 
 		$this->filterResults($usr_id, $xdglRequestList);

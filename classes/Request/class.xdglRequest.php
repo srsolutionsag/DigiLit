@@ -182,7 +182,7 @@ class xdglRequest extends ActiveRecord {
 	/**
 	 * @var int
 	 *
-	 * @db_has_field        false
+	 * @db_has_field        true
 	 * @db_fieldtype        timestamp
 	 * @db_is_notnull       true
 	 */
@@ -356,6 +356,7 @@ class xdglRequest extends ActiveRecord {
 	 */
 	public function assignToLibrary(xdglLibrary $xdglLibrary) {
 		$this->setLibraryId($xdglLibrary->getId());
+		$this->setLibrarianId(self::LIBRARIAN_ID_NONE);
 		$this->setStatus(self::STATUS_NEW);
 		$this->update();
 		xdglNotification::sendMoved($this);

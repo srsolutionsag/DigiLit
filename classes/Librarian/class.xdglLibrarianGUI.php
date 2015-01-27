@@ -122,10 +122,11 @@ class xdglLibrarianGUI {
 		$term = $ilDB->quote('%' . $_GET['term'] . '%', 'text');
 		$type = $ilDB->quote($_GET['container_type'], 'text');
 
-		$query = "SELECT obj.obj_id, obj.title, usr.* FROM object_data obj
+		$query = "SELECT obj.obj_id, obj.title, usr.*
+FROM object_data obj
 				 JOIN usr_data usr ON usr.usr_id = obj.obj_id
 			 WHERE obj.type = $type AND
-				 (obj.title LIKE $term OR usr.firstname LIKE $term OR usr.lastname LIKE $term OR usr.email LIKE $term)
+				 (obj.title LIKE $term OR usr.firstname LIKE $term OR usr.lastname LIKE $term OR usr.email LIKE $term OR usr.login LIKE $term )
 			 ORDER BY  obj.title";
 
 		$res = $ilDB->query($query);

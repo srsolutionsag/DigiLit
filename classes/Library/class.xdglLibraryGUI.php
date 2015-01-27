@@ -200,7 +200,11 @@ class xdglLibraryGUI {
 		$xdglLibrary = xdglLibrary::find($_POST['library_select']);
 
 		if ($xdglLibrarian instanceof xdglLibrarian) {
-			$request->assignToLibrarian($xdglLibrarian);
+			if ($xdglLibrarian->getUsrId()) {
+				$request->assignToLibrarian($xdglLibrarian);
+			} elseif ($xdglLibrary instanceof xdglLibrary) {
+				$request->assignToLibrary($xdglLibrary);
+			}
 		} elseif ($xdglLibrary instanceof xdglLibrary) {
 			$request->assignToLibrary($xdglLibrary);
 		}
