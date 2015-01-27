@@ -34,7 +34,7 @@ global $ilDB;
  */
 
 $ilDB->manipulate('UPDATE ' . xdglRequest::returnDbTableName() . ' SET library_id = ' . $ilDB->quote(xdglLibrary::getPrimaryId(), 'integer'));
-$ilDB->manipulate('UPDATE ' . xdglRequest::returnDbTableName() . ' SET librarian_id = ' . $ilDB->quote(0, 'integer') . ' WHERE librarian_id IS NULL');
+$ilDB->manipulate('UPDATE ' . xdglRequest::returnDbTableName() . ' SET librarian_id = ' . $ilDB->quote(xdglRequest::LIBRARIAN_ID_NONE, 'integer') . ' WHERE librarian_id IS NULL');
 ?>
 <#5>
 <?php
@@ -50,6 +50,7 @@ foreach(xdglRequest::get() as $xdglRequest) {
 	 * @var $xdglRequest xdglRequest
 	 */
 	$xdglRequest->setLastChange($xdglRequest->getDateLastStatusChange());
+	$xdglRequest->setLibrarianId(xdglRequest::LIBRARIAN_ID_NONE);
 	$xdglRequest->update(true, false);
 }
 ?>
