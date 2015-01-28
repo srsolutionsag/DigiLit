@@ -50,11 +50,11 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		parent::__construct($a_parent_obj, $a_parent_cmd);
 		$this->parent_obj = $a_parent_obj;
 		$this->setRowTemplate('tpl.requests_overview_row.html', 'Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit');
-		$this->setEnableNumInfo(true);
 		$this->setFormAction($this->ctrl->getFormAction($a_parent_obj));
 		$this->initColums();
 		$this->initFilters();
 		$this->setDefaultOrderField('title');
+		$this->setEnableNumInfo(true);
 		$this->setExternalSorting(true);
 		$this->setExternalSegmentation(true);
 		$this->parseData();
@@ -66,7 +66,9 @@ class xdglRequestTableGUI extends ilTable2GUI {
 	 */
 	public function fillRow($a_set) {
 		$obj = xdglRequest::find($a_set['id']);
-		$this->tpl->setVariable('VAL_EXT_ID', $obj->getExtId());
+		//		$a_set['ext_id'] = $obj->getExtId();
+		$this->tpl->setVariable('VAL_EXT_ID', $a_set['ext_id']);
+
 		$this->tpl->setVariable('VAL_TITLE', $a_set['title']);
 		$this->tpl->setVariable('VAL_BOOK', $a_set['book']);
 		$this->tpl->setVariable('VAL_PUBLISHING_YEAR', $a_set['publishing_year']);
@@ -82,7 +84,8 @@ class xdglRequestTableGUI extends ilTable2GUI {
 
 
 	protected function initColums() {
-		$this->addColumn($this->pl->txt('request_ext_id'), NULL);
+		//		$this->addColumn($this->pl->txt('request_ext_id'), NULL);
+		$this->addColumn($this->pl->txt('request_ext_id'), 'ext_id');
 		$this->addColumn($this->pl->txt('request_title'), 'title');
 		$this->addColumn($this->pl->txt('request_book'), 'book');
 		$this->addColumn($this->pl->txt('request_publishing_year'), 'publishing_year');
@@ -129,6 +132,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 			case xdglRequest::STATUS_RELEASED:
 				$current_selection_list->addItem($this->pl->txt('request_view'), 'view_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_VIEW));
 				$current_selection_list->addItem($this->pl->txt('request_edit'), 'edit_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_EDIT));
+				$current_selection_list->addItem($this->pl->txt('request_download_file'), 'request_download_file', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_DOWNLOAD_FILE));
 				$current_selection_list->addItem($this->pl->txt('request_replace_file'), 'request_replace_file', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_REPLACE_FILE));
 				$current_selection_list->addItem($this->pl->txt('request_delete_file'), 'request_delete_file', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_DELETE_FILE));
 				break;
@@ -167,8 +171,11 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$libs[xdglRequest::LIBRARIAN_ID_NONE] = $this->pl->txt('filter_none');
 		$libs[xdglRequest::LIBRARIAN_ID_MINE] = $this->pl->txt('filter_mine');
 		ksort($libs);
-
 		$te->setOptions($libs);
+		$this->addAndReadFilterItem($te);
+
+		// Ext_ID
+		$te = new ilTextInputGUI($this->pl->txt('request_ext_id'), 'ext_id');
 		$this->addAndReadFilterItem($te);
 	}
 
@@ -187,12 +194,20 @@ class xdglRequestTableGUI extends ilTable2GUI {
 						$field = 'xdgl_library.id';
 						$xdglRequestList->where(array( $field => $value ));
 						break;
+					case 'ext_id':
+
+//						$xdglRequestList->where(array( $field => $value ), 'LIKE');
+						$h = new arHaving();
+						$h->setFieldname('ext_id');
+						$h->setValue('%'.$value.'%');
+						$h->setOperator('LIKE');
+						$xdglRequestList->getArHavingCollection()->add($h);
+						break;
 					case 'xdgl_librarian_id':
 						$key = array_keys($value, xdglRequest::LIBRARIAN_ID_MINE);
-						if ($key) {
-							$value[$key] = $usr_id;
+						if (count($key)) {
+							$value[$key[0]] = $usr_id;
 						}
-
 						$xdglRequestList->where(array( 'librarian_id' => $value ));
 						break;
 					default:
@@ -213,13 +228,27 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$this->determineOffsetAndOrder();
 		$this->determineLimit();
 		$xdglRequestList = xdglRequest::getCollection();
-		$xdglRequestList->orderBy($this->getOrderField(), $this->getOrderDirection());
-		$xdglRequestList->where(array( 'digi_lit_object_id' => 0 ), '>');
-		$xdglRequestList->where(array( 'status' => 0 ), '>');
+				$xdglRequestList->orderBy($this->getOrderField(), $this->getOrderDirection());
+				$xdglRequestList->where(array( 'digi_lit_object_id' => 0 ), '>');
+				$xdglRequestList->where(array( 'status' => 0 ), '>');
 		$xdglRequestList->leftjoin('usr_data', 'requester_usr_id', 'usr_id', array( 'email' ));
 		$xdglRequestList->leftjoin(xdglLibrary::TABLE_NAME, 'library_id', 'id', array( 'id', 'title' ));
 		$xdglRequestList->leftjoin(xdglLibrarian::TABLE_NAME, 'librarian_id', 'usr_id', array( 'usr_id', 'library_id' ));
 		$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array( 'email' ));
+		$xdglRequestList->leftjoin('object_reference', 'crs_ref_id', 'ref_id', array( 'ref_id', 'obj_id' ));
+		$xdglRequestList->leftjoin('object_data', 'object_reference.obj_id', 'obj_id', array( 'title' ), '=', true);
+
+		$sel = new arSelect();
+		$regex = xdglConfig::get(xdglConfig::F_REGEX);
+		preg_match('/\/\((.*)\)\//', $regex, $matches);
+
+		$sel->setFieldName('CASE object_data.title REGEXP "' . $matches[1] . '"
+				WHEN "1" THEN CONCAT(SUBSTRING_INDEX(object_data.title, " ", 1), "-", LPAD(xdgl_request.id, 6, 0))
+				WHEN "0" THEN CONCAT("UNKNOWN-", LPAD(xdgl_request.id, 6, 0)) END');
+		$sel->setAs('ext_id');
+		$sel->setTableName('');
+		$xdglRequestList->getArSelectCollection()->add($sel);
+
 		if (!ilObjDigiLitAccess::showAllLibraries()) {
 			/**
 			 * @var xdglLibrarian $xdglLibrarian
@@ -237,8 +266,10 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		}
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
-		//		$xdglRequestList->debug();
-		$this->setData($xdglRequestList->getArray());
+//		$xdglRequestList->debug();
+		$a_data = $xdglRequestList->getArray();
+
+		$this->setData($a_data);
 	}
 
 
@@ -256,15 +287,10 @@ class xdglRequestTableGUI extends ilTable2GUI {
 	}
 
 
-	function resetOffset() {
-		parent::resetOffset(false);
-		$this->ctrl->setParameter($this->parent_obj, $this->getNavParameter(), $this->nav_value);
-	}
-	/**
-	 * @param $usr_id
-	 * @param $xdglRequestList
-	 */
-
+	//	public function resetOffset() {
+	//		parent::resetOffset(false);
+	//		$this->ctrl->setParameter($this->parent_obj, $this->getNavParameter(), $this->nav_value);
+	//	}
 }
 
 ?>

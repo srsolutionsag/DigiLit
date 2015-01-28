@@ -8,7 +8,7 @@ admin_form_title#:#Einstellungen
 admin_mail#:#E-Mail
 admin_mail_moved#:#Mailtext beim Verschieben in Bibliothek
 admin_mail_new_request#:#Mailtext bei neuem Antrag
-admin_mail_rejected#:#Mailtext abgelehnter Antrage
+admin_mail_rejected#:#Mailtext abgelehnter Antrag
 admin_mail_textes#:#Mail-Texte
 admin_mail_uploaded#:#Mailtext bei hochgeladener Datei
 admin_max_digilits#:#Maximale Anzahl DigiLits im Kurs
@@ -34,8 +34,10 @@ filter_status#:#Status
 fold_create_xdgl#:#DigiLits erstellen
 form_usr_placeholder#:#Benutzer suchen
 grp_create_xdgl#:#DigiLits erstellen
+librarian_already_assigned#:#Bereits einer Bibliothek zugewiesen
 librarian_back#:#Zurück
-librarian_form_title#:#Bearbeiter/innen/Librarians
+librarian_form_title#:#Bearbeiter/in
+librarian_has_sets#:#Hat zugeordnete Anträge
 librarian_none#:#Keine
 librarian_return#:#Zurück zur Übersicht
 librarian_select#:#Bearbeiter/in auswählen
@@ -95,6 +97,7 @@ request_create_date#:#Bestelldatum
 request_creation_date#:#Anfragedatum
 request_date_last_status_change#:#Letzte Änderung
 request_delete_file#:#PDF löschen
+request_download_file#:#PDF herunterladen
 request_edit#:#Metadaten bearbeiten
 request_edition_relevant#:#Nur diese Auflage
 request_editor#:#Autor/Herausgeber

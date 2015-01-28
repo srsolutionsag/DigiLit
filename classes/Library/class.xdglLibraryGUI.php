@@ -47,6 +47,7 @@ class xdglLibraryGUI {
 		$this->tabs_gui = $ilTabs;
 		$this->ctrl = $ilCtrl;
 		$this->pl = ilDigiLitPlugin::getInstance();
+		$this->library = xdglLibrary::find($_GET[self::XDGL_LIB_ID]);
 	}
 
 
@@ -76,6 +77,7 @@ class xdglLibraryGUI {
 			case self::CMD_ADD:
 			case self::CMD_CANCEL:
 			case self::CMD_VIEW:
+			case self::CMD_DELETE:
 				if (!ilObjDigiLitAccess::isAdmin()) {
 					return false;
 				}
@@ -102,14 +104,14 @@ class xdglLibraryGUI {
 
 
 	protected function edit() {
-		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, xdglLibrary::find($_GET[self::XDGL_LIB_ID]));
+		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, $this->library);
 		$xdglLibraryFormGUI->fillForm();
 		$this->tpl->setContent($xdglLibraryFormGUI->getHTML());
 	}
 
 
 	protected function update() {
-		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, xdglLibrary::find($_GET[self::XDGL_LIB_ID]));
+		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, $this->library);
 		$xdglLibraryFormGUI->setValuesByPost();
 		if ($xdglLibraryFormGUI->saveObject()) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_edit'), true);
@@ -126,7 +128,7 @@ class xdglLibraryGUI {
 
 
 	protected function view() {
-		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, xdglLibrary::find($_GET[self::XDGL_LIB_ID]), true);
+		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, $this->library, true);
 		$xdglLibraryFormGUI->fillForm();
 		$this->tpl->setContent($xdglLibraryFormGUI->getHTML());
 	}
@@ -144,17 +146,13 @@ class xdglLibraryGUI {
 
 
 	protected function confirmDelete() {
-		/**
-		 * @var $xdglLibrary xdglLibrary
-		 */
-		$xdglLibrary = xdglLibrary::find($_GET[self::XDGL_LIB_ID]);
-		if (!$xdglLibrary->isDeletable()) {
-			echo 'Achtung!';
+		if (!$this->library->isDeletable()) {
+			throw new ilException('This Library can not be deleted');
 		}
 		$conf = new ilConfirmationGUI();
 		$conf->setFormAction($this->ctrl->getFormAction($this));
 		$conf->setHeaderText($this->pl->txt('msg_confirm_delete_library'));
-		$conf->addItem(self::XDGL_LIB_ID, $xdglLibrary->getId(), $xdglLibrary->getTitle());
+		$conf->addItem(self::XDGL_LIB_ID, $this->library->getId(), $this->library->getTitle());
 		$conf->setConfirm($this->pl->txt('library_delete'), self::CMD_DELETE);
 		$conf->setCancel($this->pl->txt('library_cancel'), self::CMD_CANCEL);
 		$this->tpl->setContent($conf->getHTML());
@@ -162,6 +160,11 @@ class xdglLibraryGUI {
 
 
 	protected function delete() {
+		if (!$this->library->isDeletable()) {
+			throw new ilException('This Library can not be deleted');
+		}
+		$this->library->delete();
+		$this->cancel();
 	}
 
 

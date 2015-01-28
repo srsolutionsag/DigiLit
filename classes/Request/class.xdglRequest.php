@@ -290,6 +290,7 @@ class xdglRequest extends ActiveRecord {
 
 
 	public function afterObjectLoad() {
+		// $this->updateCrsRefId();
 		if (xdglConfig::get(xdglConfig::F_USE_REGEX)) {
 			preg_match(xdglConfig::get(xdglConfig::F_REGEX), $this->getCourseNumber(), $matches);
 			$form_id = sprintf('%05d', $this->getId());
@@ -1177,5 +1178,18 @@ class xdglRequest extends ActiveRecord {
 	 */
 	public function setLastChange($last_change) {
 		$this->last_change = $last_change;
+	}
+
+
+	protected function updateCrsRefId() {
+		if (!$this->getCrsRefId()) {
+			$refs = ilObject2::_getAllReferences($this->getDigiLitObjectId());
+			$ref_id = (array_shift(array_values($refs)));
+			if ($ref_id) {
+				$ilObjDigiLit = new ilObjDigiLit($ref_id);
+				$this->setCrsRefId(ilObjDigiLit::returnParentCrsRefId($ilObjDigiLit->getRefId()));
+				$this->update(true, false);
+			}
+		}
 	}
 }

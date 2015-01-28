@@ -26,6 +26,7 @@ class xdglRequestGUI {
 	const CMD_UPLOAD = 'upload';
 	const CMD_EDIT = 'edit';
 	const CMD_REPLACE_FILE = 'replaceFile';
+	const CMD_DOWNLOAD_FILE = 'downloadFile';
 	const CMD_DELETE_FILE = 'confirmDeleteFile';
 	const CMD_PERFORM_DELETE_FILE = 'deleteFile';
 	const CMD_SAVE = 'save';
@@ -124,6 +125,7 @@ class xdglRequestGUI {
 			case self::CMD_DELETE_FILE:
 			case self::CMD_PERFORM_DELETE_FILE:
 			case self::CMD_SANDBOX:
+			case self::CMD_DOWNLOAD_FILE:
 				$this->$cmd();
 				break;
 		}
@@ -281,6 +283,12 @@ class xdglRequestGUI {
 			ilUtil::sendFailure($e->getMessage(), true);
 		}
 		$this->ctrl->redirect($this);
+	}
+
+
+	protected function downloadFile() {
+		ilObjDigiLitAccess::isManager(true);
+		$this->xdglRequest->deliverFile();
 	}
 
 

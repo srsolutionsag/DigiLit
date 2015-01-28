@@ -16,6 +16,7 @@ class xdglLibrarianGUI {
 
 	const XDGL_LIBRARIAN_ID = 'liba_id';
 	const CMD_ASSIGN = 'assign';
+	const CMD_UPDATEASSIGNMENT = 'updateAssignments';
 	const CMD_UPDATEASSIGNEMENT = 'updateAssignements';
 	const CMD_STANDARD = 'index';
 	const CMD_GETAJAX = 'getAjaxData';
@@ -56,9 +57,8 @@ class xdglLibrarianGUI {
 		$this->ctrl->saveParameterByClass('xdglLibraryGUI', xdglLibraryGUI::XDGL_LIB_ID);
 		switch ($cmd) {
 			case self::CMD_ASSIGN:
-			case self::CMD_GETAJAX:
 			case self::CMD_RETURN:
-			case self::CMD_UPDATEASSIGNEMENT:
+			case self::CMD_UPDATEASSIGNMENT:
 				$this->tabs_gui->clearTargets();
 				$this->tabs_gui->setBackTarget($this->pl->txt('librarian_back'), $this->ctrl->getLinkTargetByClass('xdglLibraryGUI'));
 				$this->{$cmd}();
@@ -70,38 +70,38 @@ class xdglLibrarianGUI {
 
 
 	protected function assign() {
-		$form = $this->buildForm();
-		$user_ids = xdglLibrarian::where(array( 'library_id' => $_GET[xdglLibraryGUI::XDGL_LIB_ID] ))->getArray(NULL, 'usr_id');
-		$form->setValuesByArray(array( 'usr_ids' => implode(',', $user_ids) ));
+		$form = $this->buildFormList();
 		$this->tpl->setContent($form->getHTML());
 	}
 
 
-	protected function updateAssignements() {
-		$form = $this->buildForm();
+	protected function updateAssignments() {
+		$form = $this->buildFormList();
 		$form->checkInput();
 		/**
 		 * @var $obj xdglLibrarian
 		 */
 		$lib_id = $_GET[xdglLibraryGUI::XDGL_LIB_ID];
-
-		$input = $form->getInput('usr_ids');
-		$usr_ids = explode(',', $input[0]);
-		foreach (xdglLibrarian::where(array( 'library_id' => $lib_id ))->where(array( 'usr_id' => $usr_ids ), 'NOT IN')->get() as $obj) {
-			$obj->setActive(false);
-			$obj->delete();
-		}
-
-		foreach ($usr_ids as $usr_id) {
-			$obj = xdglLibrarian::findOrGetInstance($usr_id);
-			$obj->setLibraryId($lib_id);
-			$obj->setActive(true);
-			if ($obj->is_new) {
-				$obj->create();
-			} else {
-				$obj->update();
+		$usr_ids = $_POST['usr_id'];
+		if (count($usr_ids)) {
+			foreach (xdglLibrarian::where(array( 'library_id' => $lib_id ))->where(array( 'usr_id' => $usr_ids ), 'NOT IN')->get() as $obj) {
+				if ($obj->isDeletable()) {
+					$obj->setActive(false);
+					$obj->delete();
+				}
+			}
+			foreach ($usr_ids as $usr_id) {
+				$obj = xdglLibrarian::findOrGetInstance($usr_id);
+				$obj->setLibraryId($lib_id);
+				$obj->setActive(true);
+				if ($obj->is_new) {
+					$obj->create();
+				} else {
+					$obj->update();
+				}
 			}
 		}
+
 		ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
 		$this->returnToLibrary();
 	}
@@ -113,6 +113,88 @@ class xdglLibrarianGUI {
 	}
 
 
+	/**
+	 * @return ilPropertyFormGUI
+	 */
+	protected function buildFormList() {
+		$lib_id = $_GET[xdglLibraryGUI::XDGL_LIB_ID];
+		$form = new ilPropertyFormGUI();
+		$form->setFormAction($this->ctrl->getFormAction($this));
+		$form->setTitle($this->pl->txt('librarian_form_title'));
+
+		global $ilDB;
+		/**
+		 * @var $ilDB ilDB
+		 */
+
+		$role_ids = array_merge(xdglConfig::get(xdglConfig::F_ROLES_MANAGER), xdglConfig::get(xdglConfig::F_ROLES_ADMIN));
+
+		$q = "SELECT ua.usr_id, usr.firstname, usr.lastname, usr.email, lib.library_id AS assigned_to
+				FROM rbac_ua ua
+				JOIN usr_data usr ON usr.usr_id = ua.usr_id
+				LEFT JOIN xdgl_librarian lib ON lib.usr_id = ua.usr_id
+				WHERE  " . $ilDB->in('ua.rol_id', array_values($role_ids), false, 'integer');
+
+		$a_set = $ilDB->query($q);
+		while ($rec = $ilDB->fetchObject($a_set)) {
+			$cb = new ilCheckboxInputGUI($rec->lastname . ', ' . $rec->firstname . ' (' . $rec->email . ')', 'usr_id[]');
+			$cb->setValue($rec->usr_id);
+			if ($rec->assigned_to == $lib_id) {
+				$cb->setChecked(true);
+				/**
+				 * @var $xdglLibrarian xdglLibrarian
+				 */
+				$xdglLibrarian = xdglLibrarian::find($rec->usr_id);
+				if (!$xdglLibrarian->isDeletable()) {
+					$cb->setDisabled(true);
+					$cb->setInfo($this->pl->txt('librarian_has_sets'));
+					$hi = new ilHiddenInputGUI('usr_id[]');
+					$hi->setValue($rec->usr_id);
+					$form->addItem($hi);
+				}
+			} elseif ($rec->assigned_to != NULL) {
+				$cb->setDisabled(true);
+				$cb->setInfo($this->pl->txt('librarian_already_assigned'));
+			}
+			$form->addItem($cb);
+		}
+
+		$form->addCommandButton(self::CMD_UPDATEASSIGNMENT, $this->pl->txt('librarian_update_assignements'));
+		$form->addCommandButton(self::CMD_RETURN, $this->pl->txt('librarian_return'));
+
+		return $form;
+	}
+
+
+
+	//
+	// OLD VERSION USING AJAX
+	//
+
+	/**
+	 * @return ilPropertyFormGUI
+	 * @deprecated
+	 */
+	protected function buildForm() {
+		$form = new ilPropertyFormGUI();
+		$form->setFormAction($this->ctrl->getFormAction($this));
+		$form->setTitle($this->pl->txt('librarian_form_title'));
+
+		$xdglMultiUserInputGUI = new xdglMultiUserInputGUI($this->pl->txt('librarian_users'), 'usr_ids');
+		$ajax_link = $this->ctrl->getLinkTarget($this, 'getAjaxData', '', true);
+		$xdglMultiUserInputGUI->setAjaxLink($ajax_link);
+		$form->addItem($xdglMultiUserInputGUI);
+
+		$form->addCommandButton(self::CMD_UPDATEASSIGNEMENT, $this->pl->txt('librarian_update_assignements'));
+		$form->addCommandButton(self::CMD_RETURN, $this->pl->txt('librarian_return'));
+
+		return $form;
+	}
+
+
+	/**
+	 * @deprecated
+	 */
 	protected function getAjaxData() {
 		global $ilDB;
 		/**
@@ -140,22 +222,35 @@ FROM object_data obj
 
 
 	/**
-	 * @return ilPropertyFormGUI
+	 * @deprecated
 	 */
-	protected function buildForm() {
-		$form = new ilPropertyFormGUI();
-		$form->setFormAction($this->ctrl->getFormAction($this));
-		$form->setTitle($this->pl->txt('librarian_form_title'));
+	protected function updateAssignements() {
+		$form = $this->buildForm();
+		$form->checkInput();
+		/**
+		 * @var $obj xdglLibrarian
+		 */
+		$lib_id = $_GET[xdglLibraryGUI::XDGL_LIB_ID];
 
-		$xdglMultiUserInputGUI = new xdglMultiUserInputGUI($this->pl->txt('librarian_users'), 'usr_ids');
-		$ajax_link = $this->ctrl->getLinkTarget($this, 'getAjaxData', '', true);
-		$xdglMultiUserInputGUI->setAjaxLink($ajax_link);
-		$form->addItem($xdglMultiUserInputGUI);
+		$input = $form->getInput('usr_ids');
+		$usr_ids = explode(',', $input[0]);
+		foreach (xdglLibrarian::where(array( 'library_id' => $lib_id ))->where(array( 'usr_id' => $usr_ids ), 'NOT IN')->get() as $obj) {
+			$obj->setActive(false);
+			$obj->delete();
+		}
 
-		$form->addCommandButton(self::CMD_UPDATEASSIGNEMENT, $this->pl->txt('librarian_update_assignements'));
-		$form->addCommandButton(self::CMD_RETURN, $this->pl->txt('librarian_return'));
-
-		return $form;
+		foreach ($usr_ids as $usr_id) {
+			$obj = xdglLibrarian::findOrGetInstance($usr_id);
+			$obj->setLibraryId($lib_id);
+			$obj->setActive(true);
+			if ($obj->is_new) {
+				$obj->create();
+			} else {
+				$obj->update();
+			}
+		}
+		ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
+		$this->returnToLibrary();
 	}
 }
 

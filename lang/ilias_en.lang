@@ -31,7 +31,10 @@ filter_mine#:#Only assigned to me
 filter_none#:#Nobody is assigned
 filter_status#:#Status
 form_usr_placeholder#:#Search Users
+librarian_already_assigned#:#Already assigned to a library
 librarian_back#:#Back
+librarian_form_title#:#Librarian
+librarian_has_sets#:#Has assigned requests
 librarian_none#:#none
 librarian_return#:#Back to Overview
 librarian_select#:#Select Librarian
@@ -90,6 +93,7 @@ request_create_date#:#Order date
 request_creation_date#:#Request Date
 request_date_last_status_change#:#Last change
 request_delete_file#:#Delete PDF
+request_download_file#:#Download PDF
 request_edit#:#Edit Metadata
 request_edition_relevant#:#This edition only
 request_editor#:#Editor

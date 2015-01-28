@@ -97,6 +97,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_ASSIGNED_LIBRARY,
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
 			xdglNotification::R_ALL,
+			xdglNotification::R_NOTICE,
 		),
 		self::TYPE_MOVED => array(
 			xdglNotification::R_TITLE,
