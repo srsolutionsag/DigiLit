@@ -78,6 +78,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_ISSN,
 			xdglNotification::R_ASSIGNED_LIBRARY,
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
+			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
 		),
 		self::TYPE_REJECTED => array(
