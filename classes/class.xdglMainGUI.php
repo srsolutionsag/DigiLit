@@ -41,6 +41,8 @@ class xdglMainGUI {
 		$this->tabs = $ilTabs;
 		$this->ctrl = $ilCtrl;
 		$this->pl = ilDigiLitPlugin::getInstance();
+		require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Librarian/class.xdglLibrarian.php');
+		xdglLibrarian::installDB();
 	}
 
 

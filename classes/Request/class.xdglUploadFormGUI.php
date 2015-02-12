@@ -101,6 +101,9 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 	public function uploadFile() {
 		$this->readForm();
 		if ($this->request->uploadFileFromForm($this)) {
+			global $ilUser;
+			$this->request->setLibrarianId($ilUser->getId());
+			$this->request->update();
 			ilUtil::sendSuccess($this->pl->txt('msg_success_upload'), true);
 			xdglNotification::sendUploaded($this->request);
 

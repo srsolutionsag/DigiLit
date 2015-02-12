@@ -117,7 +117,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_LAST_MODIFIED_BY_USER,
 			xdglNotification::R_ASSIGNED_LIBRARY,
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
-			xdglNotification::R_INTERNAL_NOTICE,
+			//			xdglNotification::R_INTERNAL_NOTICE,
 			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
 		)

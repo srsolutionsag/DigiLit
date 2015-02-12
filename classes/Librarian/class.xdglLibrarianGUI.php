@@ -83,27 +83,27 @@ class xdglLibrarianGUI {
 		 */
 		$lib_id = $_GET[xdglLibraryGUI::XDGL_LIB_ID];
 		$usr_ids = $_POST['usr_id'];
-		if (count($usr_ids)) {
-			foreach (xdglLibrarian::where(array( 'library_id' => $lib_id ))->where(array( 'usr_id' => $usr_ids ), 'NOT IN')->get() as $obj) {
-				if ($obj->isDeletable()) {
-					$obj->setActive(false);
-					$obj->delete();
-				}
+		//		var_dump($usr_ids); // FSX
+		if (!is_array($usr_ids)) {
+			$usr_ids = array(9999);
+		}
+
+		foreach (xdglLibrarian::where(array( 'library_id' => $lib_id ))->where(array( 'usr_id' => $usr_ids ), 'NOT IN')->get() as $obj) {
+			if ($obj->isDeletable()) {
+				$obj->delete();
 			}
-			foreach ($usr_ids as $usr_id) {
-				$obj = xdglLibrarian::findOrGetInstance($usr_id);
-				$obj->setLibraryId($lib_id);
-				$obj->setActive(true);
-				if ($obj->is_new) {
-					$obj->create();
-				} else {
-					$obj->update();
-				}
+		}
+		foreach ($usr_ids as $usr_id) {
+			$obj = xdglLibrarian::findOrGetInstance($usr_id, $lib_id);
+			if ($obj->is_new) {
+				$obj->create();
+			} else {
+				$obj->update();
 			}
 		}
 
 		ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
-		$this->returnToLibrary();
+		$this->ctrl->redirect($this, self::CMD_ASSIGN);
 	}
 
 
@@ -132,8 +132,8 @@ class xdglLibrarianGUI {
 		$q = "SELECT ua.usr_id, usr.firstname, usr.lastname, usr.email, lib.library_id AS assigned_to
 				FROM rbac_ua ua
 				JOIN usr_data usr ON usr.usr_id = ua.usr_id
-				LEFT JOIN xdgl_librarian lib ON lib.usr_id = ua.usr_id
-				WHERE  " . $ilDB->in('ua.rol_id', array_values($role_ids), false, 'integer');
+				LEFT JOIN xdgl_librarian lib ON lib.usr_id = ua.usr_id AND lib.library_id = " . $ilDB->quote($lib_id, 'integer') . "
+				WHERE  " . $ilDB->in('ua.rol_id', array_values($role_ids), false, 'integer') . " GROUP BY ua.usr_id";
 
 		$a_set = $ilDB->query($q);
 		while ($rec = $ilDB->fetchObject($a_set)) {
@@ -144,16 +144,15 @@ class xdglLibrarianGUI {
 				/**
 				 * @var $xdglLibrarian xdglLibrarian
 				 */
-				$xdglLibrarian = xdglLibrarian::find($rec->usr_id);
+				$xdglLibrarian = xdglLibrarian::findOrGetInstance($rec->usr_id, $rec->assigned_to);
+
 				if (!$xdglLibrarian->isDeletable()) {
-					$cb->setDisabled(true);
 					$cb->setInfo($this->pl->txt('librarian_has_sets'));
 					$hi = new ilHiddenInputGUI('usr_id[]');
 					$hi->setValue($rec->usr_id);
 					$form->addItem($hi);
 				}
 			} elseif ($rec->assigned_to != NULL) {
-				$cb->setDisabled(true);
 				$cb->setInfo($this->pl->txt('librarian_already_assigned'));
 			}
 			$form->addItem($cb);

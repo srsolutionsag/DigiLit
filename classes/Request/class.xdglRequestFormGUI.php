@@ -364,7 +364,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 		$this->request->setEditionRelevant($this->getInput(self::F_EDITION_RELEVANT));
 		$this->request->setIssn($this->getInput(self::F_ISSN));
 
-		if ($this->is_new) {
+		if ($this->is_new AND $ref_id) {
 			$this->request->setCrsRefId($ref_id);
 		}
 

@@ -18,7 +18,7 @@ class xdglLibrary extends ActiveRecord {
 	/**
 	 * @var xdglLibrarian
 	 */
-	protected $librarians = [ ];
+	protected $librarians = array();
 	/**
 	 * @var int
 	 */
@@ -104,35 +104,40 @@ class xdglLibrary extends ActiveRecord {
 	}
 
 
+	//	/**
+	//	 * @param ilObjUser $ilObjUser
+	//	 *
+	//	 * @return ActiveRecord|xdglLibrary
+	//	 */
+	//	public static function getLibraryForUser(ilObjUser $ilObjUser) {
+	//		$xdglLibrarian = xdglLibrarian::find($ilObjUser->getId());
+	//		if ($xdglLibrarian instanceof xdglLibrarian) {
+	//			$libraryId = $xdglLibrarian->getLibraryId();
+	//
+	//			return self::find($libraryId);
+	//		}
+	//
+	//		return self::getPrimary();
+	//	}
+
 	/**
 	 * @param ilObjUser $ilObjUser
 	 *
-	 * @return ActiveRecord|xdglLibrary
+	 * @return array
 	 */
-	public static function getLibraryForUser(ilObjUser $ilObjUser) {
-		$xdglLibrarian = xdglLibrarian::find($ilObjUser->getId());
-		if ($xdglLibrarian instanceof xdglLibrarian) {
-			$libraryId = $xdglLibrarian->getLibraryId();
-
-			return self::find($libraryId);
-		}
-
-		return self::getPrimary();
+	public static function getLibraryIdsForUser(ilObjUser $ilObjUser) {
+		return xdglLibrarian::where(array( 'usr_id' => $ilObjUser->getId() ))->getArray(NULL, 'library_id');
 	}
 
 
 	/**
 	 * @param ilObjUser $ilObjUser
+	 * @param           $lib_id
 	 *
 	 * @return bool
 	 */
-	public static function isAssignedToLibrary(ilObjUser $ilObjUser) {
-		$activeRecordList = xdglLibrarian::where(array( 'usr_id' => $ilObjUser->getId() ));
-		if ($activeRecordList->hasSets()) {
-			return $activeRecordList->first()->getLibraryId();
-		}
-
-		return false;
+	public static function isAssignedToLibrary(ilObjUser $ilObjUser, $lib_id) {
+		return in_array($lib_id, self::getLibraryIdsForUser($ilObjUser));
 	}
 
 

@@ -179,7 +179,7 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $this->xdglRequest, false, false, false);
 		$xdglRequestFormGUI->setValuesByPost();
-		if ($xdglRequestFormGUI->saveObject()) {
+		if ($xdglRequestFormGUI->saveObject(NULL)) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_edit'), true);
 			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 			$this->ctrl->redirect($this);
@@ -193,7 +193,7 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $this->xdglRequest);
 		$xdglRequestFormGUI->setValuesByPost();
-		if ($xdglRequestFormGUI->saveObject()) {
+		if ($xdglRequestFormGUI->saveObject(NULL)) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
 			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 			$this->ctrl->redirect($this);
@@ -214,8 +214,10 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$form = $this->initRefuseForm();
 		if ($form->checkInput()) {
+			global $ilUser;
 			$this->xdglRequest->setRejectionReason($form->getInput(self::F_REASON));
 			$this->xdglRequest->setStatus(xdglRequest::STATUS_REFUSED);
+			$this->xdglRequest->setLibrarianId($ilUser->getId());
 			$this->xdglRequest->update();
 			xdglNotification::sendRejected($this->xdglRequest);
 			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
@@ -228,8 +230,10 @@ class xdglRequestGUI {
 
 
 	protected function changeStatusToWip() {
+		global $ilUser;
 		ilObjDigiLitAccess::isManager(true);
 		$this->xdglRequest->setStatus(xdglRequest::STATUS_IN_PROGRRESS);
+		$this->xdglRequest->setLibrarianId($ilUser->getId());
 		$this->xdglRequest->update();
 		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 		$this->ctrl->redirect($this);
@@ -254,6 +258,7 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$upload_form = new xdglUploadFormGUI($this, $this->xdglRequest);
 		$upload_form->uploadFile();
+
 		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 		$this->ctrl->redirect($this);
 	}
@@ -278,6 +283,8 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		try {
 			$this->xdglRequest->deleteFile();
+			global $ilUser;
+			$this->xdglRequest->setLibrarianId($ilUser->getId());
 			ilUtil::sendSuccess($this->pl->txt('msg_request_file_deleted'), true);
 		} catch (Exception $e) {
 			ilUtil::sendFailure($e->getMessage(), true);

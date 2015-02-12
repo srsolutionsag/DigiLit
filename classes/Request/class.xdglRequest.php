@@ -530,11 +530,7 @@ class xdglRequest extends ActiveRecord {
 
 		if (ilUtil::moveUploadedFile($xdglUploadFormGUI->getUploadTempName(), $xdglUploadFormGUI->getUploadTempName(), $this->getAbsoluteFilePath())) {
 			global $ilUser;
-			/**
-			 * @var $ilUser ilObjUser
-			 */
-			$xdglLibrarian = xdglLibrarian::find($ilUser->getId());
-			$this->assignToLibrarian($xdglLibrarian);
+			$this->setLibrarianId($ilUser->getId());
 			$this->setStatus(self::STATUS_RELEASED);
 			$this->update();
 
