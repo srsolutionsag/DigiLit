@@ -1,5 +1,8 @@
 <?php
-require_once('./Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRecord.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
+ilDigiLitPlugin::initAR();
+require_once('./include/inc.ilias_version.php');
+require_once('./Services/Component/classes/class.ilComponent.php');
 
 /**
  * Class xdglConfig
@@ -22,6 +25,10 @@ class xdglConfig extends ActiveRecord {
 	const F_OWN_LIBRARY_ONLY = 'own_library_only';
 	const F_USE_REGEX = 'use_regex';
 	const F_REGEX = 'regex';
+	const ILIAS_44 = 44;
+	const ILIAS_50 = 50;
+	const ILIAS_51 = 51;
+	const MIN_ILIAS_VERSION = self::ILIAS_44;
 	/**
 	 * @var array
 	 */
@@ -129,6 +136,56 @@ class xdglConfig extends ActiveRecord {
 	 */
 	static function returnDbTableName() {
 		return 'xdgl_config';
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public static function getILIASVersion() {
+		if (ilComponent::isVersionGreaterString(ILIAS_VERSION_NUMERIC, '5.0.999')) {
+			return self::ILIAS_51;
+		}
+		if (ilComponent::isVersionGreaterString(ILIAS_VERSION_NUMERIC, '4.9.999')) {
+			return self::ILIAS_50;
+		}
+		if (ilComponent::isVersionGreaterString(ILIAS_VERSION_NUMERIC, '4.3.999')) {
+			return self::ILIAS_44;
+		}
+
+		return 0;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public static function isILIASSupported() {
+		return self::getILIASVersion() >= self::MIN_ILIAS_VERSION;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public static function is44() {
+		return self::getILIASVersion() >= self::ILIAS_44;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public static function is50() {
+		return self::getILIASVersion() >= self::ILIAS_50;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public static function hasGlobalCache() {
+		return is_file('./Services/GlobalCache/classes/class.ilGlobalCache.php');
 	}
 }
 

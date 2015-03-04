@@ -93,8 +93,10 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$this->addColumn($this->pl->txt('request_date_last_status_change'), 'date_last_status_change');
 		$this->addColumn($this->pl->txt('request_status'), 'status');
 		$this->addColumn($this->pl->txt('request_requester_mailto'), 'usr_data_email');
-		$this->addColumn($this->pl->txt('request_assigned_library'), 'xdgl_library_title');
-		$this->addColumn($this->pl->txt('request_assigned_librarian'), 'usr_data_2_email');
+//		if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES)) {
+			$this->addColumn($this->pl->txt('request_assigned_library'), 'xdgl_library_title');
+			$this->addColumn($this->pl->txt('request_assigned_librarian'), 'usr_data_2_email');
+//		}
 		$this->addColumn($this->pl->txt('common_actions'));
 	}
 
@@ -124,12 +126,12 @@ class xdglRequestTableGUI extends ilTable2GUI {
 				$current_selection_list->addItem($this->pl->txt('request_refuse'), 'refuse_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CDM_CONFIRM_REFUSE));
 				$current_selection_list->addItem($this->pl->txt('request_assign'), 'assign_request', $this->ctrl->getLinkTargetByClass('xdglLibraryGUI', xdglLibraryGUI::CMD_ASSIGN_LIBRARY));
 				break;
-//			case xdglRequest::STATUS_IN_PROGRRESS:
-//				$current_selection_list->addItem($this->pl->txt('request_view'), 'view_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_VIEW));
-//				$current_selection_list->addItem($this->pl->txt('request_edit'), 'edit_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_EDIT));
-//				$current_selection_list->addItem($this->pl->txt('upload_title'), 'upload_pdf', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_SELECT_FILE));
-//				$current_selection_list->addItem($this->pl->txt('request_refuse'), 'refuse_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CDM_CONFIRM_REFUSE));
-//				break;
+			//			case xdglRequest::STATUS_IN_PROGRRESS:
+			//				$current_selection_list->addItem($this->pl->txt('request_view'), 'view_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_VIEW));
+			//				$current_selection_list->addItem($this->pl->txt('request_edit'), 'edit_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_EDIT));
+			//				$current_selection_list->addItem($this->pl->txt('upload_title'), 'upload_pdf', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_SELECT_FILE));
+			//				$current_selection_list->addItem($this->pl->txt('request_refuse'), 'refuse_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CDM_CONFIRM_REFUSE));
+			//				break;
 			case xdglRequest::STATUS_RELEASED:
 				$current_selection_list->addItem($this->pl->txt('request_view'), 'view_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_VIEW));
 				$current_selection_list->addItem($this->pl->txt('request_edit'), 'edit_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_EDIT));
@@ -263,7 +265,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		}
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
-//		$xdglRequestList->debug();
+		//		$xdglRequestList->debug();
 		$a_data = $xdglRequestList->getArray();
 
 		$this->setData($a_data);

@@ -2,6 +2,7 @@
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequestGUI.php');
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfigGUI.php');
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Library/class.xdglLibraryGUI.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php');
 
 /**
  * Class xdglMainGUI
@@ -9,7 +10,7 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
  * @author            Fabian Schmid <fs@studer-raimann.ch>
  * @version           1.0.0
  *
- * @ilCtrl_IsCalledBy xdglMainGUI : ilRouterGUI
+ * @ilCtrl_IsCalledBy xdglMainGUI : ilRouterGUI, ilUIPluginRouterGUI
  * @ilCtrl_IsCalledBy xdglMainGUI : ilDigiLitConfigGUI
  */
 class xdglMainGUI {
@@ -41,8 +42,6 @@ class xdglMainGUI {
 		$this->tabs = $ilTabs;
 		$this->ctrl = $ilCtrl;
 		$this->pl = ilDigiLitPlugin::getInstance();
-		require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Librarian/class.xdglLibrarian.php');
-		xdglLibrarian::installDB();
 	}
 
 
@@ -76,6 +75,10 @@ class xdglMainGUI {
 				$this->ctrl->forwardCommand($xdglRequestGUI);
 
 				break;
+		}
+		if (xdglConfig::is50()) {
+			$this->tpl->getStandardTemplate();
+			$this->tpl->show();
 		}
 	}
 }

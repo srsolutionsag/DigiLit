@@ -1,6 +1,7 @@
 <?php
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
+ilDigiLitPlugin::initAR();
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php');
-require_once('./Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRecord.php');
 
 /**
  * Class xdglLibrarian

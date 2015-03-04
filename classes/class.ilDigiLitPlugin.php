@@ -16,6 +16,8 @@ require_once('class.ilObjDigiLitAccess.php');
 class ilDigiLitPlugin extends ilRepositoryObjectPlugin {
 
 	const XDGL = 'xdgl';
+	const AR_CUST = './Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRecord.php';
+	const AR_SERV = './Services/ActiveRecord/class.ActiveRecord.php';
 	/**
 	 * @var ilDigiLitPlugin
 	 */
@@ -55,6 +57,21 @@ class ilDigiLitPlugin extends ilRepositoryObjectPlugin {
 	 */
 	public static function getStaticPluginPrefix() {
 		return self::XDGL;
+	}
+
+
+	/**
+	 * @throws ilException
+	 */
+	public static function initAR() {
+		if (!is_file(self::AR_CUST) AND !is_file(self::AR_SERV)
+		) {
+			throw new ilException('No Activerecord found');
+		}
+		if (is_file(self::AR_CUST)) {
+			require_once(self::AR_CUST);
+		}
+		require_once(self::AR_SERV);
 	}
 
 
