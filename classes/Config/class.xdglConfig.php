@@ -55,7 +55,7 @@ class xdglConfig extends ActiveRecord {
 			return false;
 		}
 
-		return self::isRegexValid(self::F_REGEX);
+		return self::isRegexValid(self::get(self::F_REGEX));
 	}
 
 

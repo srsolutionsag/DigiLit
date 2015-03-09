@@ -21,7 +21,7 @@ require_once('./Services/Form/classes/class.ilMultiSelectInputGUI.php');
  */
 class xdglRequestTableGUI extends ilTable2GUI {
 
-	const TBL_XDGL_REQUEST_OVERVIEWS = 'tbl_xdgl_request_overviews';
+	const TBL_XDGL_REQUEST_OVERVIEWS = 'tbl_xdgl_request_overviews_v2';
 	/**
 	 * @var ilDigiLitPlugin
 	 */
