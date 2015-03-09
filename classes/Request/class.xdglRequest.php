@@ -1,6 +1,6 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-ilDigiLitPlugin::initAR();
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
+xdgl::initAR();
 
 /**
  * xdglRequest
@@ -313,7 +313,7 @@ class xdglRequest extends ActiveRecord {
 		if ($this->getLibrarianId() === NULL) {
 			$this->setLibrarianId(self::LIBRARIAN_ID_NONE);
 		}
-		if (!$prevent_last_change) {
+		if (! $prevent_last_change) {
 			global $ilUser;
 			$this->setLastChange(time());
 			$this->setLastModifiedByUsrId($ilUser->getId());
@@ -508,8 +508,8 @@ class xdglRequest extends ActiveRecord {
 	 * @return bool
 	 */
 	public function createDir() {
-		if (!$this->dirExists()) {
-			if (!ilUtil::makeDirParents($this->getFilePath())) {
+		if (! $this->dirExists()) {
+			if (! ilUtil::makeDirParents($this->getFilePath())) {
 				throw new Exception('Unable to create Folder \'' . $this->getFilePath() . '\'. Missing permissions?');
 			} else {
 				return true;
@@ -1178,7 +1178,7 @@ class xdglRequest extends ActiveRecord {
 
 
 	protected function updateCrsRefId() {
-		if (!$this->getCrsRefId()) {
+		if (! $this->getCrsRefId()) {
 			$refs = ilObject2::_getAllReferences($this->getDigiLitObjectId());
 			$ref_id = (array_shift(array_values($refs)));
 			if ($ref_id) {

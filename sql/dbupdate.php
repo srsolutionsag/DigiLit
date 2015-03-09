@@ -54,3 +54,25 @@ foreach(xdglRequest::get() as $xdglRequest) {
 	$xdglRequest->update(true, false);
 }
 ?>
+<#7>
+<?php
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Librarian/class.xdglLibrarian.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Library/class.xdglLibrary.php');
+global $ilUser;
+if(xdglLibrarian::count() == 0) {
+	$xdglLibrarian = new xdglLibrarian();
+	$xdglLibrarian->setLibraryId(xdglLibrary::getPrimaryId());
+	$xdglLibrarian->setUsrId($ilUser->getId());
+	$xdglLibrarian->create();
+}
+?>
+<#8>
+<?php
+// Base Configuration
+require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php';
+if (! xdglConfig::get(xdglConfig::F_MAX_DIGILITS)) {
+	xdglConfig::set(xdglConfig::F_MAX_DIGILITS, 10);
+}
+xdglConfig::set(xdglConfig::F_USE_LIBRARIES, true);
+xdglConfig::set(xdglConfig::F_OWN_LIBRARY_ONLY, true);
+?>

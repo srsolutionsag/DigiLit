@@ -179,7 +179,7 @@ class xdglLibraryGUI {
 
 		$se = new ilSelectInputGUI($this->pl->txt('library_select'), 'library_select');
 		$se->setRequired(true);
-		$se->setOptions(xdglLibrary::getArray('id', 'title'));
+		$se->setOptions(xdglLibrary::orderBy('title')->getArray('id', 'title'));
 		$form->addItem($se);
 
 		$se = new ilSelectInputGUI($this->pl->txt('librarian_select'), 'librarian_select');

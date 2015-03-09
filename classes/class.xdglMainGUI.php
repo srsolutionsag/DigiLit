@@ -59,8 +59,20 @@ class xdglMainGUI {
 				$this->tabs->addTab(self::TAB_LIBRARIES, $this->pl->txt('tab_' . self::TAB_LIBRARIES), $this->ctrl->getLinkTarget($xdglLibraryGUI));
 			}
 		}
+		$nextClass = $this->ctrl->getNextClass();
+		if (! xdglConfig::isConfigUpToDate()) {
+			ilUtil::sendInfo('Configuraion out of date');
+			$nextClass = 'xdglconfiggui';
+		}
+		global $ilUser;
+		if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES) AND
+			xdglConfig::get(xdglConfig::F_OWN_LIBRARY_ONLY) AND ! xdglLibrary::isAssignedToAnyLibrary($ilUser)
+		) {
+			ilUtil::sendInfo('You cannot use DigiLit since you are not assigned to any Library', true);
+			ilUtil::redirect('/');
+		}
 
-		switch ($this->ctrl->getNextClass()) {
+		switch ($nextClass) {
 			case 'xdglconfiggui';
 				$this->tabs->setTabActive(self::TAB_SETTINGS);
 				$this->ctrl->forwardCommand($xdglConfigGUI);

@@ -93,10 +93,10 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$this->addColumn($this->pl->txt('request_date_last_status_change'), 'date_last_status_change');
 		$this->addColumn($this->pl->txt('request_status'), 'status');
 		$this->addColumn($this->pl->txt('request_requester_mailto'), 'usr_data_email');
-//		if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES)) {
-			$this->addColumn($this->pl->txt('request_assigned_library'), 'xdgl_library_title');
-			$this->addColumn($this->pl->txt('request_assigned_librarian'), 'usr_data_2_email');
-//		}
+		//		if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES)) {
+		$this->addColumn($this->pl->txt('request_assigned_library'), 'xdgl_library_title');
+		$this->addColumn($this->pl->txt('request_assigned_librarian'), 'usr_data_2_email');
+		//		}
 		$this->addColumn($this->pl->txt('common_actions'));
 	}
 
@@ -241,26 +241,29 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array( 'email' ));
 		$xdglRequestList->leftjoin('object_reference', 'crs_ref_id', 'ref_id', array( 'ref_id', 'obj_id' ));
 		$xdglRequestList->leftjoin('object_data', 'object_reference.obj_id', 'obj_id', array( 'title' ), '=', true);
-
 		$sel = new arSelect();
-		$regex = xdglConfig::get(xdglConfig::F_REGEX);
-		preg_match('/\/\((.*)\)\//', $regex, $matches);
-
-		$sel->setFieldName('CASE object_data.title REGEXP "' . $matches[1] . '"
+		$sel->setAs('ext_id');
+		if (xdglConfig::hasValidRegex()) {
+			$regex = xdglConfig::get(xdglConfig::F_REGEX);
+			preg_match('/\/\((.*)\)\//', $regex, $matches);
+			$sel->setFieldName('CASE object_data.title REGEXP "' . $matches[1] . '"
 				WHEN "1" THEN CONCAT(SUBSTRING_INDEX(object_data.title, " ", 1), "-", LPAD(xdgl_request.id, 6, 0))
 				WHEN "0" THEN CONCAT("UNKNOWN-", LPAD(xdgl_request.id, 6, 0)) END');
-		$sel->setAs('ext_id');
-		$sel->setTableName('');
+			$sel->setTableName('');
+		} else {
+			$sel->setFieldName('id');
+			$sel->setTableName('xdgl_request');
+		}
 		$xdglRequestList->getArSelectCollection()->add($sel);
 
-		if (!ilObjDigiLitAccess::showAllLibraries()) {
+		if (! ilObjDigiLitAccess::showAllLibraries()) {
 			$lib_ids = xdglLibrary::getLibraryIdsForUser($ilUser);
 			$xdglRequestList->where(array( 'xdgl_library.id' => $lib_ids ));
 		}
 
 		$this->filterResults($usr_id, $xdglRequestList);
 		$this->setMaxCount($xdglRequestList->count());
-		if (!$xdglRequestList->hasSets()) {
+		if (! $xdglRequestList->hasSets()) {
 			ilUtil::sendInfo('Keine Ergebnisse für diesen Filter');
 		}
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());

@@ -68,6 +68,7 @@ msg_success_upload#:#File uploaded
 notification_subject_mail_new_request#:#New DigiLit-Request
 notification_subject_mail_rejected#:#DigiLit-Request rejected
 notification_subject_mail_uploaded#:#DigiLit uploaded
+notification_subject_mail_moved#:#DigiLit moved
 obj_list_page#:#Page(s)
 obj_xdgl#:#DigiLit
 obj_xdgl_admin_title#:#DigiLit Administration

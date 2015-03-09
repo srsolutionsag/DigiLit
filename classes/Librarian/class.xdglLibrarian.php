@@ -1,6 +1,6 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-ilDigiLitPlugin::initAR();
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
+xdgl::initAR();
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php');
 
 /**
@@ -28,7 +28,7 @@ class xdglLibrarian extends ActiveRecord {
 	 * @return bool
 	 */
 	public function isDeletable() {
-		return !xdglRequest::where(array(
+		return ! xdglRequest::where(array(
 			'librarian_id' => $this->getUsrId(),
 			'status' => array( xdglRequest::STATUS_REFUSED, xdglRequest::STATUS_RELEASED, xdglRequest::STATUS_COPY )
 		), array( 'librarian_id' => '=', 'status' => 'NOT IN' ))->hasSets();
@@ -85,7 +85,7 @@ class xdglLibrarian extends ActiveRecord {
 			$lib_id = xdglLibrary::getPrimaryId();
 		}
 		$list = self::getCollection();
-		if (!$all) {
+		if (! $all) {
 			$list->where(array( 'library_id' => $lib_id ));
 		}
 		$list->innerjoin('usr_data', 'usr_id', 'usr_id', array( 'firstname', 'lastname', 'email' ));
@@ -93,6 +93,8 @@ class xdglLibrarian extends ActiveRecord {
 		if ($exclude) {
 			$list->where(array( 'usr_id' => $exclude ), '!=');
 		}
+
+		$list->orderBy('user_fullname');
 
 		return $list->getArray('usr_id', 'user_fullname');
 	}

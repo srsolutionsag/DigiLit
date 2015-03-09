@@ -1,6 +1,6 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-ilDigiLitPlugin::initAR();
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
+xdgl::initAR();
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php');
 
 /**
@@ -139,6 +139,16 @@ class xdglLibrary extends ActiveRecord {
 	 */
 	public static function isAssignedToLibrary(ilObjUser $ilObjUser, $lib_id) {
 		return in_array($lib_id, self::getLibraryIdsForUser($ilObjUser));
+	}
+
+
+	/**
+	 * @param ilObjUser $ilObjUser
+	 *
+	 * @return bool
+	 */
+	public static function isAssignedToAnyLibrary(ilObjUser $ilObjUser) {
+		return count(self::getLibraryIdsForUser($ilObjUser)) > 0;
 	}
 
 

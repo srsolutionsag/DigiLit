@@ -71,6 +71,7 @@ msg_success_upload#:#Datei hochgeladen
 notification_subject_mail_new_request#:#Neuer DigiLit-Antrag
 notification_subject_mail_rejected#:#DigiLit-Antrag abgelehnt
 notification_subject_mail_uploaded#:#DigiLit hochgeladen
+notification_subject_mail_moved#:#DigiLit verschoben
 obj_list_page#:#Seite(n)
 obj_xdgl#:#DigiLit
 obj_xdgl_admin_title#:#DigiLit Administration

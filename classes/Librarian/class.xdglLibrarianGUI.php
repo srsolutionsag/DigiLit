@@ -48,7 +48,7 @@ class xdglLibrarianGUI {
 	 * @return bool
 	 */
 	public function executeCommand() {
-		if (!ilObjDigiLitAccess::isAdmin()) {
+		if (! ilObjDigiLitAccess::isAdmin()) {
 			return false;
 		}
 		$cmd = $this->ctrl->getCmd(self::CMD_STANDARD);
@@ -84,8 +84,8 @@ class xdglLibrarianGUI {
 		$lib_id = $_GET[xdglLibraryGUI::XDGL_LIB_ID];
 		$usr_ids = $_POST['usr_id'];
 		//		var_dump($usr_ids); // FSX
-		if (!is_array($usr_ids)) {
-			$usr_ids = array(9999);
+		if (! is_array($usr_ids)) {
+			$usr_ids = array( - 1 );
 		}
 
 		foreach (xdglLibrarian::where(array( 'library_id' => $lib_id ))->where(array( 'usr_id' => $usr_ids ), 'NOT IN')->get() as $obj) {
@@ -94,6 +94,9 @@ class xdglLibrarianGUI {
 			}
 		}
 		foreach ($usr_ids as $usr_id) {
+			if ($usr_id == - 1) {
+				continue;
+			}
 			$obj = xdglLibrarian::findOrGetInstance($usr_id, $lib_id);
 			if ($obj->is_new) {
 				$obj->create();
@@ -146,7 +149,7 @@ class xdglLibrarianGUI {
 				 */
 				$xdglLibrarian = xdglLibrarian::findOrGetInstance($rec->usr_id, $rec->assigned_to);
 
-				if (!$xdglLibrarian->isDeletable()) {
+				if (! $xdglLibrarian->isDeletable()) {
 					$cb->setInfo($this->pl->txt('librarian_has_sets'));
 					$hi = new ilHiddenInputGUI('usr_id[]');
 					$hi->setValue($rec->usr_id);
@@ -188,68 +191,6 @@ class xdglLibrarianGUI {
 		$form->addCommandButton(self::CMD_RETURN, $this->pl->txt('librarian_return'));
 
 		return $form;
-	}
-
-
-	/**
-	 * @deprecated
-	 */
-	protected function getAjaxData() {
-		global $ilDB;
-		/**
-		 * @var ilDB $ilDB
-		 */
-
-		$term = $ilDB->quote('%' . $_GET['term'] . '%', 'text');
-		$type = $ilDB->quote($_GET['container_type'], 'text');
-
-		$query = "SELECT obj.obj_id, obj.title, usr.*
-FROM object_data obj
-				 JOIN usr_data usr ON usr.usr_id = obj.obj_id
-			 WHERE obj.type = $type AND
-				 (obj.title LIKE $term OR usr.firstname LIKE $term OR usr.lastname LIKE $term OR usr.email LIKE $term OR usr.login LIKE $term )
-			 ORDER BY  obj.title";
-
-		$res = $ilDB->query($query);
-		$result = array();
-		while ($row = $ilDB->fetchAssoc($res)) {
-			$result[] = array( "id" => $row['obj_id'], "text" => $row['firstname'] . ' ' . $row['lastname'] . ' (' . $row['email'] . ')' );
-		}
-		echo json_encode($result);
-		exit;
-	}
-
-
-	/**
-	 * @deprecated
-	 */
-	protected function updateAssignements() {
-		$form = $this->buildForm();
-		$form->checkInput();
-		/**
-		 * @var $obj xdglLibrarian
-		 */
-		$lib_id = $_GET[xdglLibraryGUI::XDGL_LIB_ID];
-
-		$input = $form->getInput('usr_ids');
-		$usr_ids = explode(',', $input[0]);
-		foreach (xdglLibrarian::where(array( 'library_id' => $lib_id ))->where(array( 'usr_id' => $usr_ids ), 'NOT IN')->get() as $obj) {
-			$obj->setActive(false);
-			$obj->delete();
-		}
-
-		foreach ($usr_ids as $usr_id) {
-			$obj = xdglLibrarian::findOrGetInstance($usr_id);
-			$obj->setLibraryId($lib_id);
-			$obj->setActive(true);
-			if ($obj->is_new) {
-				$obj->create();
-			} else {
-				$obj->update();
-			}
-		}
-		ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
-		$this->returnToLibrary();
 	}
 }
 

@@ -181,14 +181,55 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public function saveObject() {
-		if (!$this->checkInput()) {
+		if (! $this->checkInput()) {
 			return false;
 		}
 		foreach ($this->getItems() as $item) {
 			$this->saveValueForItem($item);
 		}
+		xdglConfig::set(xdglConfig::F_CONFIG_VERSION, xdglConfig::CONFIG_VERSION);
 
 		return true;
+	}
+
+
+	public function checkInput() {
+		/**
+		 * @var $roles_admin       ilMultiSelectInputGUI
+		 * @var $roles_manager     ilMultiSelectInputGUI
+		 * @var $regex             ilTextInputGUI
+		 * @var $use_regex         ilCheckboxInputGUI
+		 */
+		$check = true;
+		if (ilObjDigiLitAccess::isGlobalAdmin()) {
+			$roles_admin = $this->getItemByPostVar(xdglConfig::F_ROLES_ADMIN);
+			if (count($roles_admin->getValue()) == 0) {
+				$check = false;
+				$roles_admin->setAlert('Check at least one role.');
+			}
+
+			$roles_manager = $this->getItemByPostVar(xdglConfig::F_ROLES_MANAGER);
+			if (count($roles_manager->getValue()) == 0) {
+				$check = false;
+				$roles_manager->setAlert('Check at least one role.');
+			}
+		}
+		$use_regex = $this->getItemByPostVar(xdglConfig::F_USE_REGEX);
+		if ($use_regex->getChecked()) {
+			$regex = $this->getItemByPostVar(xdglConfig::F_REGEX);
+			if (! xdglConfig::isRegexValid($regex->getValue())) {
+				$check = false;
+				$regex->setAlert('Regular Expression not valid');
+			}
+		}
+		if (! $check) {
+			global $lng;
+			ilUtil::sendFailure($lng->txt("form_input_not_valid"));
+
+			return false;
+		}
+
+		return parent::checkInput();
 	}
 
 
@@ -214,7 +255,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public static function checkForSubItem($item) {
-		return !$item instanceof ilFormSectionHeaderGUI AND !$item instanceof ilMultiSelectInputGUI;
+		return ! $item instanceof ilFormSectionHeaderGUI AND ! $item instanceof ilMultiSelectInputGUI;
 	}
 
 
@@ -224,7 +265,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public static function checkItem($item) {
-		return !$item instanceof ilFormSectionHeaderGUI;
+		return ! $item instanceof ilFormSectionHeaderGUI;
 	}
 
 
