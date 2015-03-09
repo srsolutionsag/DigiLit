@@ -43,7 +43,7 @@ class xdglLibrary extends ActiveRecord {
 	 * @db_length           1
 	 * @db_is_notnull       true
 	 */
-	protected $active = false;
+	protected $active = true;
 	/**
 	 * @var string
 	 *

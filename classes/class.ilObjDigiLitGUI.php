@@ -218,7 +218,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		/**
 		 * @var $tree ilTree
 		 */
-		if (!$ref_id) {
+		if (! $ref_id) {
 			$ref_id = $_GET['ref_id'];
 		}
 
@@ -267,7 +267,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		/**
 		 * @var $ilUser ilObjUser
 		 */
-		if (strpos(gethostname(), '.local') AND $ilUser->getId() == 6) {
+		if ((strpos(gethostname(), '.local') OR strpos(gethostname(), 'vagrant-') === 0) AND $ilUser->getId() == 6) {
 			$creation_form->fillFormRandomized();
 		}
 
@@ -297,7 +297,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 			 * @var $xdglRequest xdglRequest
 			 */
 			$xdglRequest = xdglRequest::find($_GET['xdgl_id']);
-			if (!$xdglRequest->deliverFile()) {
+			if (! $xdglRequest->deliverFile()) {
 				ilUtil::sendFailure($lng->txt('file_not_found'));
 			}
 		} else {
@@ -315,9 +315,9 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$pl = ilDigiLitPlugin::getInstance();
 		$tpl->setTitle($title);
 		$tpl->setDescription('');
-		if(xdglConfig::is50()) {
+		if (xdglConfig::is50()) {
 			$tpl->setTitleIcon(ilUtil::getImagePath('icon_xdgl.svg', 'Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit'));
-		}else {
+		} else {
 			$tpl->setTitleIcon($pl->getImagePath('icon_' . ilDigiLitPlugin::getStaticPluginPrefix() . '_b.png'), $pl->txt('xdgl_icon') . ' '
 				. $pl->txt('obj_' . ilDigiLitPlugin::getStaticPluginPrefix()));
 		}
@@ -347,7 +347,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$a_val = array( $_GET['ref_id'] );
 		ilSession::set('saved_post', $a_val);
 		$ru = new ilRepUtilGUI($this);
-		if (!$ru->showDeleteConfirmation($a_val, false)) {
+		if (! $ru->showDeleteConfirmation($a_val, false)) {
 			$this->redirectParentGui();
 		}
 		$this->tpl->show();

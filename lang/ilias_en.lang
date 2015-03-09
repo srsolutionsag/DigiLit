@@ -58,6 +58,7 @@ library_select#:#Select Library
 library_title#:#Name
 library_update#:#Save
 library_view#:#Details
+library_active#:#Active
 main_menu_button#:#DigiLit-Admin
 msg_confirm_delete_library#:#Do you really want to delete the following library?
 msg_request_delete_file#:#Do you want to delete the current PDF?

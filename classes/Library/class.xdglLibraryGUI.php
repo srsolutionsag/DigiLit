@@ -78,7 +78,7 @@ class xdglLibraryGUI {
 			case self::CMD_CANCEL:
 			case self::CMD_VIEW:
 			case self::CMD_DELETE:
-				if (!ilObjDigiLitAccess::isAdmin()) {
+				if (! ilObjDigiLitAccess::isAdmin()) {
 					return false;
 				}
 				$this->{$cmd}();
@@ -123,6 +123,7 @@ class xdglLibraryGUI {
 
 	protected function add() {
 		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, new xdglLibrary());
+		$xdglLibraryFormGUI->fillForm();
 		$this->tpl->setContent($xdglLibraryFormGUI->getHTML());
 	}
 
@@ -146,7 +147,7 @@ class xdglLibraryGUI {
 
 
 	protected function confirmDelete() {
-		if (!$this->library->isDeletable()) {
+		if (! $this->library->isDeletable()) {
 			throw new ilException('This Library can not be deleted');
 		}
 		$conf = new ilConfirmationGUI();
@@ -160,7 +161,7 @@ class xdglLibraryGUI {
 
 
 	protected function delete() {
-		if (!$this->library->isDeletable()) {
+		if (! $this->library->isDeletable()) {
 			throw new ilException('This Library can not be deleted');
 		}
 		$this->library->delete();
@@ -179,11 +180,11 @@ class xdglLibraryGUI {
 
 		$se = new ilSelectInputGUI($this->pl->txt('library_select'), 'library_select');
 		$se->setRequired(true);
-		$se->setOptions(xdglLibrary::orderBy('title')->getArray('id', 'title'));
+		$se->setOptions(xdglLibrary::where(array( 'active' => true ))->orderBy('title')->getArray('id', 'title'));
 		$form->addItem($se);
 
 		$se = new ilSelectInputGUI($this->pl->txt('librarian_select'), 'librarian_select');
-		$se->setOptions(xdglLibrarian::getAssignedLibrariansForLibrary());
+		$se->setOptions(array_merge(array( 0 => $this->pl->txt('librarian_none') ), xdglLibrarian::getAssignedLibrariansForLibrary()));
 		$form->addItem($se);
 
 		$form->addCommandButton(self::CMD_RETURN_TO_REQUESTS, $this->pl->txt('library_cancel'));

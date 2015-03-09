@@ -61,6 +61,7 @@ library_select#:#Bibliothek auswählen
 library_title#:#Name
 library_update#:#Speichern
 library_view#:#Details
+library_active#:#Aktiv
 main_menu_button#:#DigiLit-Admin
 msg_confirm_delete_library#:#Möchten Sie die folgende Bibliothek wirklich löschen?
 msg_request_delete_file#:#Möchten Sie das PDF zum angezeigten Eintrag löschen?

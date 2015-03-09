@@ -73,6 +73,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		if ($obj->getIsPrimary()) {
 			$this->tpl->setVariable('STYLE', 'font-weight: bold;');
 		}
+		$this->tpl->setVariable('VAL_ACTIVE', $obj->isActive());
 		$this->tpl->setVariable('VAL_TITLE', $obj->getTitle());
 		$this->tpl->setVariable('VAL_DESCRIPTION', $obj->getDescription());
 		$this->tpl->setVariable('VAL_EMAIL', $obj->getEmail());
@@ -109,6 +110,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 
 
 	protected function initColums() {
+		$this->addColumn($this->pl->txt('library_active'));
 		$this->addColumn($this->pl->txt('library_title'), 'title');
 		$this->addColumn($this->pl->txt('library_description'), 'description');
 		$this->addColumn($this->pl->txt('library_email'), 'email');

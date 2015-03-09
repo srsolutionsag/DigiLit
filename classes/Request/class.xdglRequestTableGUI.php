@@ -164,7 +164,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		// Library
 		if (ilObjDigiLitAccess::showAllLibraries()) {
 			$te = new ilMultiSelectInputGUI($this->pl->txt('filter_library'), 'xdgl_library_id');
-			$te->setOptions(xdglLibrary::getArray('id', 'title'));
+			$te->setOptions(xdglLibrary::where(array( 'active' => true ))->getArray('id', 'title'));
 			$this->addAndReadFilterItem($te);
 		}
 		global $ilUser;
