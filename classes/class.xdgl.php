@@ -18,19 +18,22 @@ class xdgl {
 	const AR_CUST = './Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRecord.php';
 	const AR_SERV = './Services/ActiveRecord/class.ActiveRecord.php';
 
+
 	/**
 	 * @throws ilException
 	 */
 	public static function initAR() {
-		if (!is_file(self::AR_CUST) AND !is_file(self::AR_SERV)
+		if (! is_file(self::AR_CUST) AND ! is_file(self::AR_SERV)
 		) {
 			throw new ilException('No ActiveRecord found');
 		}
 		if (is_file(self::AR_CUST)) {
 			require_once(self::AR_CUST);
+		} elseif (is_file(self::AR_SERV)) {
+			require_once(self::AR_SERV);
 		}
-		require_once(self::AR_SERV);
 	}
+
 
 	/**
 	 * @return int
