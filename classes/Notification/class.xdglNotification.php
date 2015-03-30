@@ -369,7 +369,7 @@ class xdglNotification extends ilMailNotification {
 		$this->setSubject($a_subject);
 		$this->replaceBody();
 
-		$this->sendMail(array( $this->getAdress() ), array( 'email' ), false);
+		$this->sendMail(array( $this->getAdress() ), array( 'normal' ), false);
 	}
 
 
