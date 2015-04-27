@@ -10,6 +10,7 @@ require_once('./Services/Table/classes/class.ilTable2GUI.php');
 require_once('./Services/UIComponent/AdvancedSelectionList/classes/class.ilAdvancedSelectionListGUI.php');
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Notification/class.xdglNotification.php');
 require_once('./Services/Form/classes/class.ilMultiSelectInputGUI.php');
+require_once('./Customizing/global/plugins/Libraries/ActiveRecord/Connector/Having/class.arHaving.php');
 
 /**
  * Class xdglRequestTableGUI
