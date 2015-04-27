@@ -36,9 +36,10 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 	 */
 	public function  __construct(xdglLibraryGUI $a_parent_obj, $a_parent_cmd) {
 		/**
-		 * @var $ilCtrl ilCtrl
+		 * @var $ilCtrl    ilCtrl
+		 * @var $ilToolbar ilToolbarGUI
 		 */
-		global $ilCtrl;
+		global $ilCtrl, $ilToolbar;
 		$this->ctrl = $ilCtrl;
 		$this->pl = ilDigiLitPlugin::getInstance();
 		$this->setId(self::TBL_XDGL_LIB_OVERVIEWS);
@@ -56,7 +57,8 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		$this->setExternalSorting(true);
 		$this->setExternalSegmentation(true);
 		$this->parseData();
-		$this->addHeaderCommand($this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_ADD), $this->pl->txt('library_add'));
+		$ilToolbar->addButton($this->pl->txt('library_add'), $this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_ADD), '', '', '', 'emphatize');
+		//		$this->addHeaderCommand($this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_ADD), $this->pl->txt('library_add'));
 	}
 
 
@@ -68,9 +70,10 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		/**
 		 * @var $obj xdglLibrary
 		 */
-		if($obj->getIsPrimary()) {
+		if ($obj->getIsPrimary()) {
 			$this->tpl->setVariable('STYLE', 'font-weight: bold;');
 		}
+		$this->tpl->setVariable('VAL_ACTIVE', $obj->isActive());
 		$this->tpl->setVariable('VAL_TITLE', $obj->getTitle());
 		$this->tpl->setVariable('VAL_DESCRIPTION', $obj->getDescription());
 		$this->tpl->setVariable('VAL_EMAIL', $obj->getEmail());
@@ -83,6 +86,9 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		$this->determineOffsetAndOrder();
 		$this->determineLimit();
 		$xdglLibraryList = xdglLibrary::getCollection();
+		if (! $this->getOrderField()) {
+			$xdglLibraryList->orderBy('title', 'ASC');
+		}
 		$xdglLibraryList->orderBy($this->getOrderField(), $this->getOrderDirection());
 		//		$xdglRequestList->where(array( 'digi_lit_object_id' => 0 ), '>');
 		//		$xdglRequestList->where(array( 'status' => 0 ), '>');
@@ -93,7 +99,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		//			}
 		//		}
 		$this->setMaxCount($xdglLibraryList->count());
-		if (!$xdglLibraryList->hasSets()) {
+		if (! $xdglLibraryList->hasSets()) {
 			ilUtil::sendInfo('Keine Ergebnisse für diesen Filter');
 		}
 		$xdglLibraryList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
@@ -104,6 +110,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 
 
 	protected function initColums() {
+		$this->addColumn($this->pl->txt('library_active'));
 		$this->addColumn($this->pl->txt('library_title'), 'title');
 		$this->addColumn($this->pl->txt('library_description'), 'description');
 		$this->addColumn($this->pl->txt('library_email'), 'email');

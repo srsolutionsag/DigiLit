@@ -169,7 +169,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 		if ($this->is_new) {
 			$course_name->setDisabled(true);
 		}
-		$course_name->setRequired(true);
+		//		$course_name->setRequired(true);
 		$this->addItem($course_name);
 
 		// Author
@@ -252,24 +252,26 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 	}
 
 
+	/**
+	 * @param null $ref_id
+	 */
 	public function fillFormRandomized($ref_id = NULL) {
 		if ($ref_id) {
 			$this->request->setCrsRefId($ref_id);
 		}
 		$array = array(
-			self::F_AUTHOR => 'Trulla Kokolores',
-			self::F_TITLE => 'Nonsensik der Neuzeit',
-			self::F_BOOK => 'Das Buch',
+			self::F_AUTHOR => 'Author Name',
+			self::F_TITLE => 'Article Name',
+			self::F_BOOK => 'The Book',
 			self::F_EDITOR => '',
-			self::F_LOCATION => 'Bern',
-			self::F_PUBLISHER => 'Herbert Nonsend',
+			self::F_LOCATION => 'Berne',
+			self::F_PUBLISHER => 'Publisher Name',
 			self::F_PUBLISHING_YEAR => 2004,
 			self::F_PAGES => '50-89',
 			self::F_EDITION_RELEVANT => false,
 			self::F_ISSN => '',
 			self::F_VOLUME_YEAR => 2004,
-			self::F_NOTICE => 'Bitte genau dieser Text!',
-			self::F_COURSE_NAME => $this->request->getCourseNumber(),
+			self::F_NOTICE => 'This Text only!',
 			self::F_COURSE_NAME => $this->request->getCourseTitle(),
 
 		);
@@ -290,7 +292,6 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 		$array = array(
 			self::F_AUTHOR => $this->request->getAuthor(),
 			self::F_TITLE => $this->request->getTitle(),
-			self::F_COURSE_NAME => $this->request->getCourseNumber(),
 			self::F_BOOK => $this->request->getBook(),
 			self::F_EDITOR => $this->request->getEditor(),
 			self::F_LOCATION => $this->request->getLocation(),
@@ -301,7 +302,6 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			self::F_ISSN => $this->request->getIssn(),
 			self::F_COUNT => $this->request->getAmoutOfDigiLitsInCourse() . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS),
 			self::F_CRS_REF_ID => $this->request->getCrsRefId(),
-			self::F_COURSE_NAME => $this->request->getCourseTitle(),
 			self::F_REQUESTER_FULLNAME => $ilObjUserRequester->getPresentationTitle(),
 			self::F_REQUESTER_MAILTO => $ilObjUserRequester->getEmail(),
 			self::F_CREATE_DATE => date('d.m.Y - H:i:s', $this->request->getCreateDate()),
@@ -310,7 +310,11 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			self::F_VOLUME_YEAR => $this->request->getVolume(),
 			self::F_NOTICE => $this->request->getNotice(),
 			self::F_INTERNAL_NOTICE => $this->request->getInternalNotice(),
+			self::F_COURSE_NAME => $this->request->getCourseTitle(),
 		);
+		if ($this->is_new) {
+			$array[self::F_COUNT] = $this->request->getAmoutOfDigiLitsInCourse() + 1 . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS);
+		}
 		if ($this->view) {
 			$array[self::F_EDITION_RELEVANT] = xdglRequest::boolTextRepresentation($this->request->getEditionRelevant());
 		} else {
@@ -326,7 +330,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 	 *
 	 * @return bool
 	 */
-	public function fillObject() {
+	public function fillObject($ref_id) {
 		if (!$this->checkInput()) {
 			return false;
 		}
@@ -360,8 +364,8 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 		$this->request->setEditionRelevant($this->getInput(self::F_EDITION_RELEVANT));
 		$this->request->setIssn($this->getInput(self::F_ISSN));
 
-		if ($this->is_new) {
-			$this->request->setCrsRefId($this->getInput(self::F_CRS_REF_ID));
+		if ($this->is_new AND $ref_id) {
+			$this->request->setCrsRefId($ref_id);
 		}
 
 		return true;
@@ -381,12 +385,11 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 	/**
 	 * @return bool false when unsuccessful or int request_id when successful
 	 */
-	public function saveObject() {
-		if (!$this->fillObject()) {
+	public function saveObject($ref_id) {
+		if (!$this->fillObject($ref_id)) {
 			return false;
 		}
 		if ($this->request->getId() > 0) {
-
 			$this->request->update();
 		} else {
 			$this->request->create();
@@ -402,8 +405,11 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			$this->setTitle($this->pl->txt('request_view'));
 			$this->addCommandButton('edit', $this->pl->txt('request_edit'));
 			if ($this->request->getStatus() != xdglRequest::STATUS_RELEASED) {
-				$this->addCommandButton(xdglRequestGUI::CMD_SELECT_FILE, $this->pl->txt('upload_title'));
 				$this->addCommandButton(xdglRequestGUI::CDM_CONFIRM_REFUSE, $this->pl->txt('request_refuse'));
+				$this->addCommandButton(xdglRequestGUI::CMD_SELECT_FILE, $this->pl->txt('upload_title'));
+			} else {
+				$this->addCommandButton(xdglRequestGUI::CMD_REPLACE_FILE, $this->pl->txt('request_replace_file'));
+				$this->addCommandButton(xdglRequestGUI::CMD_DELETE_FILE, $this->pl->txt('request_delete_file'));
 			}
 		} else {
 			if ($this->is_new) {

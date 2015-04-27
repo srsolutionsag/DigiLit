@@ -3,7 +3,7 @@
 require_once('./Services/Component/classes/class.ilPluginConfigGUI.php');
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfigGUI.php');
 require_once('class.xdglMainGUI.php');
-
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php');
 /**
  * ilDigiLitConfigGUI
  *
@@ -18,9 +18,11 @@ class ilDigiLitConfigGUI extends ilPluginConfigGUI {
 		/**
 		 * @var $ilCtrl ilCtrl
 		 */
-		$ilCtrl->redirectByClass(array('ilRouterGUI', 'xdglMainGUI'));
-
-
+		if(xdglConfig::is50()) {
+			$ilCtrl->redirectByClass(array('ilUIPluginRouterGUI', 'xdglMainGUI'));
+		}else {
+			$ilCtrl->redirectByClass(array('ilRouterGUI', 'xdglMainGUI'));
+		}
 		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "ctype", $_GET["ctype"]);
 		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "cname", $_GET["cname"]);
 		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "slot_id", $_GET["slot_id"]);

@@ -113,6 +113,9 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	 */
 	public static function isGlobalAdmin($redirect = false) {
 		global $rbacreview, $ilUser;
+		/**
+		 * @var $rbacreview ilRbacReview
+		 */
 
 		$isAssigned = $rbacreview->isAssigned($ilUser->getId(), 2);
 
@@ -131,6 +134,10 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 		if (!xdglConfig::get(xdglConfig::F_USE_LIBRARIES)) {
 			return true;
 		}
+		if (self::isAdmin()) {
+			return true;
+		}
+
 		if (self::isGlobalAdmin()) {
 			return true;
 		}
@@ -173,22 +180,19 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	 */
 	public static function isManager($redirect = false) {
 		global $rbacreview, $ilUser;
-
-		foreach (xdglConfig::get(xdglConfig::F_ROLES_MANAGER) as $role_id) {
-			if ($rbacreview->isAssigned($ilUser->getId(), $role_id)) {
+		if (ilDigiLitPlugin::getInstance()->isActive()) {
+			foreach (xdglConfig::get(xdglConfig::F_ROLES_MANAGER) as $role_id) {
+				if ($rbacreview->isAssigned($ilUser->getId(), $role_id)) {
+					return true;
+				}
+			}
+			if (self::isAdmin()) {
 				return true;
 			}
-		}
-		if (self::isAdmin()) {
-			return true;
-		}
 
-		if (self::isGlobalAdmin()) {
-			return true;
-		}
-
-		if (!ilDigiLitPlugin::getInstance()->isActive()) {
-			return true;
+			if (self::isGlobalAdmin()) {
+				return true;
+			}
 		}
 
 		if ($redirect) {

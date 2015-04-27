@@ -78,6 +78,8 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_ISSN,
 			xdglNotification::R_ASSIGNED_LIBRARY,
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
+			xdglNotification::R_NOTICE,
+			xdglNotification::R_ALL,
 		),
 		self::TYPE_REJECTED => array(
 			xdglNotification::R_TITLE,
@@ -95,6 +97,8 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_ISSN,
 			xdglNotification::R_ASSIGNED_LIBRARY,
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
+			xdglNotification::R_NOTICE,
+			xdglNotification::R_ALL,
 		),
 		self::TYPE_MOVED => array(
 			xdglNotification::R_TITLE,
@@ -113,8 +117,9 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_LAST_MODIFIED_BY_USER,
 			xdglNotification::R_ASSIGNED_LIBRARY,
 			xdglNotification::R_ASSIGNED_LIBRARIAN,
-			xdglNotification::R_INTERNAL_NOTICE,
+			//			xdglNotification::R_INTERNAL_NOTICE,
 			xdglNotification::R_NOTICE,
+			xdglNotification::R_ALL,
 		)
 	);
 
@@ -186,6 +191,20 @@ class xdglNotification extends ilMailNotification {
 
 
 	/**
+	 * @param xdglRequest $xdglRequest
+	 *
+	 * @return bool
+	 */
+	public static function sendMoved(xdglRequest $xdglRequest) {
+		$obj = new self();
+		$obj->setType(self::TYPE_MOVED);
+		$obj->setXdglRequest($xdglRequest);
+
+		return $obj->send();
+	}
+
+
+	/**
 	 * @param $field
 	 *
 	 * @return string
@@ -202,7 +221,7 @@ class xdglNotification extends ilMailNotification {
 				$return = '';
 				foreach (self::$placeholders[$this->getType()] as $v) {
 					if ($v != self::R_ALL) {
-						$return .= $v . ': ' . self::getReplace($v) . '\n';
+						$return .= $v . ': ' . self::getReplace($v) . "\n";
 					}
 				}
 
@@ -211,10 +230,10 @@ class xdglNotification extends ilMailNotification {
 			case self::ADMIN_LINK:
 				$ilCtrl->setParameterByClass('xdglRequestGUI', xdglRequestGUI::XDGL_ID, $this->getXdglRequest()->getId());
 
-				return urldecode(ilUtil::_getHttpPath() . '/' . $ilCtrl->getLinkTargetByClass(array(
-						'ilRouterGUI',
-						'xdglRequestGUI'
-					), xdglRequestGUI::CMD_VIEW, '', false, false));
+			//				return urldecode(ilUtil::_getHttpPath() . '/' . $ilCtrl->getLinkTargetByClass(array(
+			//						'ilRouterGUI',
+			//						'xdglRequestGUI'
+			//					), xdglRequestGUI::CMD_VIEW, '', false, false));
 			case self::R_TITLE:
 				return $this->getXdglRequest()->getTitle();
 			case self::R_AUTHOR:
@@ -254,6 +273,7 @@ class xdglNotification extends ilMailNotification {
 				$obj = new ilObjUser($usr_id);
 
 				return $obj->getFullname();
+				break;
 			case self::R_ASSIGNED_LIBRARY:
 				$lib_id = $this->getXdglRequest()->getLibraryId();
 				/**
@@ -265,19 +285,25 @@ class xdglNotification extends ilMailNotification {
 				}
 			case self::R_ASSIGNED_LIBRARIAN:
 				$lib_id = $this->getXdglRequest()->getLibrarianId();
-				if (!$lib_id) {
+				if (! $lib_id) {
 					return 'NOBODY';
 				}
 				/**
 				 * @var $xdglLibrary xdglLibrarian
 				 */
-				$xdglLibrarian = xdglLibrarian::find($lib_id);
-				if ($xdglLibrarian instanceof xdglLibrarian) {
-					$usr_id = $xdglLibrarian->getUsrId();
-					$obj = new ilObjUser($usr_id);
 
-					return $obj->getFullname();
+				$activeRecordList = xdglLibrarian::where(array( 'usr_id' => $lib_id ));
+				if ($activeRecordList->hasSets()) {
+					$xdglLibrarian = $activeRecordList->first();
+					if ($xdglLibrarian instanceof xdglLibrarian) {
+						$usr_id = $xdglLibrarian->getUsrId();
+						$obj = new ilObjUser($usr_id);
+
+						return $obj->getFullname() . ' (' . $obj->getEmail() . ')';
+					}
 				}
+
+				return "";
 		}
 
 		return '';
@@ -331,13 +357,19 @@ class xdglNotification extends ilMailNotification {
 	 * @return bool
 	 */
 	public function send() {
+		global $ilUser;
+		/**
+		 * @var $ilUser ilObjUser
+		 */
+		$this->setSender($ilUser->getId());
 		$this->initUser();
 		$this->initLanguage($this->ilObjUser->getId());
 		$this->initMail();
-		$this->setSubject(ilDigiLitPlugin::getInstance()->txt('notification_subject_' . $this->getType()));
+		$a_subject = $this->getXdglRequest()->getExtId() . ': ' . ilDigiLitPlugin::getInstance()->txt('notification_subject_' . $this->getType());
+		$this->setSubject($a_subject);
 		$this->replaceBody();
 
-		$this->sendMail(array( $this->getAdress() ), array( 'email' ), false);
+		$this->sendMail(array( $this->getAdress() ), array( 'normal' ), false);
 	}
 
 
@@ -374,7 +406,7 @@ class xdglNotification extends ilMailNotification {
 
 
 	protected function initUser() {
-		if (!isset($this->ilObjUser)) {
+		if (! isset($this->ilObjUser)) {
 			$this->ilObjUser = new ilObjUser($this->getXdglRequest()->getRequesterUsrId());
 		}
 	}

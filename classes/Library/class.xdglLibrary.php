@@ -1,6 +1,7 @@
 <?php
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
+xdgl::initAR();
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php');
-require_once('./Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRecord.php');
 
 /**
  * Class xdglLibrary
@@ -11,6 +12,78 @@ require_once('./Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRe
 class xdglLibrary extends ActiveRecord {
 
 	const TABLE_NAME = 'xdgl_library';
+	/**
+	 * @var int
+	 */
+	protected $not_deletable_reason;
+	/**
+	 * @var xdglLibrarian
+	 */
+	protected $librarians = array();
+	/**
+	 * @var int
+	 */
+	protected $assigned_requests_count = 0;
+	/**
+	 * @var int
+	 *
+	 * @con_is_primary true
+	 * @con_is_unique  true
+	 * @con_has_field  true
+	 * @con_fieldtype  integer
+	 * @con_length     8
+	 * @con_sequence   true
+	 */
+	protected $id = '';
+	/**
+	 * @var bool
+	 *
+	 * @db_has_field        true
+	 * @db_fieldtype        integer
+	 * @db_length           1
+	 * @db_is_notnull       true
+	 */
+	protected $active = true;
+	/**
+	 * @var string
+	 *
+	 * @con_has_field  true
+	 * @con_fieldtype  text
+	 * @con_length     256
+	 */
+	protected $title = '';
+	/**
+	 * @var string
+	 *
+	 * @con_has_field  true
+	 * @con_fieldtype  text
+	 * @con_length     1024
+	 */
+	protected $description = '';
+	/**
+	 * @var string
+	 *
+	 * @con_has_field  true
+	 * @con_fieldtype  text
+	 * @con_length     256
+	 */
+	protected $ext_id = '';
+	/**
+	 * @var string
+	 *
+	 * @con_has_field  true
+	 * @con_fieldtype  text
+	 * @con_length     1024
+	 */
+	protected $email = '';
+	/**
+	 * @var int
+	 *
+	 * @con_has_field  true
+	 * @con_fieldtype  integer
+	 * @con_length     1
+	 */
+	protected $is_primary = false;
 
 
 	/**
@@ -32,18 +105,40 @@ class xdglLibrary extends ActiveRecord {
 	}
 
 
+	//	/**
+	//	 * @param ilObjUser $ilObjUser
+	//	 *
+	//	 * @return ActiveRecord|xdglLibrary
+	//	 */
+	//	public static function getLibraryForUser(ilObjUser $ilObjUser) {
+	//		$xdglLibrarian = xdglLibrarian::find($ilObjUser->getId());
+	//		if ($xdglLibrarian instanceof xdglLibrarian) {
+	//			$libraryId = $xdglLibrarian->getLibraryId();
+	//
+	//			return self::find($libraryId);
+	//		}
+	//
+	//		return self::getPrimary();
+	//	}
+
 	/**
 	 * @param ilObjUser $ilObjUser
 	 *
-	 * @return ActiveRecord|xdglLibrary
+	 * @return array
 	 */
-	public static function getLibraryForUser(ilObjUser $ilObjUser) {
-		$xdglLibrarian = xdglLibrarian::find($ilObjUser->getId());
-		if ($xdglLibrarian instanceof xdglLibrarian) {
-			return $xdglLibrarian;
-		}
+	public static function getLibraryIdsForUser(ilObjUser $ilObjUser) {
+		return xdglLibrarian::where(array( 'usr_id' => $ilObjUser->getId() ))->getArray(NULL, 'library_id');
+	}
 
-		return self::getPrimary();
+
+	/**
+	 * @param ilObjUser $ilObjUser
+	 * @param           $lib_id
+	 *
+	 * @return bool
+	 */
+	public static function isAssignedToLibrary(ilObjUser $ilObjUser, $lib_id) {
+		return in_array($lib_id, self::getLibraryIdsForUser($ilObjUser));
 	}
 
 
@@ -52,13 +147,8 @@ class xdglLibrary extends ActiveRecord {
 	 *
 	 * @return bool
 	 */
-	public static function isAssignedToLibrary(ilObjUser $ilObjUser) {
-		$activeRecordList = xdglLibrarian::where(array( 'usr_id' => $ilObjUser->getId() ));
-		if ($activeRecordList->hasSets()) {
-			return $activeRecordList->first()->getLibraryId();
-		}
-
-		return false;
+	public static function isAssignedToAnyLibrary(ilObjUser $ilObjUser) {
+		return count(self::getLibraryIdsForUser($ilObjUser)) > 0;
 	}
 
 
@@ -103,76 +193,6 @@ class xdglLibrary extends ActiveRecord {
 
 
 	/**
-	 * @var xdglLibrarian
-	 */
-	protected $librarians = [ ];
-	/**
-	 * @var int
-	 */
-	protected $assigned_requests_count = 0;
-	/**
-	 * @var int
-	 *
-	 * @con_is_primary true
-	 * @con_is_unique  true
-	 * @con_has_field  true
-	 * @con_fieldtype  integer
-	 * @con_length     8
-	 * @con_sequence   true
-	 */
-	protected $id = '';
-	/**
-	 * @var bool
-	 *
-	 * @db_has_field        true
-	 * @db_fieldtype        integer
-	 * @db_length           1
-	 * @db_is_notnull       true
-	 */
-	protected $active = false;
-	/**
-	 * @var string
-	 *
-	 * @con_has_field  true
-	 * @con_fieldtype  text
-	 * @con_length     256
-	 */
-	protected $title = '';
-	/**
-	 * @var string
-	 *
-	 * @con_has_field  true
-	 * @con_fieldtype  text
-	 * @con_length     1024
-	 */
-	protected $description = '';
-	/**
-	 * @var string
-	 *
-	 * @con_has_field  true
-	 * @con_fieldtype  text
-	 * @con_length     256
-	 */
-	protected $ext_id = '';
-	/**
-	 * @var string
-	 *
-	 * @con_has_field  true
-	 * @con_fieldtype  text
-	 * @con_length     1024
-	 */
-	protected $email = '';
-	/**
-	 * @var int
-	 *
-	 * @con_has_field  true
-	 * @con_fieldtype  integer
-	 * @con_length     1
-	 */
-	protected $is_primary = false;
-
-
-	/**
 	 * @return bool
 	 */
 	public function delete() {
@@ -196,6 +216,27 @@ class xdglLibrary extends ActiveRecord {
 		$ilDB->manipulate('UPDATE ' . $this->getConnectorContainerName() . ' SET is_primary = 0');
 		$this->setIsPrimary(true);
 		$this->update();
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function getRequestCount() {
+		static $count = NULL;
+		if ($count === NULL) {
+			$count = xdglRequest::where(array( 'library_id' => $this->getId() ))->count();
+		}
+
+		return $count;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function getLibrarianCount() {
+		return count($this->getLibrarians());
 	}
 
 
@@ -328,28 +369,6 @@ class xdglLibrary extends ActiveRecord {
 
 
 	/**
-	 * @return bool
-	 */
-	public function getRequestCount() {
-		static $count = NULL;
-		if ($count === NULL) {
-			$count = xdglRequest::where(array( 'library_id' => $this->getId() ))->count();
-		}
-
-		return $count;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function getLibrarianCount() {
-
-		return count($this->getLibrarians());
-	}
-
-
-	/**
 	 * @return xdglLibrarian[]
 	 */
 	public function getLibrarians() {
@@ -362,6 +381,22 @@ class xdglLibrary extends ActiveRecord {
 	 */
 	public function setLibrarians($librarians) {
 		$this->librarians = $librarians;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getNotDeletableReason() {
+		return $this->not_deletable_reason;
+	}
+
+
+	/**
+	 * @param int $not_deletable_reason
+	 */
+	public function setNotDeletableReason($not_deletable_reason) {
+		$this->not_deletable_reason = $not_deletable_reason;
 	}
 }
 

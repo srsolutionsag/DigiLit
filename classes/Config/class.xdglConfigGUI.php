@@ -85,6 +85,7 @@ class xdglConfigGUI {
 		$form = new xdglConfigFormGUI($this);
 		$form->setValuesByPost();
 		if ($form->saveObject()) {
+			ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
 			$this->ctrl->redirect($this, self::CMD_INDEX);
 		}
 		$this->tpl->setContent($form->getHTML());

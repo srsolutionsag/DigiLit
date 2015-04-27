@@ -1,5 +1,6 @@
 <?php
-require_once('./Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRecord.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
+xdgl::initAR();
 
 /**
  * Class xdglConfig
@@ -9,6 +10,7 @@ require_once('./Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRe
  */
 class xdglConfig extends ActiveRecord {
 
+	const CONFIG_VERSION = 2;
 	const F_ROLES_ADMIN = 'permission';
 	const F_ROLES_MANAGER = 'permission_manager';
 	const F_MAIL_NEW_REQUEST = 'mail_new_request';
@@ -16,10 +18,13 @@ class xdglConfig extends ActiveRecord {
 	const F_MAIL_UPLOADED = 'mail_uploaded';
 	const F_MAIL_MOVED = 'mail_moved';
 	const F_MAIL = 'mail';
+	const F_CONFIG_VERSION = 'config_version';
 	const F_MAX_DIGILITS = 'max_digilits';
 	const F_EULA_TEXT = 'eula_text';
 	const F_USE_LIBRARIES = 'use_libraries';
 	const F_OWN_LIBRARY_ONLY = 'own_library_only';
+	const F_USE_REGEX = 'use_regex';
+	const F_REGEX = 'regex';
 	/**
 	 * @var array
 	 */
@@ -35,12 +40,32 @@ class xdglConfig extends ActiveRecord {
 
 
 	/**
+	 * @return bool
+	 */
+	public static function isConfigUpToDate() {
+		return self::get(self::F_CONFIG_VERSION) == self::CONFIG_VERSION;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public static function hasValidRegex() {
+		if (! self::get(self::F_USE_REGEX)) {
+			return false;
+		}
+
+		return self::isRegexValid(self::get(self::F_REGEX));
+	}
+
+
+	/**
 	 * @param $name
 	 *
 	 * @return mixed
 	 */
 	public static function get($name) {
-		if (!self::$cache_loaded[$name]) {
+		if (! self::$cache_loaded[$name]) {
 			$obj = new self($name);
 			if ($_SERVER['REMOTE_ADDR'] == '212.41.220.231') {
 				//				var_dump(json_decode($obj->getValue())); // FSX
@@ -91,6 +116,20 @@ class xdglConfig extends ActiveRecord {
 
 
 	/**
+	 * @param $regex
+	 *
+	 * @return bool
+	 */
+	public static function isRegexValid($regex) {
+		if (preg_match("/^\/.+\/[a-z]*$/i", $regex)) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * @param string $name
 	 */
 	public function setName($name) {
@@ -127,6 +166,15 @@ class xdglConfig extends ActiveRecord {
 	 */
 	static function returnDbTableName() {
 		return 'xdgl_config';
+	}
+
+
+	/**
+	 * @return bool
+	 * @deprecated use xdgl::is50()
+	 */
+	public static function is50() {
+		return xdgl::is50();
 	}
 }
 

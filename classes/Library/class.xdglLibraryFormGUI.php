@@ -14,6 +14,7 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 	const F_EMAIL = 'email';
 	const F_LIBRARIAN_COUNT = 'librarian_count';
 	const F_REQUEST_COUNT = 'request_count';
+	const F_ACTIVE = 'active';
 	/**
 	 * @var  xdglLibrary
 	 */
@@ -99,6 +100,9 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 		$te = new ilTextInputGUI($this->txt(self::F_EMAIL), self::F_EMAIL);
 		$te->setRequired(true);
 		$this->addItem($te);
+
+		$cb = new ilCheckboxInputGUI($this->txt(self::F_ACTIVE), self::F_ACTIVE);
+		$this->addItem($cb);
 	}
 
 
@@ -109,6 +113,7 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 			self::F_EMAIL => $this->library->getEmail(),
 			self::F_REQUEST_COUNT => $this->library->getRequestCount(),
 			self::F_LIBRARIAN_COUNT => $this->library->getLibrarianCount(),
+			self::F_ACTIVE => $this->library->isActive(),
 		);
 
 		$this->setValuesByArray($array);
@@ -127,6 +132,7 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 		$this->library->setTitle($this->getInput(self::F_TITLE));
 		$this->library->setDescription($this->getInput(self::F_DESCRIPTION));
 		$this->library->setEmail($this->getInput(self::F_EMAIL));
+		$this->library->setActive($this->getInput(self::F_ACTIVE));
 
 		return true;
 	}

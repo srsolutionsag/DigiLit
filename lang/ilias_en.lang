@@ -16,7 +16,11 @@ admin_own_library_only#:#Show own Library only
 admin_permission#:#Admin-Roles
 admin_permission_manager#:#Manager-Roles
 admin_placeholders#:#Placeholders
+admin_regex#:#Regular Expression
+admin_regex_info#:#With Delimiter (e.g. /([0-9]{5}-[0-9]{2})/uim)
 admin_use_libraries#:#Use mutliple Libraries
+admin_use_regex#:#User Regular Expression für DigiLit-ID
+admin_use_regex_info#:#Regex-Search in Course-Title, the first match will be used
 common_actions#:#Actions
 common_bool_0#:#No
 common_bool_1#:#Yes
@@ -27,7 +31,10 @@ filter_mine#:#Only assigned to me
 filter_none#:#Nobody is assigned
 filter_status#:#Status
 form_usr_placeholder#:#Search Users
+librarian_already_assigned#:#Already assigned to a library
 librarian_back#:#Back
+librarian_form_title#:#Librarian
+librarian_has_sets#:#Has assigned requests
 librarian_none#:#none
 librarian_return#:#Back to Overview
 librarian_select#:#Select Librarian
@@ -51,20 +58,25 @@ library_select#:#Select Library
 library_title#:#Name
 library_update#:#Save
 library_view#:#Details
+library_active#:#Active
 main_menu_button#:#DigiLit-Admin
 msg_confirm_delete_library#:#Do you really want to delete the following library?
+msg_request_delete_file#:#Do you want to delete the current PDF?
+msg_request_file_deleted#:#File has been deleted
 msg_success_add#:#Saved
 msg_success_edit#:#Saved
 msg_success_upload#:#File uploaded
 notification_subject_mail_new_request#:#New DigiLit-Request
 notification_subject_mail_rejected#:#DigiLit-Request rejected
 notification_subject_mail_uploaded#:#DigiLit uploaded
+notification_subject_mail_moved#:#DigiLit assigned
 obj_list_page#:#Page(s)
 obj_xdgl#:#DigiLit
 obj_xdgl_admin_title#:#DigiLit Administration
 obj_xdgl_edit#:#Edit request data
 obj_xdgl_title#:#Request DigiLit
 obj_xdgls#:#DigiLits
+replace_title#:#Replace File
 request_assign#:#Assign Library
 request_assigned_librarian#:#Assigned Librarian
 request_assigned_library#:#Assigned Library
@@ -81,9 +93,13 @@ request_course_name#:#Course-Number/Course-Title
 request_create#:#Send Request
 request_create_date#:#Order date
 request_creation_date#:#Request Date
+request_date_last_status_change#:#Last change
+request_delete_file#:#Delete PDF
+request_download_file#:#Download PDF
 request_edit#:#Edit Metadata
 request_edition_relevant#:#This edition only
 request_editor#:#Editor
+request_ext_id#:#ID
 request_internal_notice#:#Internal Notice
 request_issn#:#ISSN/ISBN
 request_last_status_change#:#Last update
@@ -98,8 +114,9 @@ request_publishing_year#:#Year
 request_refuse#:#Refuse
 request_refuse_reason#:#Reason
 request_refusing_date#:#Refused
+request_replace_file#:#Replace PDF
 request_requester_fullname#:#Requester
-request_requester_mailto#:#E-Mail
+request_requester_mailto#:#Requester
 request_status#:#Status
 request_status_-1#:#Deleted
 request_status_1#:#New
@@ -119,6 +136,7 @@ tab_requests#:#Manage Requests
 tab_settings#:#Settings
 upload_cancel#:#Cancel
 upload_file#:#File
+upload_replace#:#Replace
 upload_save#:#Upload
 upload_title#:#Upload PDF
 validation_failure_4_digits_required#:#Format YYYY

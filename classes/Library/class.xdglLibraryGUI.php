@@ -47,6 +47,7 @@ class xdglLibraryGUI {
 		$this->tabs_gui = $ilTabs;
 		$this->ctrl = $ilCtrl;
 		$this->pl = ilDigiLitPlugin::getInstance();
+		$this->library = xdglLibrary::find($_GET[self::XDGL_LIB_ID]);
 	}
 
 
@@ -76,7 +77,8 @@ class xdglLibraryGUI {
 			case self::CMD_ADD:
 			case self::CMD_CANCEL:
 			case self::CMD_VIEW:
-				if (!ilObjDigiLitAccess::isAdmin()) {
+			case self::CMD_DELETE:
+				if (! ilObjDigiLitAccess::isAdmin()) {
 					return false;
 				}
 				$this->{$cmd}();
@@ -102,14 +104,14 @@ class xdglLibraryGUI {
 
 
 	protected function edit() {
-		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, xdglLibrary::find($_GET[self::XDGL_LIB_ID]));
+		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, $this->library);
 		$xdglLibraryFormGUI->fillForm();
 		$this->tpl->setContent($xdglLibraryFormGUI->getHTML());
 	}
 
 
 	protected function update() {
-		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, xdglLibrary::find($_GET[self::XDGL_LIB_ID]));
+		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, $this->library);
 		$xdglLibraryFormGUI->setValuesByPost();
 		if ($xdglLibraryFormGUI->saveObject()) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_edit'), true);
@@ -121,12 +123,13 @@ class xdglLibraryGUI {
 
 	protected function add() {
 		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, new xdglLibrary());
+		$xdglLibraryFormGUI->fillForm();
 		$this->tpl->setContent($xdglLibraryFormGUI->getHTML());
 	}
 
 
 	protected function view() {
-		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, xdglLibrary::find($_GET[self::XDGL_LIB_ID]), true);
+		$xdglLibraryFormGUI = new xdglLibraryFormGUI($this, $this->library, true);
 		$xdglLibraryFormGUI->fillForm();
 		$this->tpl->setContent($xdglLibraryFormGUI->getHTML());
 	}
@@ -144,17 +147,13 @@ class xdglLibraryGUI {
 
 
 	protected function confirmDelete() {
-		/**
-		 * @var $xdglLibrary xdglLibrary
-		 */
-		$xdglLibrary = xdglLibrary::find($_GET[self::XDGL_LIB_ID]);
-		if (!$xdglLibrary->isDeletable()) {
-			echo 'Achtung!';
+		if (! $this->library->isDeletable()) {
+			throw new ilException('This Library can not be deleted');
 		}
 		$conf = new ilConfirmationGUI();
 		$conf->setFormAction($this->ctrl->getFormAction($this));
 		$conf->setHeaderText($this->pl->txt('msg_confirm_delete_library'));
-		$conf->addItem(self::XDGL_LIB_ID, $xdglLibrary->getId(), $xdglLibrary->getTitle());
+		$conf->addItem(self::XDGL_LIB_ID, $this->library->getId(), $this->library->getTitle());
 		$conf->setConfirm($this->pl->txt('library_delete'), self::CMD_DELETE);
 		$conf->setCancel($this->pl->txt('library_cancel'), self::CMD_CANCEL);
 		$this->tpl->setContent($conf->getHTML());
@@ -162,6 +161,11 @@ class xdglLibraryGUI {
 
 
 	protected function delete() {
+		if (! $this->library->isDeletable()) {
+			throw new ilException('This Library can not be deleted');
+		}
+		$this->library->delete();
+		$this->cancel();
 	}
 
 
@@ -176,11 +180,11 @@ class xdglLibraryGUI {
 
 		$se = new ilSelectInputGUI($this->pl->txt('library_select'), 'library_select');
 		$se->setRequired(true);
-		$se->setOptions(xdglLibrary::getArray('id', 'title'));
+		$se->setOptions(xdglLibrary::where(array( 'active' => true ))->orderBy('title')->getArray('id', 'title'));
 		$form->addItem($se);
 
 		$se = new ilSelectInputGUI($this->pl->txt('librarian_select'), 'librarian_select');
-		$se->setOptions(xdglLibrarian::getAssignedLibrariansForLibrary());
+		$se->setOptions(array_merge(array( 0 => $this->pl->txt('librarian_none') ), xdglLibrarian::getAssignedLibrariansForLibrary()));
 		$form->addItem($se);
 
 		$form->addCommandButton(self::CMD_RETURN_TO_REQUESTS, $this->pl->txt('library_cancel'));
@@ -196,11 +200,15 @@ class xdglLibraryGUI {
 		 */
 		$request = xdglRequest::find($_GET[xdglRequestGUI::XDGL_ID]);
 
-		$xdglLibrarian = xdglLibrarian::find($_POST['librarian_select']);
+		$xdglLibrarian = xdglLibrarian::find($_POST['librarian_select'], $_POST['library_select']);
 		$xdglLibrary = xdglLibrary::find($_POST['library_select']);
 
 		if ($xdglLibrarian instanceof xdglLibrarian) {
-			$request->assignToLibrarian($xdglLibrarian);
+			if ($xdglLibrarian->getUsrId()) {
+				$request->assignToLibrarian($xdglLibrarian);
+			} elseif ($xdglLibrary instanceof xdglLibrary) {
+				$request->assignToLibrary($xdglLibrary);
+			}
 		} elseif ($xdglLibrary instanceof xdglLibrary) {
 			$request->assignToLibrary($xdglLibrary);
 		}

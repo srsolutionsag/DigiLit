@@ -50,19 +50,24 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 		$this->request = $request;
 		$this->parent_gui = $parent_gui;
 		$this->ctrl = $ilCtrl;
+		$this->replace = $this->request->fileExists();
+		var_dump($this->replace); // FSX
 		$this->pl = ilDigiLitPlugin::getInstance();
 		if ($_GET['rl'] == 'true') {
 			$this->pl->updateLanguageFiles();
 		}
 		$this->ctrl->saveParameter($parent_gui, xdglRequestGUI::XDGL_ID);
-
 		$this->initForm();
 	}
 
 
 	protected function initForm() {
 		$this->setFormAction($this->ctrl->getFormAction($this->parent_gui));
-		$this->setTitle($this->pl->txt('upload_title'));
+		if ($this->replace) {
+			$this->setTitle($this->pl->txt('replace_title'));
+		} else {
+			$this->setTitle($this->pl->txt('upload_title'));
+		}
 
 		// Add File-Upload
 		$in_file = new ilFileInputGUI($this->pl->txt('upload_file'), self::F_FILE_UPLOAD);
@@ -70,13 +75,18 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 		$in_file->setRequired(true);
 		$this->addItem($in_file);
 
-		$this->addCommandButton('upload', $this->pl->txt('upload_save'));
-		$this->addCommandButton('cancel', $this->pl->txt('upload_cancel'));
+		if ($this->replace) {
+			$this->addCommandButton(xdglRequestGUI::CMD_UPLOAD, $this->pl->txt('upload_replace'));
+		} else {
+			$this->addCommandButton(xdglRequestGUI::CMD_UPLOAD, $this->pl->txt('upload_save'));
+		}
+
+		$this->addCommandButton(xdglRequestGUI::CMD_CANCEL, $this->pl->txt('upload_cancel'));
 	}
 
 
-	public function readForm() {
-		if (! $this->checkInput()) {
+	protected function readForm() {
+		if (!$this->checkInput()) {
 			return false;
 		}
 		$this->upload_name = $_FILES[self::F_FILE_UPLOAD]['name'];
@@ -90,12 +100,48 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 	 */
 	public function uploadFile() {
 		$this->readForm();
-		$this->request->createDir();
-		if (ilUtil::moveUploadedFile($this->upload_temp_name, $this->upload_name, $this->request->getAbsoluteFilePath())) {
+		if ($this->request->uploadFileFromForm($this)) {
+			global $ilUser;
+			$this->request->setLibrarianId($ilUser->getId());
+			$this->request->update();
 			ilUtil::sendSuccess($this->pl->txt('msg_success_upload'), true);
 			xdglNotification::sendUploaded($this->request);
+
+			return true;
 		}
 
-		return true;
+		return false;
+	}
+
+
+	/**
+	 * @return String
+	 */
+	public function getUploadName() {
+		return $this->upload_name;
+	}
+
+
+	/**
+	 * @param String $upload_name
+	 */
+	public function setUploadName($upload_name) {
+		$this->upload_name = $upload_name;
+	}
+
+
+	/**
+	 * @return String
+	 */
+	public function getUploadTempName() {
+		return $this->upload_temp_name;
+	}
+
+
+	/**
+	 * @param String $upload_temp_name
+	 */
+	public function setUploadTempName($upload_temp_name) {
+		$this->upload_temp_name = $upload_temp_name;
 	}
 }

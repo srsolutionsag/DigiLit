@@ -8,7 +8,7 @@ admin_form_title#:#Einstellungen
 admin_mail#:#E-Mail
 admin_mail_moved#:#Mailtext beim Verschieben in Bibliothek
 admin_mail_new_request#:#Mailtext bei neuem Antrag
-admin_mail_rejected#:#Mailtext abgelehnter Antrage
+admin_mail_rejected#:#Mailtext abgelehnter Antrag
 admin_mail_textes#:#Mail-Texte
 admin_mail_uploaded#:#Mailtext bei hochgeladener Datei
 admin_max_digilits#:#Maximale Anzahl DigiLits im Kurs
@@ -16,7 +16,11 @@ admin_own_library_only#:#Nur eigene Bibliothek anzeigen
 admin_permission#:#Admin-Rollen
 admin_permission_manager#:#Manager-Rollen
 admin_placeholders#:#Platzhalter
+admin_regex#:#Regulärer Ausdruck
+admin_regex_info#:#Mit Anfangs- und Schlusszeichen (bspw. /([0-9]{5}-[0-9]{2})/uim)
 admin_use_libraries#:#Mehrere Bibliotheken verwenden
+admin_use_regex#:#Regulären Audruck für DigiLit-ID verwenden
+admin_use_regex_info#:#Regex-Suche nach String in Kurs-Titel, der erste Treffer wird verwendet.
 common_actions#:#Aktionen
 common_bool_0#:#Nein
 common_bool_1#:#Ja
@@ -30,8 +34,10 @@ filter_status#:#Status
 fold_create_xdgl#:#DigiLits erstellen
 form_usr_placeholder#:#Benutzer suchen
 grp_create_xdgl#:#DigiLits erstellen
+librarian_already_assigned#:#Bereits einer Bibliothek zugewiesen
 librarian_back#:#Zurück
-librarian_form_title#:#Bearbeiter/innen/Librarians
+librarian_form_title#:#Bearbeiter/in
+librarian_has_sets#:#Hat zugeordnete Anträge
 librarian_none#:#Keine
 librarian_return#:#Zurück zur Übersicht
 librarian_select#:#Bearbeiter/in auswählen
@@ -55,14 +61,18 @@ library_select#:#Bibliothek auswählen
 library_title#:#Name
 library_update#:#Speichern
 library_view#:#Details
+library_active#:#Aktiv
 main_menu_button#:#DigiLit-Admin
 msg_confirm_delete_library#:#Möchten Sie die folgende Bibliothek wirklich löschen?
+msg_request_delete_file#:#Möchten Sie das PDF zum angezeigten Eintrag löschen?
+msg_request_file_deleted#:#Datei wurde gelöscht
 msg_success_add#:#Erfolgreich gespeichert
 msg_success_edit#:#Erfolgreich gespeichert
 msg_success_upload#:#Datei hochgeladen
 notification_subject_mail_new_request#:#Neuer DigiLit-Antrag
 notification_subject_mail_rejected#:#DigiLit-Antrag abgelehnt
 notification_subject_mail_uploaded#:#DigiLit hochgeladen
+notification_subject_mail_moved#:#DigiLit neu zugewiesen
 obj_list_page#:#Seite(n)
 obj_xdgl#:#DigiLit
 obj_xdgl_admin_title#:#DigiLit Administration
@@ -70,6 +80,7 @@ obj_xdgl_edit#:#Antragsdaten bearbeiten
 obj_xdgl_title#:#DigiLit beantragen
 obj_xdgls#:#DigiLits
 objs_xdgl#:#DigiLits
+replace_title#:#Dokument ersetzen
 request_assign#:#Bibliothek zuordnen
 request_assigned_librarian#:#Zugewiesene/r Bearbeiter/in
 request_assigned_library#:#Zugewiesene Bibliothek
@@ -86,9 +97,13 @@ request_course_name#:#Kurs-Nummer/Kurs-Titel
 request_create#:#Antrag stellen
 request_create_date#:#Bestelldatum
 request_creation_date#:#Anfragedatum
+request_date_last_status_change#:#Letzte Änderung
+request_delete_file#:#PDF löschen
+request_download_file#:#PDF herunterladen
 request_edit#:#Metadaten bearbeiten
 request_edition_relevant#:#Nur diese Auflage
 request_editor#:#Autor/Herausgeber
+request_ext_id#:#ID
 request_internal_notice#:#Interne Bemerkungen
 request_issn#:#ISSN/ISBN
 request_last_status_change#:#Letzte Bearbeitung
@@ -103,8 +118,9 @@ request_publishing_year#:#Jahr
 request_refuse#:#Ablehnen
 request_refuse_reason#:#Grund
 request_refusing_date#:#Abgelehnt am
+request_replace_file#:#PDF ersetzen
 request_requester_fullname#:#Antragsteller
-request_requester_mailto#:#E-Mail
+request_requester_mailto#:#Besteller/in
 request_status#:#Status
 request_status_-1#:#Gelöscht
 request_status_1#:#Neu
@@ -124,6 +140,7 @@ tab_requests#:#Bestellungen verwalten
 tab_settings#:#Einstellungen
 upload_cancel#:#Abbrechen
 upload_file#:#Datei
+upload_replace#:#Ersetzen
 upload_save#:#Hochladen
 upload_title#:#PDF hochladen
 validation_failure_4_digits_required#:#Format YYYY
