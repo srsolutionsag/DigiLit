@@ -69,7 +69,7 @@ msg_success_upload#:#File uploaded
 notification_subject_mail_new_request#:#New DigiLit-Request
 notification_subject_mail_rejected#:#DigiLit-Request rejected
 notification_subject_mail_uploaded#:#DigiLit uploaded
-notification_subject_mail_moved#:#DigiLit moved
+notification_subject_mail_moved#:#DigiLit assigned
 obj_list_page#:#Page(s)
 obj_xdgl#:#DigiLit
 obj_xdgl_admin_title#:#DigiLit Administration
@@ -116,7 +116,7 @@ request_refuse_reason#:#Reason
 request_refusing_date#:#Refused
 request_replace_file#:#Replace PDF
 request_requester_fullname#:#Requester
-request_requester_mailto#:#E-Mail
+request_requester_mailto#:#Requester
 request_status#:#Status
 request_status_-1#:#Deleted
 request_status_1#:#New
