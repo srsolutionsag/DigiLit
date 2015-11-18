@@ -212,7 +212,9 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		ilUtil::redirect(ilLink::_getLink($this->getParentRefId()));
 	}
 
-
+	/**
+	 * @return int
+	 */
 	public function getParentRefId($ref_id = NULL) {
 		global $tree;
 		/**
