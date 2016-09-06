@@ -1,7 +1,6 @@
 <?php
 //require_once('class.ilDynamicLanguage.php');
 require_once('./Services/Repository/classes/class.ilRepositoryObjectPlugin.php');
-require_once('class.ilObjDigiLitAccess.php');
 
 /**
  * DigiLit repository object plugin
