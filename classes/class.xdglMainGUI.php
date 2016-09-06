@@ -10,7 +10,7 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
  * @author            Fabian Schmid <fs@studer-raimann.ch>
  * @version           1.0.0
  *
- * @ilCtrl_IsCalledBy xdglMainGUI : ilRouterGUI, ilUIPluginRouterGUI
+ * @ilCtrl_IsCalledBy xdglMainGUI : ilUIPluginRouterGUI, ilUIPluginRouterGUI
  * @ilCtrl_IsCalledBy xdglMainGUI : ilDigiLitConfigGUI
  */
 class xdglMainGUI {

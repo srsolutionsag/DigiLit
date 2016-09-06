@@ -18,11 +18,8 @@ class ilDigiLitConfigGUI extends ilPluginConfigGUI {
 		/**
 		 * @var $ilCtrl ilCtrl
 		 */
-		if(xdglConfig::is50()) {
-			$ilCtrl->redirectByClass(array('ilUIPluginRouterGUI', 'xdglMainGUI'));
-		}else {
-			$ilCtrl->redirectByClass(array('ilRouterGUI', 'xdglMainGUI'));
-		}
+
+		$ilCtrl->redirectByClass(array('ilUIPluginRouterGUI', 'xdglMainGUI'));
 		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "ctype", $_GET["ctype"]);
 		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "cname", $_GET["cname"]);
 		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "slot_id", $_GET["slot_id"]);
