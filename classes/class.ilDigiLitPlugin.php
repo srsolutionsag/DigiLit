@@ -58,6 +58,10 @@ class ilDigiLitPlugin extends ilRepositoryObjectPlugin {
 	public static function getStaticPluginPrefix() {
 		return self::XDGL;
 	}
+
+
+	protected function uninstallCustom() {
+		// TODO: Implement uninstallCustom() method.
+	}
 }
 
-?>
