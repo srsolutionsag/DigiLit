@@ -15,24 +15,6 @@ class xdgl {
 	const ILIAS_50 = 50;
 	const ILIAS_51 = 51;
 	const MIN_ILIAS_VERSION = self::ILIAS_44;
-	const AR_CUST = './Customizing/global/plugins/Libraries/ActiveRecord/class.ActiveRecord.php';
-	const AR_SERV = './Services/ActiveRecord/class.ActiveRecord.php';
-
-
-	/**
-	 * @throws ilException
-	 */
-	public static function initAR() {
-		if (! is_file(self::AR_CUST) AND ! is_file(self::AR_SERV)
-		) {
-			throw new ilException('No ActiveRecord found');
-		}
-		if (is_file(self::AR_CUST)) {
-			require_once(self::AR_CUST);
-		} elseif (is_file(self::AR_SERV)) {
-			require_once(self::AR_SERV);
-		}
-	}
 
 
 	/**
@@ -85,4 +67,3 @@ class xdgl {
 	}
 }
 
-?>
