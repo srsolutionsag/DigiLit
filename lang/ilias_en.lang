@@ -1,4 +1,3 @@
-<!-- language file start -->
 admin_common#:#Common
 admin_eula#:#EULA
 admin_eula_text#:#EULA
@@ -41,6 +40,7 @@ librarian_select#:#Select Librarian
 librarian_update_assignements#:#Save
 librarian_users#:#User-Accounts
 library_actions#:#Actions
+library_active#:#Active
 library_add#:#Add Library
 library_assign#:#Assign Librarians
 library_back#:#Back
@@ -58,7 +58,6 @@ library_select#:#Select Library
 library_title#:#Name
 library_update#:#Save
 library_view#:#Details
-library_active#:#Active
 main_menu_button#:#DigiLit-Admin
 msg_confirm_delete_library#:#Do you really want to delete the following library?
 msg_request_delete_file#:#Do you want to delete the current PDF?
@@ -66,16 +65,16 @@ msg_request_file_deleted#:#File has been deleted
 msg_success_add#:#Saved
 msg_success_edit#:#Saved
 msg_success_upload#:#File uploaded
+notification_subject_mail_moved#:#DigiLit assigned
 notification_subject_mail_new_request#:#New DigiLit-Request
 notification_subject_mail_rejected#:#DigiLit-Request rejected
 notification_subject_mail_uploaded#:#DigiLit uploaded
-notification_subject_mail_moved#:#DigiLit assigned
 obj_list_page#:#Page(s)
 obj_xdgl#:#DigiLit
+obj_xdgls#:#DigiLits
 obj_xdgl_admin_title#:#DigiLit Administration
 obj_xdgl_edit#:#Edit request data
 obj_xdgl_title#:#Request DigiLit
-obj_xdgls#:#DigiLits
 replace_title#:#Replace File
 request_assign#:#Assign Library
 request_assigned_librarian#:#Assigned Librarian
@@ -118,7 +117,7 @@ request_replace_file#:#Replace PDF
 request_requester_fullname#:#Requester
 request_requester_mailto#:#Requester
 request_status#:#Status
-request_status_-1#:#Deleted
+request_status_#:#Deleted
 request_status_1#:#New
 request_status_2#:#In Progress
 request_status_3#:#File available
@@ -140,10 +139,11 @@ upload_replace#:#Replace
 upload_save#:#Upload
 upload_title#:#Upload PDF
 validation_failure_4_digits_required#:#Format YYYY
-validation_failure_digits_only#:# Digits only
+validation_failure_digits_only#:#Digits only
 xdgl_delete#:#Delete
 xdgl_edit_permission#:#Edit permission
 xdgl_icon#:#Icon
 xdgl_read#:#Download
 xdgl_visible#:#Visible
 xdgl_write#:#Edit
+xdgl_new#:#Request new DigiLit

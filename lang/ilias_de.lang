@@ -1,4 +1,3 @@
-<!-- language file start -->
 admin_common#:#Allgemein
 admin_eula#:#EULA
 admin_eula_text#:#EULA
@@ -44,6 +43,7 @@ librarian_select#:#Bearbeiter/in auswählen
 librarian_update_assignements#:#Speichern
 librarian_users#:#Benutzeraccounts
 library_actions#:#Aktionen
+library_active#:#Aktiv
 library_add#:#Bibliothek hinzufügen
 library_assign#:#Bearbeiter/innen zuordnen
 library_back#:#Zurück
@@ -61,7 +61,6 @@ library_select#:#Bibliothek auswählen
 library_title#:#Name
 library_update#:#Speichern
 library_view#:#Details
-library_active#:#Aktiv
 main_menu_button#:#DigiLit-Admin
 msg_confirm_delete_library#:#Möchten Sie die folgende Bibliothek wirklich löschen?
 msg_request_delete_file#:#Möchten Sie das PDF zum angezeigten Eintrag löschen?
@@ -69,17 +68,17 @@ msg_request_file_deleted#:#Datei wurde gelöscht
 msg_success_add#:#Erfolgreich gespeichert
 msg_success_edit#:#Erfolgreich gespeichert
 msg_success_upload#:#Datei hochgeladen
+notification_subject_mail_moved#:#DigiLit neu zugewiesen
 notification_subject_mail_new_request#:#Neuer DigiLit-Antrag
 notification_subject_mail_rejected#:#DigiLit-Antrag abgelehnt
 notification_subject_mail_uploaded#:#DigiLit hochgeladen
-notification_subject_mail_moved#:#DigiLit neu zugewiesen
+objs_xdgl#:#DigiLits
 obj_list_page#:#Seite(n)
 obj_xdgl#:#DigiLit
+obj_xdgls#:#DigiLits
 obj_xdgl_admin_title#:#DigiLit Administration
 obj_xdgl_edit#:#Antragsdaten bearbeiten
 obj_xdgl_title#:#DigiLit beantragen
-obj_xdgls#:#DigiLits
-objs_xdgl#:#DigiLits
 replace_title#:#Dokument ersetzen
 request_assign#:#Bibliothek zuordnen
 request_assigned_librarian#:#Zugewiesene/r Bearbeiter/in
@@ -122,7 +121,7 @@ request_replace_file#:#PDF ersetzen
 request_requester_fullname#:#Antragsteller
 request_requester_mailto#:#Besteller/in
 request_status#:#Status
-request_status_-1#:#Gelöscht
+request_status_#:#Gelöscht
 request_status_1#:#Neu
 request_status_2#:#In Bearbeitung
 request_status_3#:#Dokument vorhanden
@@ -151,3 +150,4 @@ xdgl_icon#:#Icon
 xdgl_read#:#Herunterladen
 xdgl_visible#:#Sichtbar
 xdgl_write#:#Bearbeiten
+xdgl_new#:#Neues DigiLit beantragen
