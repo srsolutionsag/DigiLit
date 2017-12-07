@@ -167,7 +167,10 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 	}
 
 
-	function resetOffset() {
+	/**
+	 * @param bool $a_in_determination
+	 */
+	public function resetOffset($a_in_determination = false) {
 		parent::resetOffset(false);
 		$this->ctrl->setParameter($this->parent_obj, $this->getNavParameter(), $this->nav_value);
 	}

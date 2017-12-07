@@ -43,7 +43,7 @@ class xdglLibrarian extends ActiveRecord {
 	 *
 	 * @return xdglLibrarian
 	 */
-	public static function find($usr_id, $library_id) {
+	public static function findLibrarian($usr_id, $library_id) {
 		$obj = self::where(array('usr_id' => $usr_id, 'library_id' => $library_id))->first();
 		if ($obj instanceof xdglLibrarian) {
 			return $obj;
@@ -59,8 +59,8 @@ class xdglLibrarian extends ActiveRecord {
 	 *
 	 * @return xdglLibrarian
 	 */
-	public static function findOrGetInstance($usr_id, $library_id) {
-		$obj = self::find($usr_id, $library_id);
+	public static function findOrGetInstanceOfLibrarian($usr_id, $library_id) {
+		$obj = self::findLibrarian($usr_id, $library_id);
 		if ($obj === null) {
 			$obj = new self();
 			$obj->setLibraryId($library_id);

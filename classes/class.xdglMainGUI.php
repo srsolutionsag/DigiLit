@@ -52,7 +52,7 @@ class xdglMainGUI {
 		if (ilObjDigiLitAccess::isAdmin()) {
 			$xdglConfigGUI = new xdglConfigGUI();
 			$this->tabs->addTab(self::TAB_SETTINGS, $this->pl->txt('tab_' . self::TAB_SETTINGS), $this->ctrl->getLinkTarget($xdglConfigGUI));
-			if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES)) {
+			if (xdglConfig::getConfigValue(xdglConfig::F_USE_LIBRARIES)) {
 				$this->tabs->addTab(self::TAB_LIBRARIES, $this->pl->txt('tab_' . self::TAB_LIBRARIES), $this->ctrl->getLinkTarget($xdglLibraryGUI));
 			}
 		}
@@ -62,7 +62,7 @@ class xdglMainGUI {
 			$nextClass = 'xdglconfiggui';
 		}
 		global $ilUser;
-		if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES) AND xdglConfig::get(xdglConfig::F_OWN_LIBRARY_ONLY)
+		if (xdglConfig::getConfigValue(xdglConfig::F_USE_LIBRARIES) AND xdglConfig::getConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY)
 		                                                     AND !xdglLibrary::isAssignedToAnyLibrary($ilUser)) {
 			ilUtil::sendInfo('You cannot use DigiLit since you are not assigned to any Library', true);
 			ilUtil::redirect('/');

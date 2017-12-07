@@ -289,8 +289,8 @@ class xdglRequest extends ActiveRecord {
 
 	public function afterObjectLoad() {
 		// $this->updateCrsRefId();
-		if (xdglConfig::get(xdglConfig::F_USE_REGEX)) {
-			preg_match(xdglConfig::get(xdglConfig::F_REGEX), $this->getCourseNumber(), $matches);
+		if (xdglConfig::getConfigValue(xdglConfig::F_USE_REGEX)) {
+			preg_match(xdglConfig::getConfigValue(xdglConfig::F_REGEX), $this->getCourseNumber(), $matches);
 			$form_id = sprintf('%05d', $this->getId());
 			if ($matches[1]) {
 				$this->setExtId(self::EXT_ID_PREFIX . $matches[1] . '-' . $form_id);
@@ -363,20 +363,22 @@ class xdglRequest extends ActiveRecord {
 
 
 	/**
-	 * @param $id
+	 * @param       $primary_key
+	 * @param array $add_constructor_args
 	 *
-	 * @return xdglRequest
+	 * @return \xdglRequest
 	 */
-	public static function find($id) {
-		return parent::find($id);
+	public static function find($primary_key, array $add_constructor_args = array()) {
+		return parent::find($primary_key, $add_constructor_args);
 	}
 
 
 	/**
-	 * @param xdglRequest $old_request
-	 * @param             $obj_id
+	 * @param \xdglRequest $old_request
+	 * @param int          $obj_id
 	 *
-	 * @return xdglRequest
+	 * @return \xdglRequest
+	 * @throws \Exception
 	 */
 	public static function copyRequest(xdglRequest $old_request, $obj_id = null) {
 		$new_request = clone($old_request);

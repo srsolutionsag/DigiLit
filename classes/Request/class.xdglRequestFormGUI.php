@@ -240,7 +240,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			$eula->setRequired(true);
 			$tpl = $this->pl->getTemplate('default/tpl.eula.html');
 			$tpl->setVariable('TXT_SHOW', $this->txt(self::F_CONFIRM_EULA . '_show'));
-			$tpl->setVariable('EULA', xdglConfig::get(xdglConfig::F_EULA_TEXT));
+			$tpl->setVariable('EULA', xdglConfig::getConfigValue(xdglConfig::F_EULA_TEXT));
 
 			$eula->setInfo($tpl->get());
 			$this->addItem($eula);
@@ -296,7 +296,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			self::F_PAGES              => $this->request->getPages(),
 			self::F_EDITION_RELEVANT   => $this->request->getEditionRelevant(),
 			self::F_ISSN               => $this->request->getIssn(),
-			self::F_COUNT              => $this->request->getAmoutOfDigiLitsInCourse() . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS),
+			self::F_COUNT              => $this->request->getAmoutOfDigiLitsInCourse() . '/' . xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS),
 			self::F_CRS_REF_ID         => $this->request->getCrsRefId(),
 			self::F_REQUESTER_FULLNAME => $ilObjUserRequester->getPresentationTitle(),
 			self::F_REQUESTER_MAILTO   => $ilObjUserRequester->getEmail(),
@@ -309,7 +309,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			self::F_COURSE_NAME        => $this->request->getCourseTitle(),
 		);
 		if ($this->is_new) {
-			$array[self::F_COUNT] = $this->request->getAmoutOfDigiLitsInCourse() + 1 . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS);
+			$array[self::F_COUNT] = $this->request->getAmoutOfDigiLitsInCourse() + 1 . '/' . xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS);
 		}
 		if ($this->view) {
 			$array[self::F_EDITION_RELEVANT] = xdglRequest::boolTextRepresentation($this->request->getEditionRelevant());

@@ -102,22 +102,6 @@ class xdglLibrary extends ActiveRecord {
 	}
 
 
-	//	/**
-	//	 * @param ilObjUser $ilObjUser
-	//	 *
-	//	 * @return ActiveRecord|xdglLibrary
-	//	 */
-	//	public static function getLibraryForUser(ilObjUser $ilObjUser) {
-	//		$xdglLibrarian = xdglLibrarian::find($ilObjUser->getId());
-	//		if ($xdglLibrarian instanceof xdglLibrarian) {
-	//			$libraryId = $xdglLibrarian->getLibraryId();
-	//
-	//			return self::find($libraryId);
-	//		}
-	//
-	//		return self::getPrimary();
-	//	}
-
 	/**
 	 * @param ilObjUser $ilObjUser
 	 *

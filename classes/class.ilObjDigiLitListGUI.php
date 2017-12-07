@@ -53,7 +53,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	 * @return string
 	 */
 	public function getGuiClass() {
-		return 'ilObjDigiLitGUI';
+		return ilObjDigiLitGUI::class;
 	}
 
 
@@ -240,7 +240,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				$props[] = array(
 					'alert'               => false,
 					'property'            => $lng->txt('size'),
-					'value'               => ilFormat::formatSize(filesize($file), 'short'),
+					'value'               => ilUtil::formatSize(filesize($file), 'short'),
 					'propertyNameVisible' => false,
 					'newline'             => true,
 				);

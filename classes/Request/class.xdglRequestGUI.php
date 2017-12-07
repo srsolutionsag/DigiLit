@@ -12,7 +12,7 @@
 class xdglRequestGUI {
 
 	const XDGL_ID = 'xdgl_id';
-	const CDM_CONFIRM_REFUSE = self::CMD_CONFIRM_REFUSE;
+	const CDM_CONFIRM_REFUSE = 'confirmRefuse';
 	const CMD_SELECT_FILE = 'selectFile';
 	const CMD_CANCEL = 'cancel';
 	const CMD_INDEX = 'index';

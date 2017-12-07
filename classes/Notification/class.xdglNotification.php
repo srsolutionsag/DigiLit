@@ -322,7 +322,7 @@ class xdglNotification extends ilMailNotification {
 				if ($xdglLibrary instanceof xdglLibrary) {
 					return $xdglLibrary->getEmail();
 				} else {
-					return xdglConfig::get(xdglConfig::F_MAIL);
+					return xdglConfig::getConfigValue(xdglConfig::F_MAIL);
 				}
 
 				break;
@@ -339,7 +339,7 @@ class xdglNotification extends ilMailNotification {
 	 */
 	public function replaceBody() {
 		$placeholders = self::getPlaceHoldersForType($this->getType());
-		$body = xdglConfig::get($this->getType());
+		$body = xdglConfig::getConfigValue($this->getType());
 		foreach ($placeholders as $k) {
 			$body = str_replace('[' . $k . ']', $this->getReplace($k), $body);
 		}

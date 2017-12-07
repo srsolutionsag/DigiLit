@@ -95,11 +95,11 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 
 
 	/**
-	 * @param ilObjDigiLit $newObj
-	 * @param              $additional_args
+	 * @param \ilObject $newObj
 	 */
-	public function afterSave(ilObjDigiLit $newObj, $additional_args) {
-		$request = new xdglRequest($additional_args[0]);
+	public function afterSave(ilObject $newObj) {
+		$numargs = func_get_args();
+		$request = new xdglRequest($numargs[1][0]);
 		$request->setDigiLitObjectId($newObj->getId());
 		$request->update();
 

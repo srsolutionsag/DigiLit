@@ -41,7 +41,7 @@ class xdglConfig extends ActiveRecord {
 	 * @return bool
 	 */
 	public static function isConfigUpToDate() {
-		return self::get(self::F_CONFIG_VERSION) == self::CONFIG_VERSION;
+		return self::getConfigValue(self::F_CONFIG_VERSION) == self::CONFIG_VERSION;
 	}
 
 
@@ -49,11 +49,11 @@ class xdglConfig extends ActiveRecord {
 	 * @return bool
 	 */
 	public static function hasValidRegex() {
-		if (!self::get(self::F_USE_REGEX)) {
+		if (!self::getConfigValue(self::F_USE_REGEX)) {
 			return false;
 		}
 
-		return self::isRegexValid(self::get(self::F_REGEX));
+		return self::isRegexValid(self::getConfigValue(self::F_REGEX));
 	}
 
 
@@ -62,7 +62,7 @@ class xdglConfig extends ActiveRecord {
 	 *
 	 * @return mixed
 	 */
-	public static function get($name) {
+	public static function getConfigValue($name) {
 		if (!self::$cache_loaded[$name]) {
 			$obj = new self($name);
 			if ($_SERVER['REMOTE_ADDR'] == '212.41.220.231') {
@@ -80,7 +80,7 @@ class xdglConfig extends ActiveRecord {
 	 * @param $name
 	 * @param $value
 	 */
-	public static function set($name, $value) {
+	public static function setConfigValue($name, $value) {
 		$obj = new self($name);
 		$obj->setValue(json_encode($value));
 

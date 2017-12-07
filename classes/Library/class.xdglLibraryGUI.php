@@ -197,7 +197,7 @@ class xdglLibraryGUI {
 		 */
 		$request = xdglRequest::find($_GET[xdglRequestGUI::XDGL_ID]);
 
-		$xdglLibrarian = xdglLibrarian::find($_POST['librarian_select'], $_POST['library_select']);
+		$xdglLibrarian = xdglLibrarian::findLibrarian($_POST['librarian_select'], $_POST['library_select']);
 		$xdglLibrary = xdglLibrary::find($_POST['library_select']);
 
 		if ($xdglLibrarian instanceof xdglLibrarian) {

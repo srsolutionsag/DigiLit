@@ -79,13 +79,14 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 
 	/**
-	 * @param ilObjDigiLit $new_obj
-	 * @param              $a_target_id
-	 * @param null         $a_copy_id
+	 * @param      $new_obj
+	 * @param      $a_target_id
+	 * @param null $a_copy_id
 	 *
 	 * @return bool|void
+	 * @throws \Exception
 	 */
-	protected function doCloneObject(ilObjDigiLit $new_obj, $a_target_id, $a_copy_id = null) {
+	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null) {
 		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
 		xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
 

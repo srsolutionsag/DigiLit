@@ -84,7 +84,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$this->addColumn($this->pl->txt('request_date_last_status_change'), 'date_last_status_change');
 		$this->addColumn($this->pl->txt('request_status'), 'status');
 		$this->addColumn($this->pl->txt('request_requester_mailto'), 'usr_data_email');
-		//		if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES)) {
+		//		if (xdglConfig::getConfigValue(xdglConfig::F_USE_LIBRARIES)) {
 		$this->addColumn($this->pl->txt('request_assigned_library'), 'xdgl_library_title');
 		$this->addColumn($this->pl->txt('request_assigned_librarian'), 'usr_data_2_email');
 		//		}
@@ -246,7 +246,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$sel = new arSelect();
 		$sel->setAs('ext_id');
 		if (xdglConfig::hasValidRegex()) {
-			$regex = xdglConfig::get(xdglConfig::F_REGEX);
+			$regex = xdglConfig::getConfigValue(xdglConfig::F_REGEX);
 			preg_match('/\/\((.*)\)\//', $regex, $matches);
 			$sel->setFieldName('CASE object_data.title REGEXP "' . $matches[1] . '"
 				WHEN "1" THEN CONCAT(SUBSTRING_INDEX(object_data.title, " ", 1), "-", LPAD(xdgl_request.id, 6, 0))

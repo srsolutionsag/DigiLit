@@ -18,10 +18,10 @@ if (!xdglLibrary::where(array( 'is_primary' => 1 ))->hasSets()) {
 	$xdglLibrary->setDescription('');
 	$xdglLibrary->setActive(true);
 	$xdglLibrary->setIsPrimary(true);
-	$xdglLibrary->setEmail(xdglConfig::get(xdglConfig::F_MAIL));
+	$xdglLibrary->setEmail(xdglConfig::getConfigValue(xdglConfig::F_MAIL));
 	$xdglLibrary->create();
 }
-xdglConfig::set(xdglConfig::F_USE_LIBRARIES, true);
+xdglConfig::setConfigValue(xdglConfig::F_USE_LIBRARIES, true);
 ?>
 <#4>
 <?php
@@ -70,9 +70,9 @@ if(xdglLibrarian::count() == 0) {
 <?php
 // Base Configuration
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php';
-if (! xdglConfig::get(xdglConfig::F_MAX_DIGILITS)) {
-	xdglConfig::set(xdglConfig::F_MAX_DIGILITS, 10);
+if (! xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS)) {
+	xdglConfig::setConfigValue(xdglConfig::F_MAX_DIGILITS, 10);
 }
-xdglConfig::set(xdglConfig::F_USE_LIBRARIES, true);
-xdglConfig::set(xdglConfig::F_OWN_LIBRARY_ONLY, true);
+xdglConfig::setConfigValue(xdglConfig::F_USE_LIBRARIES, true);
+xdglConfig::setConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY, true);
 ?>

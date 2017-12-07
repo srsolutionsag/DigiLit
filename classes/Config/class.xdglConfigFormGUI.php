@@ -164,7 +164,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	private function getValuesForItem($item, &$array) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
-			$array[$key] = xdglConfig::get($key);
+			$array[$key] = xdglConfig::getConfigValue($key);
 			//			echo '<pre>' . print_r($array, 1) . '</pre>';
 			if (self::checkForSubItem($item)) {
 				foreach ($item->getSubItems() as $subitem) {
@@ -185,7 +185,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 		foreach ($this->getItems() as $item) {
 			$this->saveValueForItem($item);
 		}
-		xdglConfig::set(xdglConfig::F_CONFIG_VERSION, xdglConfig::CONFIG_VERSION);
+		xdglConfig::setConfigValue(xdglConfig::F_CONFIG_VERSION, xdglConfig::CONFIG_VERSION);
 
 		return true;
 	}
@@ -237,7 +237,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	private function saveValueForItem($item) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
-			xdglConfig::set($key, $this->getInput($key));
+			xdglConfig::setConfigValue($key, $this->getInput($key));
 			if (self::checkForSubItem($item)) {
 				foreach ($item->getSubItems() as $subitem) {
 					$this->saveValueForItem($subitem);

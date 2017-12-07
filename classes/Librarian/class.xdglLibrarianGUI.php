@@ -93,7 +93,7 @@ class xdglLibrarianGUI {
 			if ($usr_id == -1) {
 				continue;
 			}
-			$obj = xdglLibrarian::findOrGetInstance($usr_id, $lib_id);
+			$obj = xdglLibrarian::findOrGetInstanceOfLibrarian($usr_id, $lib_id);
 			if ($obj->is_new) {
 				$obj->create();
 			} else {
@@ -126,7 +126,7 @@ class xdglLibrarianGUI {
 		 * @var $ilDB ilDB
 		 */
 
-		$role_ids = array_merge(xdglConfig::get(xdglConfig::F_ROLES_MANAGER), xdglConfig::get(xdglConfig::F_ROLES_ADMIN));
+		$role_ids = array_merge(xdglConfig::getConfigValue(xdglConfig::F_ROLES_MANAGER), xdglConfig::getConfigValue(xdglConfig::F_ROLES_ADMIN));
 
 		$q = "SELECT ua.usr_id, usr.firstname, usr.lastname, usr.email, lib.library_id AS assigned_to
 				FROM rbac_ua ua
@@ -143,7 +143,7 @@ class xdglLibrarianGUI {
 				/**
 				 * @var $xdglLibrarian xdglLibrarian
 				 */
-				$xdglLibrarian = xdglLibrarian::findOrGetInstance($rec->usr_id, $rec->assigned_to);
+				$xdglLibrarian = xdglLibrarian::findOrGetInstanceOfLibrarian($rec->usr_id, $rec->assigned_to);
 
 				if (!$xdglLibrarian->isDeletable()) {
 					$cb->setInfo($this->pl->txt('librarian_has_sets'));
