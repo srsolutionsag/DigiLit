@@ -1,11 +1,4 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilObjDigiLitAccess.php');
-require_once('class.xdglRequestFormGUI.php');
-require_once('class.xdglRequest.php');
-require_once('class.xdglRequestTableGUI.php');
-require_once('class.xdglUploadFormGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilObjDigiLitGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfigGUI.php');
 
 /**
  * GUI-Class xdglRequestGUI
@@ -179,9 +172,9 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $this->xdglRequest, false, false, false);
 		$xdglRequestFormGUI->setValuesByPost();
-		if ($xdglRequestFormGUI->saveObject(NULL)) {
+		if ($xdglRequestFormGUI->saveObject(null)) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_edit'), true);
-			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+			$this->ctrl->setParameter($this, self::XDGL_ID, null);
 			$this->ctrl->redirect($this);
 		} else {
 			$this->tpl->setContent($xdglRequestFormGUI->getHTML());
@@ -193,9 +186,9 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $this->xdglRequest);
 		$xdglRequestFormGUI->setValuesByPost();
-		if ($xdglRequestFormGUI->saveObject(NULL)) {
+		if ($xdglRequestFormGUI->saveObject(null)) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
-			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+			$this->ctrl->setParameter($this, self::XDGL_ID, null);
 			$this->ctrl->redirect($this);
 		} else {
 			$this->tpl->setContent($xdglRequestFormGUI->getHTML());
@@ -220,7 +213,7 @@ class xdglRequestGUI {
 			$this->xdglRequest->setLibrarianId($ilUser->getId());
 			$this->xdglRequest->update();
 			xdglNotification::sendRejected($this->xdglRequest);
-			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+			$this->ctrl->setParameter($this, self::XDGL_ID, null);
 			$this->ctrl->redirect($this);
 		} else {
 			$form->setValuesByPost();
@@ -235,7 +228,7 @@ class xdglRequestGUI {
 		$this->xdglRequest->setStatus(xdglRequest::STATUS_IN_PROGRRESS);
 		$this->xdglRequest->setLibrarianId($ilUser->getId());
 		$this->xdglRequest->update();
-		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+		$this->ctrl->setParameter($this, self::XDGL_ID, null);
 		$this->ctrl->redirect($this);
 	}
 
@@ -259,7 +252,7 @@ class xdglRequestGUI {
 		$upload_form = new xdglUploadFormGUI($this, $this->xdglRequest);
 		$upload_form->uploadFile();
 
-		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+		$this->ctrl->setParameter($this, self::XDGL_ID, null);
 		$this->ctrl->redirect($this);
 	}
 
@@ -320,4 +313,3 @@ class xdglRequestGUI {
 	}
 }
 
-?>

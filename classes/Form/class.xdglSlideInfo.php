@@ -8,6 +8,9 @@
  */
 class xdglSlideInfo {
 
+	/**
+	 * @var string
+	 */
 	protected $body = '';
 
 
@@ -39,4 +42,4 @@ class xdglSlideInfo {
 	}
 }
 
-?>
+

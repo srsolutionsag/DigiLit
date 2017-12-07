@@ -1,5 +1,5 @@
 <?php
-require_once('./Services/Repository/classes/class.ilRepositoryObjectPlugin.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * DigiLit repository object plugin

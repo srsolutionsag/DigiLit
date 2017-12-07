@@ -20,9 +20,7 @@
 	| Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
 	+-----------------------------------------------------------------------------+
 */
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-include_once('./Services/Repository/classes/class.ilObjectPluginListGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * ListGUI implementation for DigiLit object plugin. This one
@@ -90,9 +88,9 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		$commands = array(
 			array(
 				'permission' => 'read',
-				'cmd' => 'showContent',
-				'default' => true
-			)
+				'cmd'        => 'showContent',
+				'default'    => true,
+			),
 		);
 
 		switch ($request->getStatus()) {
@@ -102,20 +100,20 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 			case xdglRequest::STATUS_COPY:
 
 				$commands[] = array(
-					'txt' => $this->plugin->txt('common_cmd_delete'),
+					'txt'        => $this->plugin->txt('common_cmd_delete'),
 					'permission' => 'delete',
-					'cmd' => 'confirmDeleteObject',
-					'default' => false
+					'cmd'        => 'confirmDeleteObject',
+					'default'    => false,
 				);
 				break;
 
 			case xdglRequest::STATUS_NEW:
 			case xdglRequest::STATUS_RELEASED:
 				$commands[] = array(
-					'txt' => $this->plugin->txt('common_cmd_delete'),
+					'txt'        => $this->plugin->txt('common_cmd_delete'),
 					'permission' => 'delete',
-					'cmd' => 'confirmDeleteObject',
-					'default' => false
+					'cmd'        => 'confirmDeleteObject',
+					'default'    => false,
 				);
 
 				$this->cut_enabled = true;
@@ -160,68 +158,68 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		$info_string .= $request->getPages();
 
 		$props[] = array(
-			'alert' => false,
-			'newline' => true,
-			'property' => 'description',
-			'value' => $info_string,
-			'propertyNameVisible' => false
+			'alert'               => false,
+			'newline'             => true,
+			'property'            => 'description',
+			'value'               => $info_string,
+			'propertyNameVisible' => false,
 		);
 
 		switch ($request->getStatus()) {
 			case xdglRequest::STATUS_NEW:
 				$props[] = array(
-					'alert' => true,
-					'newline' => true,
-					'property' => $lng->txt('status'),
-					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_NEW),
-					'propertyNameVisible' => true
+					'alert'               => true,
+					'newline'             => true,
+					'property'            => $lng->txt('status'),
+					'value'               => $this->plugin->txt('request_status_' . xdglRequest::STATUS_NEW),
+					'propertyNameVisible' => true,
 				);
 				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_creation_date'),
-					'value' => self::format_date_time($request->getCreateDate()),
-					'propertyNameVisible' => true
+					'alert'               => false,
+					'newline'             => true,
+					'property'            => $this->plugin->txt('request_creation_date'),
+					'value'               => self::format_date_time($request->getCreateDate()),
+					'propertyNameVisible' => true,
 				);
 				break;
 			case xdglRequest::STATUS_IN_PROGRRESS:
 				$props[] = array(
-					'alert' => true,
-					'newline' => true,
-					'property' => $lng->txt('status'),
-					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_IN_PROGRRESS),
-					'propertyNameVisible' => true
+					'alert'               => true,
+					'newline'             => true,
+					'property'            => $lng->txt('status'),
+					'value'               => $this->plugin->txt('request_status_' . xdglRequest::STATUS_IN_PROGRRESS),
+					'propertyNameVisible' => true,
 				);
 				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_creation_date'),
-					'value' => self::format_date_time($request->getCreateDate()),
-					'propertyNameVisible' => true
+					'alert'               => false,
+					'newline'             => true,
+					'property'            => $this->plugin->txt('request_creation_date'),
+					'value'               => self::format_date_time($request->getCreateDate()),
+					'propertyNameVisible' => true,
 				);
 				break;
 
 			case xdglRequest::STATUS_REFUSED:
 				$props[] = array(
-					'alert' => true,
-					'newline' => true,
-					'property' => $lng->txt('status'),
-					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_REFUSED),
-					'propertyNameVisible' => true
+					'alert'               => true,
+					'newline'             => true,
+					'property'            => $lng->txt('status'),
+					'value'               => $this->plugin->txt('request_status_' . xdglRequest::STATUS_REFUSED),
+					'propertyNameVisible' => true,
 				);
 				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_creation_date'),
-					'value' => self::format_date_time($request->getCreateDate()),
-					'propertyNameVisible' => true
+					'alert'               => false,
+					'newline'             => true,
+					'property'            => $this->plugin->txt('request_creation_date'),
+					'value'               => self::format_date_time($request->getCreateDate()),
+					'propertyNameVisible' => true,
 				);
 				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_refusing_date'),
-					'value' => self::format_date_time($request->getDateLastStatusChange()),
-					'propertyNameVisible' => true
+					'alert'               => false,
+					'newline'             => true,
+					'property'            => $this->plugin->txt('request_refusing_date'),
+					'value'               => self::format_date_time($request->getDateLastStatusChange()),
+					'propertyNameVisible' => true,
 				);
 				break;
 
@@ -233,37 +231,37 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 
 				if (!preg_match('/^\\.|\\.[a-zA-Z0-9]+$/', $file)) {
 					$props[] = array(
-						'alert' => false,
-						'property' => $lng->txt('filename_interoperability'),
-						'value' => $lng->txt('filename_extension_missing'),
-						'propertyNameVisible' => false
+						'alert'               => false,
+						'property'            => $lng->txt('filename_interoperability'),
+						'value'               => $lng->txt('filename_extension_missing'),
+						'propertyNameVisible' => false,
 					);
 				}
 				$props[] = array(
-					'alert' => false,
-					'property' => $lng->txt('size'),
-					'value' => ilFormat::formatSize(filesize($file), 'short'),
+					'alert'               => false,
+					'property'            => $lng->txt('size'),
+					'value'               => ilFormat::formatSize(filesize($file), 'short'),
 					'propertyNameVisible' => false,
-					'newline' => true,
+					'newline'             => true,
 				);
 				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_upload_date'),
-					'value' => self::format_date_time($request->getDateLastStatusChange()),
-					'propertyNameVisible' => true
+					'alert'               => false,
+					'newline'             => true,
+					'property'            => $this->plugin->txt('request_upload_date'),
+					'value'               => self::format_date_time($request->getDateLastStatusChange()),
+					'propertyNameVisible' => true,
 				);
 
 				if (!ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
 					$props[] = array(
-						'alert' => true,
-						'newline' => true,
-						'property' => 'description',
-						'value' => $this->plugin->txt('status_no_access_to_download'),
-						'propertyNameVisible' => false
+						'alert'               => true,
+						'newline'             => true,
+						'property'            => 'description',
+						'value'               => $this->plugin->txt('status_no_access_to_download'),
+						'propertyNameVisible' => false,
 					);
 				}
-				
+
 				break;
 		}
 
@@ -295,8 +293,8 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				if (ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
 					$ilCtrl->setParameterByClass('ilObjDigiLitGUI', xdglRequestGUI::XDGL_ID, xdglRequest::getIdByDigiLitObjectId($this->obj_id));
 					$this->default_command = array(
-						'link' => $ilCtrl->getLinkTargetByClass('ilObjDigiLitGUI', ilObjDigiLitGUI::CMD_SEND_FILE),
-						'frame' => '_top'
+						'link'  => $ilCtrl->getLinkTargetByClass('ilObjDigiLitGUI', ilObjDigiLitGUI::CMD_SEND_FILE),
+						'frame' => '_top',
 					);
 				} else {
 					$this->default_command = false;
@@ -337,4 +335,4 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	}
 }
 
-?>
+

@@ -1,6 +1,4 @@
 <?php
-require_once('./Services/Form/classes/class.ilPropertyFormGUI.php');
-require_once('class.xdglConfig.php');
 
 /**
  * Form-Class xdglConfigFormGUI
@@ -139,7 +137,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 		// EULA
 		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_EULA_TEXT), xdglConfig::F_EULA_TEXT);
 		$te->setUseRte(true);
-		$te->setRteTags(array( 'a', 'p', 'ul', 'li', 'ol' ));
+		$te->setRteTags(array('a', 'p', 'ul', 'li', 'ol'));
 		$te->setCols(self::A_COLS);
 		$te->setRows(self::A_ROWS);
 		$this->addItem($te);
@@ -181,7 +179,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public function saveObject() {
-		if (! $this->checkInput()) {
+		if (!$this->checkInput()) {
 			return false;
 		}
 		foreach ($this->getItems() as $item) {
@@ -217,12 +215,12 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 		$use_regex = $this->getItemByPostVar(xdglConfig::F_USE_REGEX);
 		if ($use_regex->getChecked()) {
 			$regex = $this->getItemByPostVar(xdglConfig::F_REGEX);
-			if (! xdglConfig::isRegexValid($regex->getValue())) {
+			if (!xdglConfig::isRegexValid($regex->getValue())) {
 				$check = false;
 				$regex->setAlert('Regular Expression not valid');
 			}
 		}
-		if (! $check) {
+		if (!$check) {
 			global $lng;
 			ilUtil::sendFailure($lng->txt("form_input_not_valid"));
 
@@ -255,7 +253,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public static function checkForSubItem($item) {
-		return ! $item instanceof ilFormSectionHeaderGUI AND ! $item instanceof ilMultiSelectInputGUI;
+		return !$item instanceof ilFormSectionHeaderGUI AND !$item instanceof ilMultiSelectInputGUI;
 	}
 
 
@@ -265,7 +263,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public static function checkItem($item) {
-		return ! $item instanceof ilFormSectionHeaderGUI;
+		return !$item instanceof ilFormSectionHeaderGUI;
 	}
 
 

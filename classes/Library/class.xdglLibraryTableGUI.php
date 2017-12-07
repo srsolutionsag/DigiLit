@@ -2,14 +2,6 @@
 
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-require_once('class.xdglLibraryGUI.php');
-require_once('class.xdglLibrary.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-require_once('./Services/Table/classes/class.ilTable2GUI.php');
-require_once('./Services/UIComponent/AdvancedSelectionList/classes/class.ilAdvancedSelectionListGUI.php');
-require_once('./Services/Form/classes/class.ilMultiSelectInputGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Librarian/class.xdglLibrarianGUI.php');
-
 /**
  * Class xdglLibraryTableGUI
  *
@@ -34,7 +26,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 	 * @param xdglLibraryGUI $a_parent_obj
 	 * @param string         $a_parent_cmd
 	 */
-	public function  __construct(xdglLibraryGUI $a_parent_obj, $a_parent_cmd) {
+	public function __construct(xdglLibraryGUI $a_parent_obj, $a_parent_cmd) {
 		/**
 		 * @var $ilCtrl    ilCtrl
 		 * @var $ilToolbar ilToolbarGUI
@@ -57,7 +49,8 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		$this->setExternalSorting(true);
 		$this->setExternalSegmentation(true);
 		$this->parseData();
-		$ilToolbar->addButton($this->pl->txt('library_add'), $this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_ADD), '', '', '', 'emphatize');
+		$ilToolbar->addButton($this->pl->txt('library_add'), $this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_ADD), '', '', '',
+			'emphatize');
 		//		$this->addHeaderCommand($this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_ADD), $this->pl->txt('library_add'));
 	}
 
@@ -86,7 +79,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		$this->determineOffsetAndOrder();
 		$this->determineLimit();
 		$xdglLibraryList = xdglLibrary::getCollection();
-		if (! $this->getOrderField()) {
+		if (!$this->getOrderField()) {
 			$xdglLibraryList->orderBy('title', 'ASC');
 		}
 		$xdglLibraryList->orderBy($this->getOrderField(), $this->getOrderDirection());
@@ -99,7 +92,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		//			}
 		//		}
 		$this->setMaxCount($xdglLibraryList->count());
-		if (! $xdglLibraryList->hasSets()) {
+		if (!$xdglLibraryList->hasSets()) {
 			ilUtil::sendInfo('Keine Ergebnisse für diesen Filter');
 		}
 		$xdglLibraryList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
@@ -134,11 +127,15 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 
 		$this->ctrl->setParameter($this->parent_obj, xdglLibraryGUI::XDGL_LIB_ID, $a_set['id']);
 		$this->ctrl->setParameterByClass('xdglLibrarianGUI', xdglLibrarianGUI::XDGL_LIBRARIAN_ID, $a_set['id']);
-		$current_selection_list->addItem($this->pl->txt('library_view'), 'library_view', $this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_VIEW));
-		$current_selection_list->addItem($this->pl->txt('library_edit'), 'library_edit', $this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_EDIT));
-		$current_selection_list->addItem($this->pl->txt('library_assign'), 'library_assign', $this->ctrl->getLinkTargetByClass('xdglLibrarianGUI', xdglLibrarianGUI::CMD_ASSIGN));
+		$current_selection_list->addItem($this->pl->txt('library_view'), 'library_view',
+			$this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_VIEW));
+		$current_selection_list->addItem($this->pl->txt('library_edit'), 'library_edit',
+			$this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_EDIT));
+		$current_selection_list->addItem($this->pl->txt('library_assign'), 'library_assign',
+			$this->ctrl->getLinkTargetByClass('xdglLibrarianGUI', xdglLibrarianGUI::CMD_ASSIGN));
 		if ($obj->isDeletable()) {
-			$current_selection_list->addItem($this->pl->txt('library_delete'), 'library_delete', $this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_CONFIRM_DELETE));
+			$current_selection_list->addItem($this->pl->txt('library_delete'), 'library_delete',
+				$this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_CONFIRM_DELETE));
 		}
 
 		$this->tpl->setVariable('VAL_ACTIONS', $current_selection_list->getHTML());
@@ -176,4 +173,4 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 	}
 }
 
-?>
+

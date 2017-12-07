@@ -1,9 +1,5 @@
 <?php
 
-require_once('./Services/Form/classes/class.ilMultiSelectInputGUI.php');
-require_once('./Services/User/classes/class.ilObjUser.php');
-require_once('./Services/UICore/classes/class.ilTemplate.php');
-
 /**
  * Class xdglMultiUserInputGUI
  *
@@ -43,12 +39,11 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 	 */
 	protected function getValueAsJson() {
 		global $ilDB;
-		$query = "SELECT obj_id, title FROM object_data WHERE type = 'usr' AND "
-			. $ilDB->in("obj_id", $this->getValue(), false, "integer");
+		$query = "SELECT obj_id, title FROM object_data WHERE type = 'usr' AND " . $ilDB->in("obj_id", $this->getValue(), false, "integer");
 		$res = $ilDB->query($query);
 		$result = array();
 		while ($row = $ilDB->fetchAssoc($res)) {
-			$result[] = array( "id" => $row['obj_id'], "text" => $row['title'] );
+			$result[] = array("id" => $row['obj_id'], "text" => $row['title']);
 		}
 
 		return json_encode($result);
@@ -61,7 +56,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 	 */
 	public function __construct($title, $post_var) {
 		global $tpl, $ilUser, $lng;
-		if (substr($post_var, - 2) != '[]') {
+		if (substr($post_var, -2) != '[]') {
 			$post_var = $post_var . '[]';
 		}
 		parent::__construct($title, $post_var);
@@ -70,7 +65,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 		$this->pl = ilDigiLitPlugin::getInstance();
 		$tpl->addJavaScript('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/lib/select2/select2.min.js');
 		$tpl->addJavaScript('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/lib/select2/select2_locale_'
-			. $ilUser->getCurrentLanguage() . '.js');
+		                    . $ilUser->getCurrentLanguage() . '.js');
 		$tpl->addCss('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/lib/select2/select2.css');
 		$this->setInputTemplate($this->pl->getTemplate('tpl.multiple_select.html'));
 		$this->setWidth('300px');
@@ -130,11 +125,11 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 		$options = $this->getOptions();
 
 		$tpl->setVariable('POST_VAR', $this->getPostVar());
-		$tpl->setVariable('ID', substr($this->getPostVar(), 0, - 2));
+		$tpl->setVariable('ID', substr($this->getPostVar(), 0, -2));
 		$tpl->setVariable('WIDTH', $this->getWidth());
 		$tpl->setVariable('PRELOAD', $values);
 		$tpl->setVariable('HEIGHT', $this->getHeight());
-		$tpl->setVariable('PLACEHOLDER', $this->pl->txt('form_'.$this->getContainerType() . '_placeholder'));
+		$tpl->setVariable('PLACEHOLDER', $this->pl->txt('form_' . $this->getContainerType() . '_placeholder'));
 		$tpl->setVariable('MINIMUM_INPUT_LENGTH', $this->getMinimumInputLength());
 		$tpl->setVariable('CONTAINER_TYPE', $this->getContainerType());
 		$tpl->setVariable('Class', $this->getCssClass());
@@ -284,13 +279,14 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 
 
 	/**
-	 * This implementation might sound silly. But the multiple select input used parses the post vars differently if you use ajax. thus we have to do this stupid 'trick'. Shame on select2 project ;)
+	 * This implementation might sound silly. But the multiple select input used parses the post vars differently if you use ajax. thus we have to do
+	 * this stupid 'trick'. Shame on select2 project ;)
 	 *
 	 * @return string the real postvar.
 	 */
 	protected function searchPostVar() {
-		if (substr($this->getPostVar(), - 2) == '[]') {
-			return substr($this->getPostVar(), 0, - 2);
+		if (substr($this->getPostVar(), -2) == '[]') {
+			return substr($this->getPostVar(), 0, -2);
 		} else {
 			return $this->getPostVar();
 		}

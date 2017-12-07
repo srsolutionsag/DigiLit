@@ -1,8 +1,5 @@
 <?php
 
-require_once('./Services/Mail/classes/class.ilMailNotification.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php');
-
 /**
  * Class xdglNotification
  *
@@ -63,7 +60,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
 		),
-		self::TYPE_ULOADED => array(
+		self::TYPE_ULOADED     => array(
 			xdglNotification::R_TITLE,
 			xdglNotification::R_AUTHOR,
 			xdglNotification::R_COURSE_NUMBER,
@@ -81,7 +78,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
 		),
-		self::TYPE_REJECTED => array(
+		self::TYPE_REJECTED    => array(
 			xdglNotification::R_TITLE,
 			xdglNotification::R_AUTHOR,
 			xdglNotification::R_REASON,
@@ -100,7 +97,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
 		),
-		self::TYPE_MOVED => array(
+		self::TYPE_MOVED       => array(
 			xdglNotification::R_TITLE,
 			xdglNotification::R_AUTHOR,
 			xdglNotification::R_REQUESTER_FULLNAME,
@@ -120,7 +117,7 @@ class xdglNotification extends ilMailNotification {
 			//			xdglNotification::R_INTERNAL_NOTICE,
 			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
-		)
+		),
 	);
 
 
@@ -285,14 +282,14 @@ class xdglNotification extends ilMailNotification {
 				}
 			case self::R_ASSIGNED_LIBRARIAN:
 				$lib_id = $this->getXdglRequest()->getLibrarianId();
-				if (! $lib_id) {
+				if (!$lib_id) {
 					return 'NOBODY';
 				}
 				/**
 				 * @var $xdglLibrary xdglLibrarian
 				 */
 
-				$activeRecordList = xdglLibrarian::where(array( 'usr_id' => $lib_id ));
+				$activeRecordList = xdglLibrarian::where(array('usr_id' => $lib_id));
 				if ($activeRecordList->hasSets()) {
 					$xdglLibrarian = $activeRecordList->first();
 					if ($xdglLibrarian instanceof xdglLibrarian) {
@@ -369,7 +366,7 @@ class xdglNotification extends ilMailNotification {
 		$this->setSubject($a_subject);
 		$this->replaceBody();
 
-		$this->sendMail(array( $this->getAdress() ), array( 'normal' ), false);
+		$this->sendMail(array($this->getAdress()), array('normal'), false);
 	}
 
 
@@ -406,10 +403,9 @@ class xdglNotification extends ilMailNotification {
 
 
 	protected function initUser() {
-		if (! isset($this->ilObjUser)) {
+		if (!isset($this->ilObjUser)) {
 			$this->ilObjUser = new ilObjUser($this->getXdglRequest()->getRequesterUsrId());
 		}
 	}
 }
 
-?>

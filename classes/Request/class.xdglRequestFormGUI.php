@@ -1,9 +1,5 @@
 <?php
 
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequestGUI.php');
-require_once('./Services/Form/classes/class.ilPropertyFormGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-
 /**
  * GUI-Class xdglRequestFormGUI
  *
@@ -255,24 +251,24 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 	/**
 	 * @param null $ref_id
 	 */
-	public function fillFormRandomized($ref_id = NULL) {
+	public function fillFormRandomized($ref_id = null) {
 		if ($ref_id) {
 			$this->request->setCrsRefId($ref_id);
 		}
 		$array = array(
-			self::F_AUTHOR => 'Author Name',
-			self::F_TITLE => 'Article Name',
-			self::F_BOOK => 'The Book',
-			self::F_EDITOR => '',
-			self::F_LOCATION => 'Berne',
-			self::F_PUBLISHER => 'Publisher Name',
-			self::F_PUBLISHING_YEAR => 2004,
-			self::F_PAGES => '50-89',
+			self::F_AUTHOR           => 'Author Name',
+			self::F_TITLE            => 'Article Name',
+			self::F_BOOK             => 'The Book',
+			self::F_EDITOR           => '',
+			self::F_LOCATION         => 'Berne',
+			self::F_PUBLISHER        => 'Publisher Name',
+			self::F_PUBLISHING_YEAR  => 2004,
+			self::F_PAGES            => '50-89',
 			self::F_EDITION_RELEVANT => false,
-			self::F_ISSN => '',
-			self::F_VOLUME_YEAR => 2004,
-			self::F_NOTICE => 'This Text only!',
-			self::F_COURSE_NAME => $this->request->getCourseTitle(),
+			self::F_ISSN             => '',
+			self::F_VOLUME_YEAR      => 2004,
+			self::F_NOTICE           => 'This Text only!',
+			self::F_COURSE_NAME      => $this->request->getCourseTitle(),
 
 		);
 		$this->setValuesByArray($array);
@@ -282,7 +278,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 	/**
 	 * @param int $ref_id
 	 */
-	public function fillForm($ref_id = NULL) {
+	public function fillForm($ref_id = null) {
 		if ($ref_id) {
 			$this->request->setCrsRefId($ref_id);
 		}
@@ -290,27 +286,27 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 		$ilObjUserModified = new ilObjUser($this->request->getLastModifiedByUsrId());
 
 		$array = array(
-			self::F_AUTHOR => $this->request->getAuthor(),
-			self::F_TITLE => $this->request->getTitle(),
-			self::F_BOOK => $this->request->getBook(),
-			self::F_EDITOR => $this->request->getEditor(),
-			self::F_LOCATION => $this->request->getLocation(),
-			self::F_PUBLISHER => $this->request->getPublisher(),
-			self::F_PUBLISHING_YEAR => $this->request->getPublishingYear(),
-			self::F_PAGES => $this->request->getPages(),
-			self::F_EDITION_RELEVANT => $this->request->getEditionRelevant(),
-			self::F_ISSN => $this->request->getIssn(),
-			self::F_COUNT => $this->request->getAmoutOfDigiLitsInCourse() . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS),
-			self::F_CRS_REF_ID => $this->request->getCrsRefId(),
+			self::F_AUTHOR             => $this->request->getAuthor(),
+			self::F_TITLE              => $this->request->getTitle(),
+			self::F_BOOK               => $this->request->getBook(),
+			self::F_EDITOR             => $this->request->getEditor(),
+			self::F_LOCATION           => $this->request->getLocation(),
+			self::F_PUBLISHER          => $this->request->getPublisher(),
+			self::F_PUBLISHING_YEAR    => $this->request->getPublishingYear(),
+			self::F_PAGES              => $this->request->getPages(),
+			self::F_EDITION_RELEVANT   => $this->request->getEditionRelevant(),
+			self::F_ISSN               => $this->request->getIssn(),
+			self::F_COUNT              => $this->request->getAmoutOfDigiLitsInCourse() . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS),
+			self::F_CRS_REF_ID         => $this->request->getCrsRefId(),
 			self::F_REQUESTER_FULLNAME => $ilObjUserRequester->getPresentationTitle(),
-			self::F_REQUESTER_MAILTO => $ilObjUserRequester->getEmail(),
-			self::F_CREATE_DATE => date('d.m.Y - H:i:s', $this->request->getCreateDate()),
+			self::F_REQUESTER_MAILTO   => $ilObjUserRequester->getEmail(),
+			self::F_CREATE_DATE        => date('d.m.Y - H:i:s', $this->request->getCreateDate()),
 			self::F_LAST_STATUS_CHANGE => date('d.m.Y - H:i:s', $this->request->getDateLastStatusChange()),
-			self::F_MODIFIED_BY => $ilObjUserModified->getPresentationTitle(),
-			self::F_VOLUME_YEAR => $this->request->getVolume(),
-			self::F_NOTICE => $this->request->getNotice(),
-			self::F_INTERNAL_NOTICE => $this->request->getInternalNotice(),
-			self::F_COURSE_NAME => $this->request->getCourseTitle(),
+			self::F_MODIFIED_BY        => $ilObjUserModified->getPresentationTitle(),
+			self::F_VOLUME_YEAR        => $this->request->getVolume(),
+			self::F_NOTICE             => $this->request->getNotice(),
+			self::F_INTERNAL_NOTICE    => $this->request->getInternalNotice(),
+			self::F_COURSE_NAME        => $this->request->getCourseTitle(),
 		);
 		if ($this->is_new) {
 			$array[self::F_COUNT] = $this->request->getAmoutOfDigiLitsInCourse() + 1 . '/' . xdglConfig::get(xdglConfig::F_MAX_DIGILITS);
@@ -357,7 +353,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			$this->request->setInternalNotice($this->getInput(self::F_INTERNAL_NOTICE));
 		}
 		if ($this->getInput(self::F_VOLUME_YEAR) === '') {
-			$this->request->setVolume(NULL);
+			$this->request->setVolume(null);
 		} else {
 			$this->request->setVolume($this->getInput(self::F_VOLUME_YEAR));
 		}

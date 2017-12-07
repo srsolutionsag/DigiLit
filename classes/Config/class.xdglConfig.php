@@ -1,6 +1,4 @@
 <?php
-require_once('./Services/ActiveRecord/class.ActiveRecord.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
 
 /**
  * Class xdglConfig
@@ -51,7 +49,7 @@ class xdglConfig extends ActiveRecord {
 	 * @return bool
 	 */
 	public static function hasValidRegex() {
-		if (! self::get(self::F_USE_REGEX)) {
+		if (!self::get(self::F_USE_REGEX)) {
 			return false;
 		}
 
@@ -65,7 +63,7 @@ class xdglConfig extends ActiveRecord {
 	 * @return mixed
 	 */
 	public static function get($name) {
-		if (! self::$cache_loaded[$name]) {
+		if (!self::$cache_loaded[$name]) {
 			$obj = new self($name);
 			if ($_SERVER['REMOTE_ADDR'] == '212.41.220.231') {
 				//				var_dump(json_decode($obj->getValue())); // FSX
@@ -86,7 +84,7 @@ class xdglConfig extends ActiveRecord {
 		$obj = new self($name);
 		$obj->setValue(json_encode($value));
 
-		if (self::where(array( 'name' => $name ))->hasSets()) {
+		if (self::where(array('name' => $name))->hasSets()) {
 			$obj->update();
 		} else {
 			$obj->create();
@@ -178,4 +176,4 @@ class xdglConfig extends ActiveRecord {
 	}
 }
 
-?>
+

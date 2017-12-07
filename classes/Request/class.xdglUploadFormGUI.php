@@ -1,7 +1,4 @@
 <?php
-require_once('./Services/Form/classes/class.ilPropertyFormGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilObjDigiLit.php');
 
 /**
  * GUI-Class xdglRequestFormGUI
@@ -71,7 +68,7 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 
 		// Add File-Upload
 		$in_file = new ilFileInputGUI($this->pl->txt('upload_file'), self::F_FILE_UPLOAD);
-		$in_file->setSuffixes(array( 'pdf' ));
+		$in_file->setSuffixes(array('pdf'));
 		$in_file->setRequired(true);
 		$this->addItem($in_file);
 

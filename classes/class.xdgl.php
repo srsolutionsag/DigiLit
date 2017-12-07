@@ -1,7 +1,7 @@
 <?php
 
 require_once('./include/inc.ilias_version.php');
-require_once('./Services/Component/classes/class.ilComponent.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * Class xdgl

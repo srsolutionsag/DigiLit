@@ -1,6 +1,4 @@
 <?php
-require_once('class.xdglConfigFormGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Library/class.xdglLibraryGUI.php');
 
 /**
  * Class xdglConfigGUI
@@ -91,5 +89,3 @@ class xdglConfigGUI {
 		$this->tpl->setContent($form->getHTML());
 	}
 }
-
-?>

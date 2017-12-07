@@ -1,7 +1,4 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Library/class.xdglLibraryTableGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Library/class.xdglLibraryFormGUI.php');
-require_once('./Services/Utilities/classes/class.ilConfirmationGUI.php');
 
 /**
  * Class xdglLibraryGUI
@@ -78,7 +75,7 @@ class xdglLibraryGUI {
 			case self::CMD_CANCEL:
 			case self::CMD_VIEW:
 			case self::CMD_DELETE:
-				if (! ilObjDigiLitAccess::isAdmin()) {
+				if (!ilObjDigiLitAccess::isAdmin()) {
 					return false;
 				}
 				$this->{$cmd}();
@@ -147,7 +144,7 @@ class xdglLibraryGUI {
 
 
 	protected function confirmDelete() {
-		if (! $this->library->isDeletable()) {
+		if (!$this->library->isDeletable()) {
 			throw new ilException('This Library can not be deleted');
 		}
 		$conf = new ilConfirmationGUI();
@@ -161,7 +158,7 @@ class xdglLibraryGUI {
 
 
 	protected function delete() {
-		if (! $this->library->isDeletable()) {
+		if (!$this->library->isDeletable()) {
 			throw new ilException('This Library can not be deleted');
 		}
 		$this->library->delete();
@@ -180,11 +177,11 @@ class xdglLibraryGUI {
 
 		$se = new ilSelectInputGUI($this->pl->txt('library_select'), 'library_select');
 		$se->setRequired(true);
-		$se->setOptions(xdglLibrary::where(array( 'active' => true ))->orderBy('title')->getArray('id', 'title'));
+		$se->setOptions(xdglLibrary::where(array('active' => true))->orderBy('title')->getArray('id', 'title'));
 		$form->addItem($se);
 
 		$se = new ilSelectInputGUI($this->pl->txt('librarian_select'), 'librarian_select');
-		$se->setOptions(array_merge(array( 0 => $this->pl->txt('librarian_none') ), xdglLibrarian::getAssignedLibrariansForLibrary()));
+		$se->setOptions(array_merge(array(0 => $this->pl->txt('librarian_none')), xdglLibrarian::getAssignedLibrariansForLibrary()));
 		$form->addItem($se);
 
 		$form->addCommandButton(self::CMD_RETURN_TO_REQUESTS, $this->pl->txt('library_cancel'));
@@ -217,13 +214,13 @@ class xdglLibraryGUI {
 
 
 	protected function cancel() {
-		$this->ctrl->setParameter($this, self::XDGL_LIB_ID, NULL);
+		$this->ctrl->setParameter($this, self::XDGL_LIB_ID, null);
 		$this->ctrl->redirect($this, self::CMD_STANDARD);
 	}
 
 
 	protected function returnToRequests() {
-		$this->ctrl->setParameterByClass('xdglRequestGUI', xdglRequestGUI::XDGL_ID, NULL);
+		$this->ctrl->setParameterByClass('xdglRequestGUI', xdglRequestGUI::XDGL_ID, null);
 		$this->ctrl->redirectByClass('xdglRequestGUI', xdglRequestGUI::CMD_INDEX);
 	}
 
@@ -238,4 +235,4 @@ class xdglLibraryGUI {
 	}
 }
 
-?>
+

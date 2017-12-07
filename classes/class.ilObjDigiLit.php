@@ -21,8 +21,7 @@
 	+-----------------------------------------------------------------------------+
 */
 
-require_once('./Services/Repository/classes/class.ilObjectPlugin.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequestFormGUI.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * Class ilObjDigiLit
@@ -86,7 +85,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 	 *
 	 * @return bool|void
 	 */
-	protected function doCloneObject(ilObjDigiLit $new_obj, $a_target_id, $a_copy_id = NULL) {
+	protected function doCloneObject(ilObjDigiLit $new_obj, $a_target_id, $a_copy_id = null) {
 		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
 		xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
 
@@ -105,7 +104,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 		 * @var $tree ilTree
 		 */
 		while (ilObject2::_lookupType($ref_id, true) != 'crs') {
-			if($ref_id == 1) {
+			if ($ref_id == 1) {
 				ilUtil::sendFailure('DigiLit-Objects can be created in courses only.', true);
 				ilUtil::redirect('/');
 			}
@@ -116,4 +115,4 @@ class ilObjDigiLit extends ilObjectPlugin {
 	}
 }
 
-?>
+

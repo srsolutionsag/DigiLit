@@ -1,8 +1,5 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequestGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfigGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Library/class.xdglLibraryGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * Class xdglMainGUI
@@ -60,14 +57,13 @@ class xdglMainGUI {
 			}
 		}
 		$nextClass = $this->ctrl->getNextClass();
-		if (! xdglConfig::isConfigUpToDate()) {
+		if (!xdglConfig::isConfigUpToDate()) {
 			ilUtil::sendInfo('Configuraion out of date');
 			$nextClass = 'xdglconfiggui';
 		}
 		global $ilUser;
-		if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES) AND
-			xdglConfig::get(xdglConfig::F_OWN_LIBRARY_ONLY) AND ! xdglLibrary::isAssignedToAnyLibrary($ilUser)
-		) {
+		if (xdglConfig::get(xdglConfig::F_USE_LIBRARIES) AND xdglConfig::get(xdglConfig::F_OWN_LIBRARY_ONLY)
+		                                                     AND !xdglLibrary::isAssignedToAnyLibrary($ilUser)) {
 			ilUtil::sendInfo('You cannot use DigiLit since you are not assigned to any Library', true);
 			ilUtil::redirect('/');
 		}
@@ -95,4 +91,4 @@ class xdglMainGUI {
 	}
 }
 
-?>
+

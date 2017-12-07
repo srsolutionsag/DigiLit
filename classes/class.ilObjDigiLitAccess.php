@@ -20,11 +20,7 @@
 	| Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
 	+-----------------------------------------------------------------------------+
 */
-
-require_once('./Services/Repository/classes/class.ilObjectPluginAccess.php');
-require_once('class.ilObjDigiLit.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * Access/Condition checking for DigiLit object
@@ -66,8 +62,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 		}
 		switch ($a_permission) {
 			case 'read':
-				if (!ilObjDigiLitAccess::checkOnline($a_obj_id) AND !$ilAccess->checkAccessOfUser($a_user_id, 'write', '', $a_ref_id)
-				) {
+				if (!ilObjDigiLitAccess::checkOnline($a_obj_id) AND !$ilAccess->checkAccessOfUser($a_user_id, 'write', '', $a_ref_id)) {
 					return true;
 				}
 				break;
@@ -213,4 +208,4 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	}
 }
 
-?>
+

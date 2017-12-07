@@ -20,15 +20,8 @@
 	| Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. |
 	+-----------------------------------------------------------------------------+
 */
-require_once('./Services/Repository/classes/class.ilObjectPluginGUI.php');
-require_once('class.ilDigiLitPlugin.php');
-require_once('Request/class.xdglRequestFormGUI.php');
-require_once('Request/class.xdglRequest.php');
-require_once('./Services/Link/classes/class.ilLink.php');
-require_once('./Services/InfoScreen/classes/class.ilInfoScreenGUI.php');
-require_once('class.ilObjDigiLit.php');
-require_once('./Services/InfoScreen/classes/class.ilInfoScreenGUI.php');
-require_once('./Services/Repository/classes/class.ilRepUtilGUI.php');
+
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * User Interface class for example repository object.
@@ -212,15 +205,16 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		ilUtil::redirect(ilLink::_getLink($this->getParentRefId()));
 	}
 
+
 	/**
 	 * @return int
 	 */
-	public function getParentRefId($ref_id = NULL) {
+	public function getParentRefId($ref_id = null) {
 		global $tree;
 		/**
 		 * @var $tree ilTree
 		 */
-		if (! $ref_id) {
+		if (!$ref_id) {
 			$ref_id = $_GET['ref_id'];
 		}
 
@@ -253,7 +247,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	protected function initCreationForms($a_new_type) {
 		$this->ctrl->setParameter($this, 'new_type', ilDigiLitPlugin::XDGL);
 
-		return array( self::CFORM_NEW => $this->initCreateForm($a_new_type) );
+		return array(self::CFORM_NEW => $this->initCreateForm($a_new_type));
 	}
 
 
@@ -299,7 +293,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 			 * @var $xdglRequest xdglRequest
 			 */
 			$xdglRequest = xdglRequest::find($_GET['xdgl_id']);
-			if (! $xdglRequest->deliverFile()) {
+			if (!$xdglRequest->deliverFile()) {
 				ilUtil::sendFailure($lng->txt('file_not_found'));
 			}
 		} else {
@@ -320,8 +314,8 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		if (xdglConfig::is50()) {
 			$tpl->setTitleIcon(ilUtil::getImagePath('icon_xdgl.svg', 'Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit'));
 		} else {
-			$tpl->setTitleIcon($pl->getImagePath('icon_' . ilDigiLitPlugin::getStaticPluginPrefix() . '_b.png'), $pl->txt('xdgl_icon') . ' '
-				. $pl->txt('obj_' . ilDigiLitPlugin::getStaticPluginPrefix()));
+			$tpl->setTitleIcon($pl->getImagePath('icon_' . ilDigiLitPlugin::getStaticPluginPrefix() . '_b.png'),
+				$pl->txt('xdgl_icon') . ' ' . $pl->txt('obj_' . ilDigiLitPlugin::getStaticPluginPrefix()));
 		}
 	}
 
@@ -346,10 +340,10 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 
 
 	public function confirmDeleteObject() {
-		$a_val = array( $_GET['ref_id'] );
+		$a_val = array($_GET['ref_id']);
 		ilSession::set('saved_post', $a_val);
 		$ru = new ilRepUtilGUI($this);
-		if (! $ru->showDeleteConfirmation($a_val, false)) {
+		if (!$ru->showDeleteConfirmation($a_val, false)) {
 			$this->redirectParentGui();
 		}
 		$this->tpl->show();
@@ -372,4 +366,3 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	}
 }
 
-?>

@@ -1,7 +1,5 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
-require_once('./Services/ActiveRecord/class.ActiveRecord.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php');
+
 /**
  * xdglRequest
  *
@@ -12,7 +10,7 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
  */
 class xdglRequest extends ActiveRecord {
 
-	const STATUS_DELETED = - 1;
+	const STATUS_DELETED = -1;
 	const STATUS_NEW = 1;
 	const STATUS_IN_PROGRRESS = 2;
 	const STATUS_RELEASED = 3;
@@ -250,7 +248,7 @@ class xdglRequest extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $copy_id = NULL;
+	protected $copy_id = null;
 	/**
 	 * @var int
 	 *
@@ -310,10 +308,10 @@ class xdglRequest extends ActiveRecord {
 	 * @param bool $update_title
 	 */
 	public function update($prevent_last_change = false, $update_title = true) {
-		if ($this->getLibrarianId() === NULL) {
+		if ($this->getLibrarianId() === null) {
 			$this->setLibrarianId(self::LIBRARIAN_ID_NONE);
 		}
-		if (! $prevent_last_change) {
+		if (!$prevent_last_change) {
 			global $ilUser;
 			$this->setLastChange(time());
 			$this->setLastModifiedByUsrId($ilUser->getId());
@@ -327,7 +325,7 @@ class xdglRequest extends ActiveRecord {
 
 	public function create() {
 		global $ilUser;
-		if ($this->getLibrarianId() === NULL) {
+		if ($this->getLibrarianId() === null) {
 			$this->setLibrarianId(self::LIBRARIAN_ID_NONE);
 		}
 		$this->setRequesterUsrId($ilUser->getId());
@@ -380,7 +378,7 @@ class xdglRequest extends ActiveRecord {
 	 *
 	 * @return xdglRequest
 	 */
-	public static function copyRequest(xdglRequest $old_request, $obj_id = NULL) {
+	public static function copyRequest(xdglRequest $old_request, $obj_id = null) {
 		$new_request = clone($old_request);
 		$new_request->setId(0);
 		$new_request->setDigiLitObjectId($obj_id);
@@ -430,11 +428,11 @@ class xdglRequest extends ActiveRecord {
 
 		foreach ($tree->getChildsByType($ref_id, ilDigiLitPlugin::XDGL) as $dig) {
 			if (xdglRequest::getInstanceForDigiLitObjectId($dig['obj_id'])->doesCount()) {
-				$count ++;
+				$count++;
 			}
 		}
 
-		foreach ($tree->getChildsByTypeFilter($ref_id, array( 'fold', 'grp' )) as $sub) {
+		foreach ($tree->getChildsByTypeFilter($ref_id, array('fold', 'grp')) as $sub) {
 			$count = self::getAmoutOfDigiLitsInContainer($count, $sub['ref_id']);
 		}
 
@@ -508,8 +506,8 @@ class xdglRequest extends ActiveRecord {
 	 * @return bool
 	 */
 	public function createDir() {
-		if (! $this->dirExists()) {
-			if (! ilUtil::makeDirParents($this->getFilePath())) {
+		if (!$this->dirExists()) {
+			if (!ilUtil::makeDirParents($this->getFilePath())) {
 				throw new Exception('Unable to create Folder \'' . $this->getFilePath() . '\'. Missing permissions?');
 			} else {
 				return true;
@@ -528,7 +526,8 @@ class xdglRequest extends ActiveRecord {
 	public function uploadFileFromForm(xdglUploadFormGUI $xdglUploadFormGUI) {
 		$this->createDir();
 
-		if (ilUtil::moveUploadedFile($xdglUploadFormGUI->getUploadTempName(), $xdglUploadFormGUI->getUploadTempName(), $this->getAbsoluteFilePath())) {
+		if (ilUtil::moveUploadedFile($xdglUploadFormGUI->getUploadTempName(), $xdglUploadFormGUI->getUploadTempName(),
+			$this->getAbsoluteFilePath())) {
 			global $ilUser;
 			$this->setLibrarianId($ilUser->getId());
 			$this->setStatus(self::STATUS_RELEASED);
@@ -605,7 +604,7 @@ class xdglRequest extends ActiveRecord {
 		$path = array();
 		$found = false;
 		$id = (int)$id;
-		for ($i = 2; $i >= 0; $i --) {
+		for ($i = 2; $i >= 0; $i--) {
 			$factor = pow(100, $i);
 			if (($tmp = (int)($id / $factor)) or $found) {
 				$path[] = $tmp;
@@ -674,8 +673,8 @@ class xdglRequest extends ActiveRecord {
 		 */
 		global $ilDB;
 
-		$set = $ilDB->query('SELECT id FROM  ' . self::returnDbTableName() . ' WHERE digi_lit_object_id = '
-			. $ilDB->quote($digilit_obj_id, "integer"));
+		$set = $ilDB->query('SELECT id FROM  ' . self::returnDbTableName() . ' WHERE digi_lit_object_id = ' . $ilDB->quote($digilit_obj_id,
+				"integer"));
 		$row = $ilDB->fetchAssoc($set);
 
 		return $row['id'];
@@ -1178,7 +1177,7 @@ class xdglRequest extends ActiveRecord {
 
 
 	protected function updateCrsRefId() {
-		if (! $this->getCrsRefId()) {
+		if (!$this->getCrsRefId()) {
 			$refs = ilObject2::_getAllReferences($this->getDigiLitObjectId());
 			$ref_id = (array_shift(array_values($refs)));
 			if ($ref_id) {
