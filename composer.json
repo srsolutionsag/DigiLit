@@ -19,6 +19,7 @@
       "../../../../../../../Services/InfoScreen",
       "../../../../../../../Services/Table",
       "../../../../../../../Services/UIComponent",
+      "../../../../../../../Services/Component",
       "../../../../../../../Services/Mail",
       "../../../../../../../Services/Utilities",
       "../../../../../../../Services/UICore",
