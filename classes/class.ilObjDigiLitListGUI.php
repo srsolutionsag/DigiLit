@@ -42,6 +42,10 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	 * @var ilDigiLitPlugin
 	 */
 	public $plugin;
+	/**
+	 * @var array
+	 */
+	protected $commands;
 
 
 	public function initType() {
@@ -88,7 +92,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		$commands = array(
 			array(
 				'permission' => 'read',
-				'cmd'        => 'showContent',
+				'cmd'        => ilObjDigiLitGUI::CMD_SEND_FILE,
 				'default'    => true,
 			),
 		);
@@ -102,7 +106,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				$commands[] = array(
 					'txt'        => $this->plugin->txt('common_cmd_delete'),
 					'permission' => 'delete',
-					'cmd'        => 'confirmDeleteObject',
+					'cmd'        => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
 					'default'    => false,
 				);
 				break;
@@ -112,7 +116,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				$commands[] = array(
 					'txt'        => $this->plugin->txt('common_cmd_delete'),
 					'permission' => 'delete',
-					'cmd'        => 'confirmDeleteObject',
+					'cmd'        => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
 					'default'    => false,
 				);
 
@@ -154,7 +158,6 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		$info_string = '';
 		$info_string .= $request->getBook() . ' ';
 		$info_string .= '(' . $request->getPublishingYear() . '), ';
-		// $info_string .= $this->plugin->txt('obj_list_page') . ' ';
 		$info_string .= $request->getPages();
 
 		$props[] = array(

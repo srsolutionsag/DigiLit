@@ -95,7 +95,7 @@ class xdglRequest extends ActiveRecord {
 	 */
 	protected $title;
 	/**
-	 * @var string (declaring wether the literaric work is a book or a journal)
+	 * @var string (declaring whether the literal work is a book or a journal)
 	 *
 	 * @db_has_field        true
 	 * @db_fieldtype        text
@@ -153,7 +153,7 @@ class xdglRequest extends ActiveRecord {
 	 */
 	protected $volume;
 	/**
-	 * @var int (used as booelan)
+	 * @var int (used as boolean)
 	 *
 	 * @db_has_field        true
 	 * @db_fieldtype        integer
@@ -288,7 +288,6 @@ class xdglRequest extends ActiveRecord {
 
 
 	public function afterObjectLoad() {
-		// $this->updateCrsRefId();
 		if (xdglConfig::getConfigValue(xdglConfig::F_USE_REGEX)) {
 			preg_match(xdglConfig::getConfigValue(xdglConfig::F_REGEX), $this->getCourseNumber(), $matches);
 			$form_id = sprintf('%05d', $this->getId());
@@ -485,7 +484,9 @@ class xdglRequest extends ActiveRecord {
 	 * @return bool
 	 */
 	public function fileExists() {
-		return is_file($this->getAbsoluteFilePath());
+		$filename = $this->getAbsoluteFilePath();
+
+		return is_file($filename);
 	}
 
 
@@ -493,7 +494,9 @@ class xdglRequest extends ActiveRecord {
 	 * @return bool
 	 */
 	public function deliverFile() {
-		if ($this->fileExists() AND $this->getStatus() == self::STATUS_RELEASED) {
+		$fileExists = $this->fileExists();
+		$status = $this->getStatus();
+		if ($fileExists AND $status == self::STATUS_RELEASED) {
 			header('Content-Type: application/pdf');
 
 			return ilUtil::deliverFile($this->getAbsoluteFilePath(), $this->getTitle() . '.pdf');
@@ -1178,6 +1181,9 @@ class xdglRequest extends ActiveRecord {
 	}
 
 
+	/**
+	 * @deprecated
+	 */
 	protected function updateCrsRefId() {
 		if (!$this->getCrsRefId()) {
 			$refs = ilObject2::_getAllReferences($this->getDigiLitObjectId());

@@ -47,10 +47,20 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	const CMD_SHOW_CONTENT = 'showContent';
 	const CMD_SEND_FILE = 'sendFile';
 	const CMD_DELETE_DIGI_LIT = 'confirmedDelete';
+	const CMD_CREATE = 'create';
+	const CMD_SAVE = 'save';
+	const CMD_EDIT = 'edit';
+	const CMD_UPDATE = 'update';
+	const CMD_CANCEL = 'cancel';
+	const CMD_INFO_SCREEN = 'infoScreen';
 	/**
 	 * @var ilObjDigiLit
 	 */
 	public $object;
+	/**
+	 * @var \xdglRequest
+	 */
+	protected $xdglRequest;
 	/**
 	 * @var ilDigiLitPlugin
 	 */
@@ -110,23 +120,23 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	/**
 	 * @return string
 	 */
-	final function getType() {
+	final public function getType() {
 		return ilDigiLitPlugin::XDGL;
 	}
 
 
 	public function executeCommand() {
 		if ($this->access->checkAccess('read', '', $_GET['ref_id'])) {
-			$this->history->addItem($_GET['ref_id'], $this->ctrl->getLinkTarget($this, $this->getStandardCmd()), $this->getType(), '');
+			$this->history->addItem($_GET['ref_id'], $this->ctrl->getLinkTarget($this, self::CMD_SEND_FILE), $this->getType(), '');
 		}
 		$cmd = $this->ctrl->getCmd();
 		$next_class = $this->ctrl->getNextClass($this);
 		$this->tpl->getStandardTemplate();
 
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->obj_id);
+		$this->xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->obj_id);
 
-		if ($xdglRequest->getId()) {
-			self::initHeader($xdglRequest->getTitle());
+		if ($this->xdglRequest->getId()) {
+			self::initHeader($this->xdglRequest->getTitle());
 		} else {
 
 			self::initHeader($this->pl->txt('obj_xdgl_title'));
@@ -149,33 +159,34 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 			case '':
 				$this->setTabs();
 				switch ($cmd) {
-					case 'create':
+					case self::CMD_CREATE:
 						$this->tabs_gui->clearTargets();
 						$this->create();
 						break;
-					case 'save':
+					case self::CMD_SAVE:
 						$this->save();
 						break;
 					case self::CMD_REDIRECT_PARENT_GUI:
 						$this->redirectParentGui();
 						break;
-					case 'edit':
+					case self::CMD_EDIT:
 						// case 'update':
 						$this->edit();
 						break;
-					case 'update':
+					case self::CMD_UPDATE:
 						parent::update();
 						break;
-					case 'sendFile':
+					case self::CMD_SEND_FILE:
 						$this->$cmd();
 						break;
-
-					case self::CMD_SHOW_CONTENT:
 					case '':
-					case 'cancel':
+					case self::CMD_SHOW_CONTENT:
+						$this->sendFile();
+						break;
+					case self::CMD_CANCEL:
 						$this->ctrl->returnToParent($this);
 						break;
-					case 'infoScreen':
+					case self::CMD_INFO_SCREEN:
 						$this->ctrl->setCmd('showSummary');
 						$this->ctrl->setCmdClass('ilinfoscreengui');
 						$this->infoScreen();
@@ -226,7 +237,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	 * @return string
 	 */
 	function getStandardCmd() {
-		return self::CMD_SHOW_CONTENT;
+		return self::CMD_SEND_FILE;
 	}
 
 
@@ -286,14 +297,13 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	/**
 	 * @description provide file as a download
 	 */
-	public function sendFile() {
+	protected function sendFile() {
 		global $lng;
 		if (ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
-			/**
-			 * @var $xdglRequest xdglRequest
-			 */
-			$xdglRequest = xdglRequest::find($_GET['xdgl_id']);
-			if (!$xdglRequest->deliverFile()) {
+			if (!$this->xdglRequest) {
+				$this->xdglRequest = xdglRequest::find($_GET['xdgl_id']);
+			}
+			if (!$this->xdglRequest->deliverFile()) {
 				ilUtil::sendFailure($lng->txt('file_not_found'));
 			}
 		} else {
@@ -363,6 +373,18 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$ru->deleteObjects(ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']), ilSession::get('saved_post'));
 		ilSession::clear('saved_post');
 		ilUtil::redirect(ilLink::_getLink($parent_ref_id));
+	}
+
+
+	public static function _goto($a_target) {
+		global $ilCtrl;
+		$obj_id = ilObject2::_lookupObjId($a_target[0]);
+		$a_value = xdglRequest::getIdByDigiLitObjectId($obj_id);
+		$ilCtrl->initBaseClass(ilObjPluginDispatchGUI::class);
+		$ilCtrl->setTargetScript('ilias.php');
+		$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, xdglRequestGUI::XDGL_ID, $a_value);
+		$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, 'ref_id', $a_target[0]);
+		$ilCtrl->redirectByClass([ilObjPluginDispatchGUI::class, ilObjDigiLitGUI::class], ilObjDigiLitGUI::CMD_SEND_FILE);
 	}
 }
 
