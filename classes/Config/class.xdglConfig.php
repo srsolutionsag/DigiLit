@@ -20,6 +20,7 @@ class xdglConfig extends ActiveRecord {
 	const F_MAX_DIGILITS = 'max_digilits';
 	const F_EULA_TEXT = 'eula_text';
 	const F_USE_LIBRARIES = 'use_libraries';
+	const F_USE_SEARCH = 'use_search';
 	const F_OWN_LIBRARY_ONLY = 'own_library_only';
 	const F_USE_REGEX = 'use_regex';
 	const F_REGEX = 'regex';

@@ -89,6 +89,9 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 		$this->addItem($te);
 
+		$h = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_SEARCH), xdglConfig::F_USE_SEARCH);
+		$this->addItem($h);
+
 		//		// Mailadress
 		//		$te = new ilTextInputGUI($this->txt(xdglConfig::F_MAIL), xdglConfig::F_MAIL);
 		//		$te->setRequired(true);

@@ -13,6 +13,7 @@
     },
     "classmap": [
       "classes",
+      "traits",
       "../../../../../../../Services/ActiveRecord",
       "../../../../../../../Services/Repository",
       "../../../../../../../Services/Link",

@@ -1,3 +1,4 @@
+add_literature#:#Literatur hinzufügen
 admin_common#:#Allgemein
 admin_eula#:#EULA
 admin_eula_text#:#EULA
@@ -20,10 +21,13 @@ admin_regex_info#:#Mit Anfangs- und Schlusszeichen (bspw. /([0-9]{5}-[0-9]{2})/u
 admin_use_libraries#:#Mehrere Bibliotheken verwenden
 admin_use_regex#:#Regulären Audruck für DigiLit-ID verwenden
 admin_use_regex_info#:#Regex-Suche nach String in Kurs-Titel, der erste Treffer wird verwendet.
+admin_use_search#:#Literatursuche verwenden.
+admin_use_search_info#:#Über die Literatursuche kann nach bereits digital verfügbarem Inhalt gesucht werden, bevor ggf. ein Antrag für eine digitale Version eines Printmediums gemacht wird.
+author#:#Autor
 common_actions#:#Aktionen
 common_bool_0#:#Nein
 common_bool_1#:#Ja
-common_cmd_delete#:#L̦schen
+common_cmd_delete#:#Lö̦schen
 crs_create_xdgl#:#DigiLits erstellen
 filter_librarian#:#Bearbeiter/in
 filter_library#:#Bibliothek
@@ -132,11 +136,14 @@ request_update#:#Speichern
 request_upload_date#:#Hochgeladen
 request_view#:#Anzeigen
 request_volume#:#Band/Heft
+search#:#Suchen
+search_literature#:#Literatur suchen
 status_no_access_to_download#:#Aufgrund rechtlicher Restriktionen kann dieses DigiLit nicht heruntergeladen werden
 tab_content#:#Antragsverwaltung
 tab_libraries#:#Bibliotheken
 tab_requests#:#Bestellungen verwalten
 tab_settings#:#Einstellungen
+title#:#Titel
 upload_cancel#:#Abbrechen
 upload_file#:#Datei
 upload_replace#:#Ersetzen

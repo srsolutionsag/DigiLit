@@ -464,8 +464,12 @@ class ComposerStaticInitfc153e3b3468af7e75c1c26c68b008ed
         'xdglRequestFormGUI' => __DIR__ . '/../..' . '/classes/Request/class.xdglRequestFormGUI.php',
         'xdglRequestGUI' => __DIR__ . '/../..' . '/classes/Request/class.xdglRequestGUI.php',
         'xdglRequestTableGUI' => __DIR__ . '/../..' . '/classes/Request/class.xdglRequestTableGUI.php',
+        'xdglSearchFormGUI' => __DIR__ . '/../..' . '/classes/Search/class.xdglSearchFormGUI.php',
+        'xdglSearchGUI' => __DIR__ . '/../..' . '/classes/Search/class.xdglSearchGUI.php',
+        'xdglSearchTableGUI' => __DIR__ . '/../..' . '/classes/Search/class.xdglSearchTableGUI.php',
         'xdglSlideInfo' => __DIR__ . '/../..' . '/classes/Form/class.xdglSlideInfo.php',
         'xdglUploadFormGUI' => __DIR__ . '/../..' . '/classes/Request/class.xdglUploadFormGUI.php',
+        'xdgl\\DIC' => __DIR__ . '/../..' . '/traits/DIC.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

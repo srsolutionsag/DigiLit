@@ -449,6 +449,10 @@ return array(
     'xdglRequestFormGUI' => $baseDir . '/classes/Request/class.xdglRequestFormGUI.php',
     'xdglRequestGUI' => $baseDir . '/classes/Request/class.xdglRequestGUI.php',
     'xdglRequestTableGUI' => $baseDir . '/classes/Request/class.xdglRequestTableGUI.php',
+    'xdglSearchFormGUI' => $baseDir . '/classes/Search/class.xdglSearchFormGUI.php',
+    'xdglSearchGUI' => $baseDir . '/classes/Search/class.xdglSearchGUI.php',
+    'xdglSearchTableGUI' => $baseDir . '/classes/Search/class.xdglSearchTableGUI.php',
     'xdglSlideInfo' => $baseDir . '/classes/Form/class.xdglSlideInfo.php',
     'xdglUploadFormGUI' => $baseDir . '/classes/Request/class.xdglUploadFormGUI.php',
+    'xdgl\\DIC' => $baseDir . '/traits/DIC.php',
 );
