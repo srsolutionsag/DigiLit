@@ -118,12 +118,8 @@ class xdglSearchTableGUI extends ilTable2GUI {
 		$this->determineLimit();
 		$this->determineOffsetAndOrder();
 
-		$xdglRequestList = xdglRequest::getCollection();
-		$xdglRequestList->where(array('status' => xdglRequest::STATUS_RELEASED, 'title' => '%' . $search_title . '%', 'author' => '%'. $search_author . '%'), array('status' => '=', 'title' => 'LIKE', 'author' => 'LIKE'));
-
-		$count = $xdglRequestList->count();
-		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
-		$data = $xdglRequestList->getArray();
+		$data = xdglRequest::findDistinctRequestsByTitleAndAuthor($search_title, $search_author, $this->limit);
+		$count = count($data);
 
 		$this->setMaxCount($count);
 		$this->setData($data);
