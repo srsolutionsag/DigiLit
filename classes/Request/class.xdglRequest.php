@@ -720,7 +720,7 @@ class xdglRequest extends ActiveRecord {
 	 */
 	public static function findDistinctRequestsByTitleAndAuthor($search_title, $search_author, $limit) {
 		global $ilDB;
-		$query = "SELECT DISTINCT author, title, book, publisher, location, publishing_year, pages FROM ilias.xdgl_request where title LIKE ".
+		$query = "SELECT DISTINCT id, author, title, book, publisher, location, publishing_year, pages FROM ilias.xdgl_request where title LIKE ".
 			$ilDB->quote("%" . $search_title . "%", "text") . " AND author LIKE ". $ilDB->quote("%" . $search_author . "%", "text") . " LIMIT " . $ilDB->quote($limit, "integer");
 		$set = $ilDB->query($query);
 		$requests = [];

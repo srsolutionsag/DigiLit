@@ -111,15 +111,15 @@ class xdglSearchGUI {
 	protected function addLiterature() {
 		$oldRequestId = $_POST['chosen_literature'];
 		$ilObjDigiLit = new ilObjDigiLit();
-		$olRequest = xdglRequest::find($oldRequestId);
-		$oldIlObDigiLit_rec = $this->findObjectById($olRequest->getDigiLitObjectId());
+		$oldRequest = xdglRequest::find($oldRequestId);
+		$oldIlObDigiLit_rec = $this->findObjectById($oldRequest->getDigiLitObjectId());
 		$ilObjDigiLit->setType('xdgl');
 		$ilObjDigiLit->setTitle($oldIlObDigiLit_rec['title']);
 		$ilObjDigiLit->setDescription($oldIlObDigiLit_rec['description']);
 		$ilObjDigiLit->create();
 		$ilObjectDigiLitGUI = new ilObjDigiLitGUI();
 		$ilObjectDigiLitGUI->putObjectInTree($ilObjDigiLit, $ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));
-		$newXdglRequest = xdglRequest::copyRequest($olRequest, $ilObjDigiLit->getId());
+		$newXdglRequest = xdglRequest::copyRequest($oldRequest, $ilObjDigiLit->getId());
 		//status has to be released to download the file
 		$newXdglRequest->setStatus(xdglRequest::STATUS_RELEASED);
 		$newXdglRequest->update();
