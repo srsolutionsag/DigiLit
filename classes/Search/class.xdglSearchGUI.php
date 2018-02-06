@@ -112,7 +112,7 @@ class xdglSearchGUI {
 		$oldRequestId = $_POST['chosen_literature'];
 		$ilObjDigiLit = new ilObjDigiLit();
 		$oldRequest = xdglRequest::find($oldRequestId);
-		$oldIlObDigiLit_rec = $this->findObjectById($oldRequest->getDigiLitObjectId());
+		$oldIlObDigiLit_rec = $ilObjDigiLit::getObjectById($oldRequest->getDigiLitObjectId());
 		$ilObjDigiLit->setType('xdgl');
 		$ilObjDigiLit->setTitle($oldIlObDigiLit_rec['title']);
 		$ilObjDigiLit->setDescription($oldIlObDigiLit_rec['description']);
@@ -124,14 +124,5 @@ class xdglSearchGUI {
 		$newXdglRequest->setStatus(xdglRequest::STATUS_RELEASED);
 		$newXdglRequest->update();
 		$ilObjectDigiLitGUI->afterSave($ilObjDigiLit, $newXdglRequest->getId());
-	}
-
-	protected function findObjectById($id) {
-		global $ilDB;
-		$query = "SELECT * FROM ilias.object_data where obj_id = ".
-			$ilDB->quote($id, "text");
-		$obj_set = $ilDB->query($query);
-		$obj_rec = $ilDB->fetchAssoc($obj_set);
-		return $obj_rec;
 	}
 }

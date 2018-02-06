@@ -42,11 +42,9 @@ class xdglSearchFormGUI extends ilPropertyFormGUI {
 		$this->setTitle($this->pl->txt('search_literature'));
 
 		$ti = new ilTextInputGUI($this->pl->txt('author'), 'author');
-		$ti->setRequired(true);
 		$this->addItem($ti);
 
 		$ti = new ilTextInputGUI($this->pl->txt('title'), 'title');
-		$ti->setRequired(true);
 		$this->addItem($ti);
 
 		$this->addCommandButton(xdglSearchGUI::CMD_SEARCH, $this->pl->txt('search'));

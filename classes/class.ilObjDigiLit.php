@@ -114,6 +114,15 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 		return $ref_id;
 	}
+
+	public static function getObjectById($obj_id) {
+		global $ilDB;
+		$query = "SELECT * FROM ilias.object_data where obj_id = ".
+			$ilDB->quote($obj_id, "text");
+		$obj_set = $ilDB->query($query);
+		$obj_rec = $ilDB->fetchAssoc($obj_set);
+		return $obj_rec;
+	}
 }
 
 

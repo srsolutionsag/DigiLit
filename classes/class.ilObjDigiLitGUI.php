@@ -85,10 +85,14 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	 * @var ilAccessHandler
 	 */
 	protected $access;
+	/**
+	 * @var ilLocator
+	 */
+	protected $locator;
 
 
 	protected function afterConstructor() {
-		global $tpl, $ilCtrl, $ilAccess, $ilNavigationHistory, $ilTabs;
+		global $tpl, $ilCtrl, $ilAccess, $ilNavigationHistory, $ilTabs, $ilLocator;
 		/**
 		 * @var $tpl                 ilTemplate
 		 * @var $ilCtrl              ilCtrl
@@ -101,6 +105,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$this->ctrl = $ilCtrl;
 		$this->tabs_gui = $ilTabs;
 		$this->pl = ilDigiLitPlugin::getInstance();
+		$this->locator = $ilLocator;
 	}
 
 
@@ -129,15 +134,37 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	}
 
 
+	/**
+	 * @param $ref_id
+	 */
+	protected function isDigiLitObject($ref_id) {
+		$obj_id = ilObject2::_lookupObjectId($ref_id);
+		$ilObjDigiLit_rec = ilObjDigiLit::getObjectById($obj_id);
+		if($ilObjDigiLit_rec['type'] == self::getType()) {
+			return true;
+		}
+		return false;
+	}
+
+
 	public function executeCommand() {
-		if ($this->access->checkAccess('read', '', $_GET['ref_id'])) {
+
+		$this->locator->addRepositoryItems();
+		$this->tpl->setLocator();
+
+		if(isset($_GET['xdgl_id'])) {
+			$this->xdglRequest = xdglRequest::find($_GET['xdgl_id']);
+		} else {
+			$this->xdglRequest = xdglRequest::getInstanceForDigiLitObjectId(ilObject2::_lookupObjectId($_GET['ref_id']));
+		}
+
+		if ($this->access->checkAccess('read', '', $_GET['ref_id']) && $this->isDigiLitObject($_GET['ref_id'])
+			&& ilObjDigiLitAccess::hasAccessToDownload($_GET['ref_id']) && $this->xdglRequest->getStatus() == xdglRequest::STATUS_RELEASED) {
 			$this->history->addItem($_GET['ref_id'], $this->ctrl->getLinkTarget($this, self::CMD_SEND_FILE), $this->getType(), '');
 		}
 		$cmd = $this->ctrl->getCmd();
 		$next_class = $this->ctrl->getNextClass($this);
 		$this->tpl->getStandardTemplate();
-
-		$this->xdglRequest = xdglRequest::find($_GET['xdgl_id']);
 
 		if ($this->xdglRequest->getId()) {
 			self::initHeader($this->xdglRequest->getTitle());
