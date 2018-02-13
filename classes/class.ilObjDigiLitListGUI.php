@@ -240,13 +240,15 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 						'propertyNameVisible' => false,
 					);
 				}
-				$props[] = array(
-					'alert'               => false,
-					'property'            => $lng->txt('size'),
-					'value'               => ilUtil::formatSize(filesize($file), 'short'),
-					'propertyNameVisible' => false,
-					'newline'             => true,
-				);
+				if(file_exists($file)) {
+					$props[] = array(
+						'alert'               => false,
+						'property'            => $lng->txt('size'),
+						'value'               => ilUtil::formatSize(filesize($file), 'short'),
+						'propertyNameVisible' => false,
+						'newline'             => true,
+					);
+				}
 				$props[] = array(
 					'alert'               => false,
 					'newline'             => true,
@@ -293,7 +295,8 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				break;
 			case xdglRequest::STATUS_RELEASED:
 			case xdglRequest::STATUS_COPY:
-				if (ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
+			$file = $request->getAbsoluteFilePath();
+				if (ilObjDigiLitAccess::hasAccessToDownload($this->ref_id) && file_exists($file)) {
 					$ilCtrl->setParameterByClass('ilObjDigiLitGUI', xdglRequestGUI::XDGL_ID, xdglRequest::getIdByDigiLitObjectId($this->obj_id));
 					$this->default_command = array(
 						'link'  => $ilCtrl->getLinkTargetByClass('ilObjDigiLitGUI', ilObjDigiLitGUI::CMD_SEND_FILE),
