@@ -8,6 +8,7 @@
  */
 class xdglConfig extends ActiveRecord {
 
+	const TABLE_NAME = 'xdgl_config';
 	const CONFIG_VERSION = 2;
 	const F_ROLES_ADMIN = 'permission';
 	const F_ROLES_MANAGER = 'permission_manager';
@@ -36,6 +37,11 @@ class xdglConfig extends ActiveRecord {
 	 * @var bool
 	 */
 	protected $ar_safe_read = false;
+
+
+	public function getConnectorContainerName(){
+		return self::TABLE_NAME;
+	}
 
 
 	/**
@@ -157,14 +163,6 @@ class xdglConfig extends ActiveRecord {
 	 */
 	public function getValue() {
 		return $this->value;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	static function returnDbTableName() {
-		return 'xdgl_config';
 	}
 
 

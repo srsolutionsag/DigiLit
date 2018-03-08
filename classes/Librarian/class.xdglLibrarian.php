@@ -10,13 +10,7 @@ class xdglLibrarian extends ActiveRecord {
 
 	const TABLE_NAME = 'xdgl_librarian';
 
-
-	/**
-	 * @return string
-	 * @description Return the Name of your Database Table
-	 * @deprecated
-	 */
-	static function returnDbTableName() {
+	public function getConnectorContainerName() {
 		return self::TABLE_NAME;
 	}
 

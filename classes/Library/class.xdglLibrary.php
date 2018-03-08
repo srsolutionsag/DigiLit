@@ -132,13 +132,7 @@ class xdglLibrary extends ActiveRecord {
 		return count(self::getLibraryIdsForUser($ilObjUser)) > 0;
 	}
 
-
-	/**
-	 * @return string
-	 * @description Return the Name of your Database Table
-	 * @deprecated
-	 */
-	static function returnDbTableName() {
+	public function getConnectorContainerName() {
 		return self::TABLE_NAME;
 	}
 

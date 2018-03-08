@@ -10,6 +10,7 @@
  */
 class xdglRequest extends ActiveRecord {
 
+	const TABLE_NAME = 'xdgl_request';
 	const STATUS_DELETED = -1;
 	const STATUS_NEW = 1;
 	const STATUS_IN_PROGRRESS = 2;
@@ -33,18 +34,9 @@ class xdglRequest extends ActiveRecord {
 
 	/**
 	 * @return string
-	 * @deprecated
 	 */
-	public static function returnDbTableName() {
-		return 'xdgl_request';
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function returnConnectorContainerName() {
-		return 'xdgl_request';
+	public function getConnectorContainerName() {
+		return self::TABLE_NAME;
 	}
 
 
@@ -678,7 +670,9 @@ class xdglRequest extends ActiveRecord {
 		 */
 		global $ilDB;
 
-		$set = $ilDB->query('SELECT id FROM  ' . self::returnDbTableName() . ' WHERE digi_lit_object_id = ' . $ilDB->quote($digilit_obj_id,
+		$xdglRequest = new xdglRequest();
+
+		$set = $ilDB->query('SELECT id FROM  ' . $xdglRequest->getConnectorContainerName() . ' WHERE digi_lit_object_id = ' . $ilDB->quote($digilit_obj_id,
 				"integer"));
 		$row = $ilDB->fetchAssoc($set);
 

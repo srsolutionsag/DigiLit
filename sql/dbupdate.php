@@ -32,9 +32,9 @@ global $ilDB;
 /**
  * @var $ilDB ilDB
  */
-
-$ilDB->manipulate('UPDATE ' . xdglRequest::returnDbTableName() . ' SET library_id = ' . $ilDB->quote(xdglLibrary::getPrimaryId(), 'integer'));
-$ilDB->manipulate('UPDATE ' . xdglRequest::returnDbTableName() . ' SET librarian_id = ' . $ilDB->quote(xdglRequest::LIBRARIAN_ID_NONE, 'integer') . ' WHERE librarian_id IS NULL');
+$xdglRequest = new xdglRequest();
+$ilDB->manipulate('UPDATE ' . $xdglRequest->getConnectorContainerName() . ' SET library_id = ' . $ilDB->quote(xdglLibrary::getPrimaryId(), 'integer'));
+$ilDB->manipulate('UPDATE ' . $xdglRequest->getConnectorContainerName() . ' SET librarian_id = ' . $ilDB->quote(xdglRequest::LIBRARIAN_ID_NONE, 'integer') . ' WHERE librarian_id IS NULL');
 ?>
 <#5>
 <?php
@@ -75,4 +75,41 @@ if (! xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS)) {
 }
 xdglConfig::setConfigValue(xdglConfig::F_USE_LIBRARIES, true);
 xdglConfig::setConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY, true);
+?>
+<#9>
+<?php
+require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
+xdglRequestUsage::installDB();
+?>
+<#10>
+<?php
+global $ilDB;
+
+$res = $ilDB->query('SELECT * FROM xdgl_request');
+
+while($row = $ilDB->fetchAssoc($res))
+{
+	if($row['status'] == 5) {
+		$ilDB->manipulateF("INSERT INTO xdgl_request_usage ".
+			"(request_id, obj_id, crs_ref_id) VALUES ".
+			"(%s,%s,%s)",
+			array("integer", "integer", "text"),
+			array($row['copy_id'], $row["obj_id"], $row['crs_ref_id']));
+
+		$ilDB->manipulateF("DELETE FROM xdgl_request WHERE id = %s",
+			array("integer"),
+			array($row['id']));
+	} else {
+		$ilDB->manipulateF("INSERT INTO xdgl_request_usage ".
+			"(request_id, obj_id, crs_ref_id) VALUES ".
+			"(%s,%s,%s)",
+			array("integer", "integer", "text"),
+			array($row['id'], $row["obj_id"], $row['crs_ref_id']));
+	}
+}
+?>
+<#11>
+<?php
+global $ilDB;
+$ilDB->manipulate('ALTER TABLE xdgl_request DROP digi_lit_object_id, DROP crs_ref_id');
 ?>
