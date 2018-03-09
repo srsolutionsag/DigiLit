@@ -127,6 +127,10 @@ class xdglSearchTableGUI extends ilTable2GUI {
 
 
 	public function getSelectableColumns() {
+		$cols["status"] = array(
+			"txt" => $this->pl->txt("request_status"),
+			"default" => true
+		);
 		$cols["author"] = array(
 			"txt" => $this->pl->txt("author"),
 			"default" => true

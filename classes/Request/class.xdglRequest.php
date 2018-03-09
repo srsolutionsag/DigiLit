@@ -31,6 +31,22 @@ class xdglRequest extends ActiveRecord {
 		self::STATUS_RELEASED,
 	);
 
+	/**
+	 * @var array
+	 * request_status_1#:#Neu
+	 * request_status_2#:#In Bearbeitung
+	* request_status_3#:#Dokument vorhanden
+	* request_status_4#:#Antrag abgelehnt
+	* request_status_5#:#Kopiert
+	 */
+	protected static $status_to_string_map = array(
+		self::STATUS_NEW => 'request_status_1',
+		self::STATUS_IN_PROGRRESS => 'request_status_2',
+		self::STATUS_RELEASED => 'request_status_3',
+		self::STATUS_REFUSED => 'request_status_4',
+		self::STATUS_ASSIGNED => 'request_status_6',
+	);
+
 
 	/**
 	 * @return string
@@ -365,28 +381,6 @@ class xdglRequest extends ActiveRecord {
 
 
 	/**
-	 * @param \xdglRequest $old_request
-	 * @param int          $obj_id
-	 *
-	 * @return \xdglRequest
-	 * @throws \Exception
-	 */
-	public static function copyRequest(xdglRequest $old_request, $obj_id = null) {
-		$new_request = clone($old_request);
-		$new_request->setId(0);
-		$new_request->setDigiLitObjectId($obj_id);
-		$new_request->setCreateDate(time());
-		$new_request->setCopyId($old_request->getId());
-		$new_request->setStatus(self::STATUS_COPY);
-		$new_request->create();
-		$new_request->createDir();
-		ilUtil::rCopy($old_request->getFilePath(), $new_request->getFilePath());
-
-		return $new_request;
-	}
-
-
-	/**
 	 * @return int
 	 */
 	public function getAmoutOfDigiLitsInCourse() {
@@ -420,7 +414,9 @@ class xdglRequest extends ActiveRecord {
 		 */
 
 		foreach ($tree->getChildsByType($ref_id, ilDigiLitPlugin::XDGL) as $dig) {
-			if (xdglRequest::getInstanceForDigiLitObjectId($dig['obj_id'])->doesCount()) {
+			$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+			$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($dig['obj_id']);
+			if (xdglRequest::find($request_usage->getRequestId())->doesCount()) {
 				$count++;
 			}
 		}
@@ -714,13 +710,17 @@ class xdglRequest extends ActiveRecord {
 	 */
 	public static function findDistinctRequestsByTitleAndAuthor($search_title, $search_author, $limit) {
 		global $ilDB;
-		$query = "SELECT DISTINCT id, author, title, book, publisher, location, publishing_year, pages FROM ilias.xdgl_request where title LIKE ".
+		$query = "SELECT DISTINCT id, status, author, title, book, publisher, location, publishing_year, pages FROM ilias.xdgl_request where title LIKE ".
 			$ilDB->quote("%" . $search_title . "%", "text") . " AND author LIKE ". $ilDB->quote("%" . $search_author . "%", "text") . " AND status != -1 GROUP BY author, title, book LIMIT " . $ilDB->quote($limit, "integer");
 		$set = $ilDB->query($query);
 		$requests = [];
 		while ($rec = $ilDB->fetchAssoc($set))
 		{
 			$requests[] = $rec;
+		}
+		$pl = ilDigiLitPlugin::getInstance();
+		foreach($requests as $key => $request_data) {
+			$requests[$key]['status'] = $pl->txt(self::$status_to_string_map[$request_data['status']]);
 		}
 		return $requests;
 	}

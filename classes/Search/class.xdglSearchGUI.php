@@ -1,4 +1,7 @@
 <?php
+
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
+
 /**
  * Class xdglSearchGUI
  *
@@ -22,13 +25,21 @@ class xdglSearchGUI {
 	 * @var ilDigiLitPlugin
 	 */
 	protected $pl;
+	/**
+	 * @var ilCtrl
+	 */
 	protected $ctrl;
+	/**
+	 * @var ilObjDigiLitFacadeInterface
+	 */
+	protected $ilObjDigiLitFacadeFactory;
 
 
 	public function __construct() {
 		$this->access = new ilObjDigiLitAccess();
 		$this->pl = ilDigiLitPlugin::getInstance();
 		$this->ctrl = $this->ctrl();
+		$this->ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 	}
 
 	public function executeCommand() {
@@ -48,7 +59,6 @@ class xdglSearchGUI {
 			$this->ctrl->setParameterByClass(ilObjDigiLitGUI::class, 'new_type', ilDigiLitPlugin::XDGL);
 			$this->ctrl->setParameter($this, 'previous_cmd', self::CMD_STANDARD);
 			$this->ctrl->saveParameter($this, 'ref_id');
-			//return $xdglSearchFormGUI->getHTML();
 	}
 
 	protected function search() {
@@ -60,7 +70,6 @@ class xdglSearchGUI {
 		$this->ctrl->setParameterByClass(ilObjDigiLitGUI::class, 'new_type', ilDigiLitPlugin::XDGL);
 		$this->ctrl->setParameter($this, 'previous_cmd', self::CMD_SEARCH);
 		$this->ctrl->saveParameterByClass(ilObjDigiLitGUI::class, 'ref_id');
-		//$this->tpl()->setContent($xdglSearchFormGUI->getHTML() . $xdglSearchTableGUI->getHTML() . $ilObjDigiLitGUI->initCreateForm('new')->getHTML());
 		if(!empty($xdglSearchTableGUI->row_data)) {
 			$this->tpl()->setContent($this->getAccordion(array($xdglSearchFormGUI, $ilObjDigiLitGUI->initCreateForm('new')), $xdglSearchTableGUI));
 		} else {
@@ -119,10 +128,7 @@ class xdglSearchGUI {
 		$ilObjDigiLit->create();
 		$ilObjectDigiLitGUI = new ilObjDigiLitGUI();
 		$ilObjectDigiLitGUI->putObjectInTree($ilObjDigiLit, $ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));
-		$newXdglRequest = xdglRequest::copyRequest($oldRequest, $ilObjDigiLit->getId());
-		//status has to be released to download the file
-		$newXdglRequest->setStatus(xdglRequest::STATUS_RELEASED);
-		$newXdglRequest->update();
-		$ilObjectDigiLitGUI->afterSave($ilObjDigiLit, $newXdglRequest->getId());
+		$this->ilObjDigiLitFacadeFactory->requestUsageFactory()->createRequestUsageFromRequestAndDigiLitObject($oldRequest, $ilObjDigiLit);
+		$ilObjectDigiLitGUI->afterSave($ilObjDigiLit);
 	}
 }

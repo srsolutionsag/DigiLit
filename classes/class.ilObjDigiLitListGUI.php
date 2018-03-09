@@ -75,7 +75,6 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	 * @return array
 	 */
 	public function initCommands() {
-		$request = xdglRequest::getInstanceForDigiLitObjectId($this->obj_id);
 
 		// Always set
 		$this->timings_enabled = false;
@@ -94,37 +93,13 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				'permission' => 'read',
 				'cmd'        => ilObjDigiLitGUI::CMD_SEND_FILE,
 				'default'    => true,
-			),
+			),array(
+				'txt'        => $this->plugin->txt('common_cmd_delete'),
+				'permission' => 'delete',
+				'cmd'        => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
+				'default'    => false,
+			)
 		);
-
-		switch ($request->getStatus()) {
-			case xdglRequest::STATUS_IN_PROGRRESS:
-				break;
-			case xdglRequest::STATUS_REFUSED:
-			case xdglRequest::STATUS_COPY:
-
-				$commands[] = array(
-					'txt'        => $this->plugin->txt('common_cmd_delete'),
-					'permission' => 'delete',
-					'cmd'        => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
-					'default'    => false,
-				);
-				break;
-
-			case xdglRequest::STATUS_NEW:
-			case xdglRequest::STATUS_RELEASED:
-				$commands[] = array(
-					'txt'        => $this->plugin->txt('common_cmd_delete'),
-					'permission' => 'delete',
-					'cmd'        => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
-					'default'    => false,
-				);
-
-				$this->cut_enabled = true;
-				$this->copy_enabled = true;
-				break;
-		}
-
 		return $commands;
 	}
 
@@ -135,8 +110,10 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	 * @return bool|void
 	 */
 	public function setTitle($title) {
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->obj_id);
-		$this->title = $xdglRequest->getTitle() . ' / ' . $xdglRequest->getAuthor();
+		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+		$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
+		$request = xdglRequest::find($request_usage->getRequestId());
+		$this->title = $request->getTitle() . ' / ' . $request->getAuthor();
 		parent::setTitle($this->title);
 		$this->default_command = false;
 	}
@@ -153,7 +130,9 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	public function getProperties() {
 		global $lng;
 
-		$request = xdglRequest::getInstanceForDigiLitObjectId($this->obj_id);
+		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+		$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
+		$request = xdglRequest::find($request_usage->getRequestId());
 
 		$info_string = '';
 		$info_string .= $request->getBook() . ' ';
@@ -227,7 +206,6 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				break;
 
 			case xdglRequest::STATUS_RELEASED:
-			case xdglRequest::STATUS_COPY:
 				// Display a warning if a file is not a hidden Unix file, and
 				// the filename extension is missing
 				$file = $request->getAbsoluteFilePath();
@@ -285,7 +263,10 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		 */
 		global $ilCtrl;
 
-		$request = xdglRequest::getInstanceForDigiLitObjectId($this->obj_id);
+		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+		$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
+		$request = xdglRequest::find($request_usage->getRequestId());
+
 
 		switch ($request->getStatus()) {
 			case xdglRequest::STATUS_NEW:
@@ -294,10 +275,9 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				$this->default_command = false;
 				break;
 			case xdglRequest::STATUS_RELEASED:
-			case xdglRequest::STATUS_COPY:
 			$file = $request->getAbsoluteFilePath();
 				if (ilObjDigiLitAccess::hasAccessToDownload($this->ref_id) && file_exists($file)) {
-					$ilCtrl->setParameterByClass('ilObjDigiLitGUI', xdglRequestGUI::XDGL_ID, xdglRequest::getIdByDigiLitObjectId($this->obj_id));
+					$ilCtrl->setParameterByClass('ilObjDigiLitGUI', xdglRequestGUI::XDGL_ID, $request->getId());
 					$this->default_command = array(
 						'link'  => $ilCtrl->getLinkTargetByClass('ilObjDigiLitGUI', ilObjDigiLitGUI::CMD_SEND_FILE),
 						'frame' => '_top',

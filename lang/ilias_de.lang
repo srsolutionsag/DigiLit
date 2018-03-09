@@ -131,6 +131,7 @@ request_status_2#:#In Bearbeitung
 request_status_3#:#Dokument vorhanden
 request_status_4#:#Antrag abgelehnt
 request_status_5#:#Kopiert
+request_status_6#:#Zugewiesen
 request_title#:#Artikeltitel
 request_update#:#Speichern
 request_upload_date#:#Hochgeladen

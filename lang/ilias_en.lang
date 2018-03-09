@@ -128,6 +128,7 @@ request_status_2#:#In Progress
 request_status_3#:#File available
 request_status_4#:#Request refused
 request_status_5#:#Copied
+request_status_6#:#Assigned
 request_title#:#Title of Article
 request_update#:#Save
 request_upload_date#:#Uploaded

@@ -5,13 +5,13 @@
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
 
-class xdglRequestUsage extends ActiveRecord {
+class xdglRequestUsage extends ActiveRecord implements xdglRequestUsageInterface {
 
 	/**
 	 * @return string
 	 */
 	public function getConnectorContainerName() {
-		return 'xdgl_request_usage';
+		return self::TABLE_NAME;
 	}
 
 	/**

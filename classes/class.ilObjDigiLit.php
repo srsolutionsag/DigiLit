@@ -87,10 +87,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 	 * @throws \Exception
 	 */
 	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null) {
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
-		xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
-
-		return true;
+		throw new Exception('cloning of objects is not supported');
 	}
 
 

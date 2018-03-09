@@ -114,14 +114,14 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	 * @param bool      $only_parent_func
 	 */
 	public function afterSave(ilObject $newObj) {
-		$numargs = func_get_args();
+/*		$numargs = func_get_args();
 		if(is_array($numargs[1])) {
 			$request = new xdglRequest($numargs[1][0]);
 		} else {
 			$request = new xdglRequest($numargs[1]);
 		}
 		$request->setDigiLitObjectId($newObj->getId());
-		$request->update();
+		$request->update();*/
 		parent::afterSave($newObj);
 	}
 
@@ -155,7 +155,9 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		if(isset($_GET['xdgl_id'])) {
 			$this->xdglRequest = xdglRequest::find($_GET['xdgl_id']);
 		} else {
-			$this->xdglRequest = xdglRequest::getInstanceForDigiLitObjectId(ilObject2::_lookupObjectId($_GET['ref_id']));
+			$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+			$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
+			$this->xdglRequest = xdglRequest::find($request_usage->getRequestId());
 		}
 
 		if ($this->access->checkAccess('read', '', $_GET['ref_id']) && $this->isDigiLitObject($_GET['ref_id'])

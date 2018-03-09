@@ -21,7 +21,7 @@ class xdglLibrarian extends ActiveRecord {
 	public function isDeletable() {
 		return !xdglRequest::where(array(
 			'librarian_id' => $this->getUsrId(),
-			'status'       => array(xdglRequest::STATUS_REFUSED, xdglRequest::STATUS_RELEASED, xdglRequest::STATUS_COPY),
+			'status'       => array(xdglRequest::STATUS_REFUSED, xdglRequest::STATUS_RELEASED),
 		), array('librarian_id' => '=', 'status' => 'NOT IN'))->hasSets();
 	}
 
