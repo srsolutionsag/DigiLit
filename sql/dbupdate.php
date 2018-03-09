@@ -79,7 +79,7 @@ xdglConfig::setConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY, true);
 <#9>
 <?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
-xdglRequestUsage::installDB();
+xdglRequestUsage::updateDB();
 ?>
 <#10>
 <?php
@@ -89,24 +89,20 @@ $res = $ilDB->query('SELECT * FROM xdgl_request');
 
 while($row = $ilDB->fetchAssoc($res))
 {
+	$xdglRequestUsage = new xdglRequestUsage();
 	if($row['status'] == 5) {
-		$ilDB->manipulateF("INSERT INTO xdgl_request_usage ".
-			"(request_id, obj_id, crs_ref_id) VALUES ".
-			"(%s,%s,%s)",
-			array("integer", "integer", "text"),
-			array($row['copy_id'], $row["obj_id"], $row['crs_ref_id']));
+		$xdglRequestUsage->setRequestId($row['copy_id']);
 
-		$ilDB->manipulateF("DELETE FROM xdgl_request WHERE id = %s",
-			array("integer"),
-			array($row['id']));
+		$xdglRequest = new xdglRequest($row['id']);
+		$xdglRequest->delete();
 	} else {
-		$ilDB->manipulateF("INSERT INTO xdgl_request_usage ".
-			"(request_id, obj_id, crs_ref_id) VALUES ".
-			"(%s,%s,%s)",
-			array("integer", "integer", "text"),
-			array($row['id'], $row["obj_id"], $row['crs_ref_id']));
+		$xdglRequestUsage->setRequestId($row['id']);
 	}
+	$xdglRequestUsage->setObjId($row['digi_lit_object_id']);
+	$xdglRequestUsage->setCrsRefId($row['crs_ref_id']);
+	$xdglRequestUsage->create();
 }
+
 ?>
 <#11>
 <?php
