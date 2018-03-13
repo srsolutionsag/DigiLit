@@ -185,12 +185,9 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$this->addAndReadFilterItem($te);
 
 		// number of usages
-		$radio_grp_input = new ilRadioGroupInputGUI();
-		$radio_grp_input->setValue();
-
-		$opts = new ilRadioOption(0-5,array('min' => 0, 'max' => 5));
-		$opts->setInfo($this->pl->txt('cntr_view_info_sessions'));
-		$radio_grp_input->addOption($opts);
+		$select = new ilSelectInputGUI($this->pl->txt('number_of_usages'), 'number_of_usages');
+		$select->setOptions(array('0-5' => '0-5', '0-10' => '0-10', '0-15' => '0-15', '0-20' => '0-20'));
+		$this->addAndReadFilterItem($select);
 	}
 
 
@@ -278,6 +275,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		}
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
+
 		//		$xdglRequestList->debug();
 		$a_data = $xdglRequestList->getArray();
 
@@ -293,6 +291,9 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$item->readFromSession();
 		if ($item instanceof ilCheckboxInputGUI) {
 			$this->filter[$item->getPostVar()] = $item->getChecked();
+		} elseif($item instanceof ilSelectInputGUI && $item->getPostVar() == 'number_of_usages') {
+			$item->setValue($_POST['number_of_usages']);
+			$this->filter[$item->getPostVar()] = $item->getValue();
 		} else {
 			$this->filter[$item->getPostVar()] = $item->getValue();
 		}

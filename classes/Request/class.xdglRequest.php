@@ -293,6 +293,15 @@ class xdglRequest extends ActiveRecord {
 	 * @var string
 	 */
 	protected $ext_id = '';
+	/**
+	 * @var int
+	 *
+	 * @db_has_field        true
+	 * @db_fieldtype        integer
+	 * @db_length           4
+	 */
+	protected $number_of_usages;
+
 
 
 	public function afterObjectLoad() {
@@ -1209,5 +1218,20 @@ class xdglRequest extends ActiveRecord {
 				$this->update(true, false);
 			}
 		}
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getNumberOfUsages() {
+		return $this->number_of_usages;
+	}
+
+
+	/**
+	 * @param int $number_of_usages
+	 */
+	public function setNumberOfUsages($number_of_usages) {
+		$this->number_of_usages = $number_of_usages;
 	}
 }
