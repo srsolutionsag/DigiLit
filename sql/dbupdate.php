@@ -78,6 +78,7 @@ xdglConfig::setConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY, true);
 ?>
 <#9>
 <?php
+require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php';
 global $ilDB;
 xdglRequest::updateDB();
 ?>
@@ -88,6 +89,8 @@ xdglRequestUsage::updateDB();
 ?>
 <#11>
 <?php
+require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php';
+require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
 global $ilDB;
 
 $res = $ilDB->query('SELECT * FROM xdgl_request');
