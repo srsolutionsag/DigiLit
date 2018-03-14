@@ -119,12 +119,10 @@ class xdglSearchGUI {
 
 	protected function addLiterature() {
 		$oldRequestId = $_POST['chosen_literature'];
-		$ilObjDigiLit = new ilObjDigiLit();
 		$oldRequest = xdglRequest::find($oldRequestId);
-		$oldIlObDigiLit_rec = $ilObjDigiLit::getObjectById($oldRequest->getDigiLitObjectId());
+		$ilObjDigiLit = new ilObjDigiLit();
 		$ilObjDigiLit->setType('xdgl');
-		$ilObjDigiLit->setTitle($oldIlObDigiLit_rec['title']);
-		$ilObjDigiLit->setDescription($oldIlObDigiLit_rec['description']);
+		$ilObjDigiLit->setTitle($oldRequest->getTitle());
 		$ilObjDigiLit->create();
 		$ilObjectDigiLitGUI = new ilObjDigiLitGUI();
 		$ilObjectDigiLitGUI->putObjectInTree($ilObjDigiLit, $ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));

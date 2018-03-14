@@ -1,5 +1,7 @@
 <?php
 
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
+
 /**
  * xdglRequest
  *
@@ -202,14 +204,6 @@ class xdglRequest extends ActiveRecord {
 	 */
 	protected $date_last_status_change;
 	/**
-	 * @var int
-	 *
-	 * @db_has_field        true
-	 * @db_fieldtype        integer
-	 * @db_length           4
-	 */
-	protected $digi_lit_object_id;
-	/**
 	 * @var string
 	 *
 	 * @db_has_field        true
@@ -217,14 +211,6 @@ class xdglRequest extends ActiveRecord {
 	 * @db_length           4
 	 */
 	protected $version = 1;
-	/**
-	 * @var string
-	 *
-	 * @db_has_field        true
-	 * @db_fieldtype        integer
-	 * @db_length           8
-	 */
-	protected $crs_ref_id;
 	/**
 	 * @var string
 	 *
@@ -625,13 +611,23 @@ class xdglRequest extends ActiveRecord {
 
 
 	protected function updateIliasObjTitle() {
-		if ($this->getDigiLitObjectId()) {
-			/**
-			 * @var $ilObjDigiLit ilObjDigiLit
-			 */
-			$ilObjDigiLit = ilObjectFactory::getInstanceByObjId($this->getDigiLitObjectId());
-			$ilObjDigiLit->setTitle($this->getTitle());
-			$ilObjDigiLit->update();
+		/**
+		 * @var $ilObjDigiLitFacadeFactory ilObjDigiLitFacadeFactory
+		 */
+		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+		$xdglRequestUsageArray = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesByRequestId($this->getId());
+		/**
+		 * @var $xdglRequestUsage xdglRequestUsage
+		 */
+		foreach($xdglRequestUsageArray as $key => $xdglRequestUsage) {
+			if($xdglRequestUsage->getObjId()) {
+				/**
+				 * @var $ilObjDigiLit ilObjDigiLit
+				 */
+				$ilObjDigiLit = ilObjectFactory::getInstanceByObjId($xdglRequestUsage->getObjId());
+				$ilObjDigiLit->setTitle($this->getTitle());
+				$ilObjDigiLit->update();
+			}
 		}
 	}
 
@@ -998,22 +994,6 @@ class xdglRequest extends ActiveRecord {
 
 
 	/**
-	 * @param int $digi_lit_object_id
-	 */
-	public function setDigiLitObjectId($digi_lit_object_id) {
-		$this->digi_lit_object_id = $digi_lit_object_id;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getDigiLitObjectId() {
-		return $this->digi_lit_object_id;
-	}
-
-
-	/**
 	 * @param int $version
 	 */
 	public function setVersion($version) {
@@ -1026,22 +1006,6 @@ class xdglRequest extends ActiveRecord {
 	 */
 	public function getVersion() {
 		return $this->version;
-	}
-
-
-	/**
-	 * @param string $crs_ref_id
-	 */
-	public function setCrsRefId($crs_ref_id) {
-		$this->crs_ref_id = $crs_ref_id;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getCrsRefId() {
-		return $this->crs_ref_id;
 	}
 
 
@@ -1204,21 +1168,6 @@ class xdglRequest extends ActiveRecord {
 		$this->last_change = $last_change;
 	}
 
-
-	/**
-	 * @deprecated
-	 */
-	protected function updateCrsRefId() {
-		if (!$this->getCrsRefId()) {
-			$refs = ilObject2::_getAllReferences($this->getDigiLitObjectId());
-			$ref_id = (array_shift(array_values($refs)));
-			if ($ref_id) {
-				$ilObjDigiLit = new ilObjDigiLit($ref_id);
-				$this->setCrsRefId(ilObjDigiLit::returnParentCrsRefId($ilObjDigiLit->getRefId()));
-				$this->update(true, false);
-			}
-		}
-	}
 
 	/**
 	 * @return int

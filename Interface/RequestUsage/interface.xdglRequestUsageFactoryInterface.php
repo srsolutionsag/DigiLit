@@ -26,4 +26,12 @@ interface xdglRequestUsageFactoryInterface {
 	 */
 	public function createRequestUsageFromRequestAndDigiLitObject(xdglRequest $xdglRequest, ilObjDigiLit $ilObjDigiLit);
 
+
+	/**
+	 * @param int $request_id
+	 *
+	 * @return array of xdglRequestUsage | null
+	 */
+	public function getRequestUsagesByRequestId($request_id);
+
 }
