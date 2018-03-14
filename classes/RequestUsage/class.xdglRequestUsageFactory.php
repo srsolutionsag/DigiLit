@@ -32,7 +32,7 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 	}
 
 
-	public function getRequestUsagesByRequestId($request_id) {
+	public function getRequestUsagesArrayByRequestId($request_id) {
 		$xdglRequestUsageArray = xdglRequestUsage::where(array('request_id' => $request_id))->getArray();
 		return $xdglRequestUsageArray;
 	}

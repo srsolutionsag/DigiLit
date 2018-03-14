@@ -35,11 +35,6 @@ class xdglRequest extends ActiveRecord {
 
 	/**
 	 * @var array
-	 * request_status_1#:#Neu
-	 * request_status_2#:#In Bearbeitung
-	* request_status_3#:#Dokument vorhanden
-	* request_status_4#:#Antrag abgelehnt
-	* request_status_5#:#Kopiert
 	 */
 	protected static $status_to_string_map = array(
 		self::STATUS_NEW => 'request_status_1',
@@ -615,18 +610,15 @@ class xdglRequest extends ActiveRecord {
 		 * @var $ilObjDigiLitFacadeFactory ilObjDigiLitFacadeFactory
 		 */
 		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
-		$xdglRequestUsageArray = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesByRequestId($this->getId());
-		/**
-		 * @var $xdglRequestUsage xdglRequestUsage
-		 */
-		foreach($xdglRequestUsageArray as $key => $xdglRequestUsage) {
-			if($xdglRequestUsage->getObjId()) {
+		$xdglRequestUsageArray = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesArrayByRequestId($this->getId());
+		foreach($xdglRequestUsageArray as $key => $data) {
+			if($data['obj_id']) {
 				/**
 				 * @var $ilObjDigiLit ilObjDigiLit
 				 */
-				$ilObjDigiLit = ilObjectFactory::getInstanceByObjId($xdglRequestUsage->getObjId());
-				$ilObjDigiLit->setTitle($this->getTitle());
-				$ilObjDigiLit->update();
+				$ilObjDigiLit_rec = ilObjDigiLit::getObjectById($data['obj_id']);
+				$ilObjDigiLit_rec['title'] = $this->getTitle();
+				ilObjDigiLit::updateObjDigiLitTitle($ilObjDigiLit_rec);
 			}
 		}
 	}

@@ -78,16 +78,10 @@ xdglConfig::setConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY, true);
 ?>
 <#9>
 <?php
-require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php';
-global $ilDB;
-xdglRequest::updateDB();
-?>
-<#10>
-<?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
 xdglRequestUsage::updateDB();
 ?>
-<#11>
+<#10>
 <?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php';
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
@@ -113,7 +107,7 @@ while($row = $ilDB->fetchAssoc($res))
 }
 
 ?>
-<#12>
+<#11>
 <?php
 global $ilDB;
 $ilDB->manipulate('ALTER TABLE xdgl_request DROP digi_lit_object_id, DROP crs_ref_id');

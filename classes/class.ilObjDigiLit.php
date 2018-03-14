@@ -120,6 +120,11 @@ class ilObjDigiLit extends ilObjectPlugin {
 		$obj_rec = $ilDB->fetchAssoc($obj_set);
 		return $obj_rec;
 	}
+
+	public static function updateObjDigiLitTitle($ilObjDigiLit_rec) {
+		global $ilDB;
+		$ilDB->manipulate("UPDATE object_data SET title = ".$ilDB->quote($ilObjDigiLit_rec['title']) . " WHERE obj_id = ".$ilDB->quote($ilObjDigiLit_rec['obj_id'], "integer"));
+	}
 }
 
 
