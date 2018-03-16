@@ -652,36 +652,6 @@ class xdglRequest extends ActiveRecord {
 	//           Static Functions           //
 	// ------------------------------------ //
 
-	/**
-	 * @param int $digilit_obj_id
-	 *
-	 * @return int request id
-	 */
-	public static function getIdByDigiLitObjectId($digilit_obj_id) {
-		/**
-		 * @var ilDB $ilDB
-		 */
-		global $ilDB;
-
-		$xdglRequest = new xdglRequest();
-
-		$set = $ilDB->query('SELECT id FROM  ' . $xdglRequest->getConnectorContainerName() . ' WHERE digi_lit_object_id = ' . $ilDB->quote($digilit_obj_id,
-				"integer"));
-		$row = $ilDB->fetchAssoc($set);
-
-		return $row['id'];
-	}
-
-
-	/**
-	 * @param $digilit_obj_id
-	 *
-	 * @return xdglRequest
-	 */
-	public static function getInstanceForDigiLitObjectId($digilit_obj_id) {
-		return self::find(self::getIdByDigiLitObjectId($digilit_obj_id));
-	}
-
 
 	/**
 	 * Set the status of one specific digilit object
@@ -721,7 +691,6 @@ class xdglRequest extends ActiveRecord {
 		}
 		return $requests;
 	}
-
 
 
 	// ------------------------------------ //

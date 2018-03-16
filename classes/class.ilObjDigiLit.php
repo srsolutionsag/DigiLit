@@ -72,10 +72,8 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 
 	public function doDelete() {
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
-		ilUtil::delDir($xdglRequest->getFilePath());
-		$xdglRequest->delete();
 	}
+
 
 
 	/**
@@ -83,11 +81,23 @@ class ilObjDigiLit extends ilObjectPlugin {
 	 * @param      $a_target_id
 	 * @param null $a_copy_id
 	 *
-	 * @return bool|void
+	 * @return bool
 	 * @throws \Exception
 	 */
 	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null) {
-		throw new Exception('cloning of objects is not supported');
+		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+		$xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
+		$ilObjDigiLitFacadeFactory->requestUsageFactory()->copyRequestUsage($xdglRequestUsage, $new_obj->getId());
+		return true;
+
+/*		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
+		xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
+
+		return true;*/
+
+/*
+ *
+ */
 	}
 
 

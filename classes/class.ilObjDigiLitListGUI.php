@@ -70,7 +70,6 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		return parent::getCommands();
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -80,13 +79,13 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		$this->timings_enabled = false;
 		$this->subscribe_enabled = false;
 		$this->payment_enabled = false;
-		$this->link_enabled = false;
+		$this->link_enabled = true;
 		$this->info_screen_enabled = true;
 		$this->delete_enabled = false;
 
 		// Should be overwritten according to status
 		$this->cut_enabled = false;
-		$this->copy_enabled = false;
+		$this->copy_enabled = true;
 
 		$commands = array(
 			array(

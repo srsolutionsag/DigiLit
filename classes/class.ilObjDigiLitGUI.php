@@ -89,6 +89,10 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	 * @var ilLocator
 	 */
 	protected $locator;
+	/**
+	 * @var ilObjDigiLitFacadeFactory
+	 */
+	protected $ilObjDigiLitFacadeFactory;
 
 
 	protected function afterConstructor() {
@@ -106,6 +110,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$this->tabs_gui = $ilTabs;
 		$this->pl = ilDigiLitPlugin::getInstance();
 		$this->locator = $ilLocator;
+		$this->ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 	}
 
 
@@ -122,6 +127,13 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		}
 		$request->setDigiLitObjectId($newObj->getId());
 		$request->update();*/
+		global $DIC;
+		$args = func_get_args();
+		$xdglRequestUsage = new xdglRequestUsage();
+		$xdglRequestUsage->setCrsRefId($DIC->repositoryTree()->getParentId($newObj->ref_id));
+		$xdglRequestUsage->setRequestId($args[1][0]);
+		$xdglRequestUsage->setObjId($newObj->getId());
+		$xdglRequestUsage->create();
 		parent::afterSave($newObj);
 	}
 
@@ -374,7 +386,8 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	public function infoScreen() {
 		$info = new ilInfoScreenGUI($this);
 		$info->addSection($this->txt('request_metadata'));
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->obj_id);
+		$xdglRequestUsage = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
+		$xdglRequest = new xdglRequest($xdglRequestUsage->getRequestId());
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $xdglRequest, true, true);
 		$xdglRequestFormGUI->fillForm();
 		/**
@@ -407,9 +420,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		}
 		$ref_id = $_SESSION['saved_post'][0];
 		$parent_ref_id = $this->getParentRefId($ref_id);
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId(ilObject2::_lookupObjId($ref_id));
-		$xdglRequest->setStatus(xdglRequest::STATUS_DELETED);
-		$xdglRequest->update();
+		$this->ilObjDigiLitFacadeFactory->requestUsageFactory()->deleteRequestUsageAndDigiLitByObjId(ilObject2::_lookupObjId($ref_id));
 		$ru = new ilRepUtilGUI($this);
 		$ru->deleteObjects(ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']), ilSession::get('saved_post'));
 		ilSession::clear('saved_post');
@@ -419,8 +430,9 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 
 	public static function _goto($a_target) {
 		global $ilCtrl;
+		$ilObjDigiLitFacadeFacory = new ilObjDigiLitFacadeFactory();
 		$obj_id = ilObject2::_lookupObjId($a_target[0]);
-		$a_value = xdglRequest::getIdByDigiLitObjectId($obj_id);
+		$a_value = $ilObjDigiLitFacadeFacory->requestUsageFactory()->getInstanceByObjectId($obj_id)->getRequestId();
 		$ilCtrl->initBaseClass(ilObjPluginDispatchGUI::class);
 		$ilCtrl->setTargetScript('ilias.php');
 		$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, xdglRequestGUI::XDGL_ID, $a_value);

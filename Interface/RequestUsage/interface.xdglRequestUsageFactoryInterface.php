@@ -11,7 +11,7 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
 interface xdglRequestUsageFactoryInterface {
 
 	/**
-	 * @param $obj_id int
+	 * @param int $obj_id
 	 *
 	 * @return xdglRequestUsage | null
 	 */
@@ -33,5 +33,33 @@ interface xdglRequestUsageFactoryInterface {
 	 * @return array of xdglRequestUsage | null
 	 */
 	public function getRequestUsagesArrayByRequestId($request_id);
+
+
+	/**
+	 * @param $request_usages_array
+	 *
+	 * @return array of cours titles
+	 */
+	public function getAllCoursTitlesWithRequestUsages($request_usages_array);
+
+
+	/**
+	 * @param int $request_id
+	 */
+	public function deleteUsagesAndDigiLitObjectsByRequestId($request_id);
+
+
+	/**
+	 * @param int $obj_id
+	 */
+	public function deleteRequestUsageAndDigiLitByObjId($obj_id);
+
+	/**
+	 * @param \xdglRequestUsage $old_request_usage
+	 * @param int          $obj_id
+	 *
+	 * @return \xdglRequestUsage
+	 */
+	public function copyRequestUsage(xdglRequestUsage $old_request_usage, $obj_id = null);
 
 }

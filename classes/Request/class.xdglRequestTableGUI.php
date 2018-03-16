@@ -88,7 +88,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		//		if (xdglConfig::getConfigValue(xdglConfig::F_USE_LIBRARIES)) {
 		$this->addColumn($this->pl->txt('request_assigned_library'), 'xdgl_library_title');
 		$this->addColumn($this->pl->txt('request_assigned_librarian'), 'usr_data_2_email');
-		$this->addColumn($this->pl->txt('request_number_of_usages'), 'number_of_usages');
+		$this->addColumn($this->pl->txt('number_of_usages'), 'number_of_usages');
 		//		}
 		$this->addColumn($this->pl->txt('common_actions'));
 	}
@@ -124,6 +124,8 @@ class xdglRequestTableGUI extends ilTable2GUI {
 					$this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CDM_CONFIRM_REFUSE));
 				$current_selection_list->addItem($this->pl->txt('request_assign'), 'assign_request',
 					$this->ctrl->getLinkTargetByClass('xdglLibraryGUI', xdglLibraryGUI::CMD_ASSIGN_LIBRARY));
+				$current_selection_list->addItem($this->pl->txt('delete_request'), 'delete_request',
+					$this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_DELETE_REQUEST));
 				break;
 			//			case xdglRequest::STATUS_IN_PROGRRESS:
 			//				$current_selection_list->addItem($this->pl->txt('request_view'), 'view_request', $this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_VIEW));
@@ -142,6 +144,8 @@ class xdglRequestTableGUI extends ilTable2GUI {
 					$this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_REPLACE_FILE));
 				$current_selection_list->addItem($this->pl->txt('request_delete_file'), 'request_delete_file',
 					$this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_DELETE_FILE));
+				$current_selection_list->addItem($this->pl->txt('delete_request'), 'delete_request',
+					$this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_DELETE_REQUEST));
 				break;
 			case xdglRequest::STATUS_REFUSED:
 				break;
@@ -186,7 +190,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 
 		// number of usages
 		$select = new ilSelectInputGUI($this->pl->txt('number_of_usages'), 'number_of_usages');
-		$select->setOptions(array('0-5' => '0-5', '0-10' => '0-10', '0-15' => '0-15', '0-20' => '0-20'));
+		$select->setOptions(array('0-5' => '0-5', '5-10' => '5-10', '10-15' => '10-15', '15-20' => '15-20'));
 		$this->addAndReadFilterItem($select);
 	}
 
@@ -206,7 +210,6 @@ class xdglRequestTableGUI extends ilTable2GUI {
 						$xdglRequestList->where(array($field => $value));
 						break;
 					case 'ext_id':
-
 						//						$xdglRequestList->where(array( $field => $value ), 'LIKE');
 						$h = new arHaving();
 						$h->setFieldname('ext_id');
@@ -220,6 +223,11 @@ class xdglRequestTableGUI extends ilTable2GUI {
 							$value[$key[0]] = $usr_id;
 						}
 						$xdglRequestList->where(array('librarian_id' => $value));
+						break;
+					case 'number_of_usages':
+						$start_between = substr($value, 0, strpos($value, '-'));
+						$end_between = str_replace($start_between . '-', '', $value);
+						$xdglRequestList->where('number_of_usages'  . ' BETWEEN ' . $start_between . ' AND ' . $end_between);
 						break;
 					default:
 						$xdglRequestList->where(array($field => $value));
@@ -246,8 +254,6 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->leftjoin(xdglLibrary::TABLE_NAME, 'library_id', 'id', array('id', 'title'));
 		$xdglRequestList->leftjoin(xdglLibrarian::TABLE_NAME, 'librarian_id', 'usr_id', array('usr_id', 'library_id'));
 		$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array('email'));
-		//$xdglRequestList->leftjoin('object_reference', 'crs_ref_id', 'ref_id', array('ref_id', 'obj_id'));
-		//$xdglRequestList->leftjoin('object_data', 'object_reference.obj_id', 'obj_id', array('title'), '=', true);
 		$sel = new arSelect();
 		$sel->setAs('ext_id');
 		if (xdglConfig::hasValidRegex()) {
@@ -292,7 +298,9 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		if ($item instanceof ilCheckboxInputGUI) {
 			$this->filter[$item->getPostVar()] = $item->getChecked();
 		} elseif($item instanceof ilSelectInputGUI && $item->getPostVar() == 'number_of_usages') {
-			$item->setValue($_POST['number_of_usages']);
+			if(isset($_POST['number_of_usages'])) {
+				$item->setValue($_POST['number_of_usages']);
+			}
 			$this->filter[$item->getPostVar()] = $item->getValue();
 		} else {
 			$this->filter[$item->getPostVar()] = $item->getValue();

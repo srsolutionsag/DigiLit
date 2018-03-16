@@ -60,6 +60,10 @@ class ilDigiLitPlugin extends ilRepositoryObjectPlugin {
 		// TODO: Implement uninstallCustom() method.
 	}
 
+	public function allowCopy() {
+		return true;
+	}
+
 
 	//	public function txt($a_var) {
 	//		require_once('./Customizing/global/plugins/Libraries/PluginTranslator/class.sragPluginTranslator.php');

@@ -159,3 +159,6 @@ xdgl_read#:#Herunterladen
 xdgl_visible#:#Sichtbar
 xdgl_write#:#Bearbeiten
 xdgl_new#:#Neues DigiLit beantragen
+number_of_usages#:#Anzahl Verwendungen
+msg_request_delete#:#Möchten Sie den angezeigten Eintrag wirklich löschen?
+msg_request_delete_with_usages#:#Möchten Sie den angezeigten Eintrag wirklich löschen? Der Eintrag wird in den folgenden Kursen verwendet:

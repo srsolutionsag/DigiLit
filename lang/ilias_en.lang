@@ -156,3 +156,6 @@ xdgl_read#:#Download
 xdgl_visible#:#Visible
 xdgl_write#:#Edit
 xdgl_new#:#Request new DigiLit
+number_of_usages#:#Number of usages
+msg_request_delete#:#Do you really want to delete the shown entry?
+msg_request_delete_with_usages#:#Do you really want to delete the shown entry? The entry is used in the following courses:

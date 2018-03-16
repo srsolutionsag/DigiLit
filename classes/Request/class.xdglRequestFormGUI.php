@@ -297,7 +297,6 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 			self::F_EDITION_RELEVANT   => $this->request->getEditionRelevant(),
 			self::F_ISSN               => $this->request->getIssn(),
 			self::F_COUNT              => $this->request->getAmoutOfDigiLitsInCourse() . '/' . xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS),
-			self::F_CRS_REF_ID         => $this->request->getCrsRefId(),
 			self::F_REQUESTER_FULLNAME => $ilObjUserRequester->getPresentationTitle(),
 			self::F_REQUESTER_MAILTO   => $ilObjUserRequester->getEmail(),
 			self::F_CREATE_DATE        => date('d.m.Y - H:i:s', $this->request->getCreateDate()),

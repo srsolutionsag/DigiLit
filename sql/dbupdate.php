@@ -78,14 +78,26 @@ xdglConfig::setConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY, true);
 ?>
 <#9>
 <?php
+/* column numer of usages has to be added to the table xdgl_request because it is needed in update step 11
+ updateDB is not possible in this step because the xdgl_request active record class has not the fields crs_ref_id and digi_lit_object_id
+ if xdgl_request would be updated those columns wouldn't be available in update step 11
+*/
+global $ilDB;
+$ilDB->manipulate('ALTER TABLE xdgl_request ADD COLUMN number_of_usages INT');
+?>
+<#10>
+<?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
 xdglRequestUsage::updateDB();
 ?>
-<#10>
+<#11>
 <?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php';
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
 global $ilDB;
+
+global $ilDB;
+
 
 $res = $ilDB->query('SELECT * FROM xdgl_request');
 
@@ -107,7 +119,7 @@ while($row = $ilDB->fetchAssoc($res))
 }
 
 ?>
-<#11>
+<#12>
 <?php
 global $ilDB;
 $ilDB->manipulate('ALTER TABLE xdgl_request DROP digi_lit_object_id, DROP crs_ref_id');

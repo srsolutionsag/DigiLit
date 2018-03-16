@@ -22,6 +22,8 @@ class xdglRequestGUI {
 	const CMD_DOWNLOAD_FILE = 'downloadFile';
 	const CMD_DELETE_FILE = 'confirmDeleteFile';
 	const CMD_PERFORM_DELETE_FILE = 'deleteFile';
+	const CMD_DELETE_REQUEST = 'confirmDeleteRequest';
+	const CMD_PERFORM_DELETE_REQUEST = 'deleteRequest';
 	const CMD_SAVE = 'save';
 	const CMD_VIEW = 'view';
 	const CMD_UPDATE = 'update';
@@ -68,6 +70,10 @@ class xdglRequestGUI {
 	 * @var xdglRequest
 	 */
 	protected $xdglRequest;
+	/**
+	 * @var ilObjDigiLitFacadeFactory
+	 */
+	protected $ilObjDigiLitFacadeFactory;
 
 
 	public function __construct() {
@@ -78,6 +84,7 @@ class xdglRequestGUI {
 		$this->access = $ilAccess;
 		$this->ctrl = $ilCtrl;
 		$this->toolbar = $ilToolbar;
+		$this->ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 
 		if ($_GET['rl'] == 'true') {
 			$this->pl->updateLanguageFiles();
@@ -117,6 +124,8 @@ class xdglRequestGUI {
 			case self::CMD_REPLACE_FILE:
 			case self::CMD_DELETE_FILE:
 			case self::CMD_PERFORM_DELETE_FILE:
+			case self::CMD_DELETE_REQUEST:
+			case self::CMD_PERFORM_DELETE_REQUEST:
 			case self::CMD_SANDBOX:
 			case self::CMD_DOWNLOAD_FILE:
 				$this->$cmd();
@@ -279,6 +288,40 @@ class xdglRequestGUI {
 			global $ilUser;
 			$this->xdglRequest->setLibrarianId($ilUser->getId());
 			ilUtil::sendSuccess($this->pl->txt('msg_request_file_deleted'), true);
+		} catch (Exception $e) {
+			ilUtil::sendFailure($e->getMessage(), true);
+		}
+		$this->ctrl->redirect($this);
+	}
+
+	protected function confirmDeleteRequest() {
+		ilObjDigiLitAccess::isManager(true);
+		$ilConfirmationGUI = new ilConfirmationGUI();
+		$ilConfirmationGUI->setFormAction($this->ctrl->getFormAction($this));
+		$xdglRequestUsageArray = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesArrayByRequestId($this->xdglRequest->getId());
+		$crs_titles_array = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getAllCoursTitlesWithRequestUsages($xdglRequestUsageArray);
+		$ilConfirmationGUI->setCancel($this->pl->txt('request_cancel'), self::CMD_CANCEL);
+		if(!empty($crs_titles_array)) {
+			$ilConfirmationGUI->setHeaderText($this->pl->txt('msg_request_delete_with_usages') . "<pre>".implode(PHP_EOL,$crs_titles_array)."</pre>");
+		}
+		else {
+			$ilConfirmationGUI->setHeaderText($this->pl->txt('msg_request_delete'));
+			$ilConfirmationGUI->setConfirm($this->pl->txt('request_delete'), self::CMD_PERFORM_DELETE_REQUEST);
+		}
+		$ilConfirmationGUI->addItem(self::XDGL_ID, $this->xdglRequest->getId(), $this->xdglRequest->getTitle());
+		$this->tpl->setContent($ilConfirmationGUI->getHTML());
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	protected function deleteRequest() {
+		ilObjDigiLitAccess::isManager(true);
+		try {
+			$this->ilObjDigiLitFacadeFactory->requestUsageFactory()->deleteAllUsagesAndDigiLitObjectsByRequestId($this->xdglRequest->getId());
+			$this->xdglRequest->setStatus(xdglRequest::STATUS_DELETED);
+			ilUtil::sendSuccess($this->pl->txt('msg_request_deleted'), true);
 		} catch (Exception $e) {
 			ilUtil::sendFailure($e->getMessage(), true);
 		}

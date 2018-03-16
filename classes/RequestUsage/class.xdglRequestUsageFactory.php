@@ -1,4 +1,7 @@
 <?php
+
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
+
 /**
  * Class xdglRequestUsageFactory
  *
@@ -31,9 +34,57 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 		return $xdglRequestUsage;
 	}
 
-
+	/**
+	 * @inheritdoc
+	 */
 	public function getRequestUsagesArrayByRequestId($request_id) {
 		$xdglRequestUsageArray = xdglRequestUsage::where(array('request_id' => $request_id))->getArray();
 		return $xdglRequestUsageArray;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function getAllCoursTitlesWithRequestUsages($request_usages_array) {
+		$crs_titles_array = [];
+		foreach($request_usages_array as $key => $data) {
+			$crs_obj_id = ilObject2::_lookupObjectId($data['crs_ref_id']);
+			$crs_titles_array[] = ilObject2::_lookupTitle($crs_obj_id);
+		}
+		return $crs_titles_array;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function deleteUsagesAndDigiLitObjectsByRequestId($request_id) {
+		global $ilDB;
+		$xdglRequestUsageArray = $this->getRequestUsagesArrayByRequestId($request_id);
+		foreach($xdglRequestUsageArray as $key => $data) {
+			$ilDB->manipulate("DELETE FROM object_data WHERE obj_id = "  . $ilDB->quote($data['obj_id'], 'integer'));
+		}
+		$ilDB->manipulate("DELETE FROM xdgl_request_usage WHERE request_id = "  . $ilDB->quote($request_id, 'integer'));
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function deleteRequestUsageAndDigiLitByObjId($obj_id) {
+		global $ilDB;
+		$ilDB->manipulate("DELETE FROM xdgl_request_usage WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
+		$ilDB->manipulate("DELETE FROM object_data WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function copyRequestUsage(xdglRequestUsage $old_request_usage, $obj_id = null) {
+		$new_request_usage = clone($old_request_usage);
+		$new_request_usage->setObjId($old_request_usage->getObjId());
+		$new_request_usage->setRequestId($old_request_usage->getRequestId());
+		$new_request_usage->setCrsRefId($old_request_usage->getCrsRefId());
+		$new_request_usage->create();
+
+		return $new_request_usage;
 	}
 }
