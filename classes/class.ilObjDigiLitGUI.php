@@ -432,12 +432,13 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		global $ilCtrl;
 		$ilObjDigiLitFacadeFacory = new ilObjDigiLitFacadeFactory();
 		$obj_id = ilObject2::_lookupObjId($a_target[0]);
+		//$a_value = xdglRequest::getIdByDigiLitObjectId($obj_id);
 		$a_value = $ilObjDigiLitFacadeFacory->requestUsageFactory()->getInstanceByObjectId($obj_id)->getRequestId();
 		$ilCtrl->initBaseClass(ilObjPluginDispatchGUI::class);
 		$ilCtrl->setTargetScript('ilias.php');
 		$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, xdglRequestGUI::XDGL_ID, $a_value);
 		$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, 'ref_id', $a_target[0]);
-		$ilCtrl->redirectByClass([ilObjPluginDispatchGUI::class, ilObjDigiLitGUI::class], ilObjDigiLitGUI::CMD_SEND_FILE);
+		$ilCtrl->redirectByClass([ilObjPluginDispatchGUI::class, ilObjDigiLitGUI::class], ilObjDigiLitGUI::CMD_INFO_SCREEN);
 	}
 
 	public function putObjectInTree(ilObject $a_obj, $a_parent_node_id = NULL) {

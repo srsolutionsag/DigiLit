@@ -80,7 +80,7 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 	 */
 	public function copyRequestUsage(xdglRequestUsage $old_request_usage, $obj_id = null) {
 		$new_request_usage = clone($old_request_usage);
-		$new_request_usage->setObjId($old_request_usage->getObjId());
+		$new_request_usage->setObjId($obj_id);
 		$new_request_usage->setRequestId($old_request_usage->getRequestId());
 		$new_request_usage->setCrsRefId($old_request_usage->getCrsRefId());
 		$new_request_usage->create();
