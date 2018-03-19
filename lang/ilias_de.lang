@@ -162,3 +162,4 @@ xdgl_new#:#Neues DigiLit beantragen
 number_of_usages#:#Anzahl Verwendungen
 msg_request_delete#:#Möchten Sie den angezeigten Eintrag wirklich löschen?
 msg_request_delete_with_usages#:#Möchten Sie den angezeigten Eintrag wirklich löschen? Der Eintrag wird in den folgenden Kursen verwendet:
+permission_denied#:#Sie verügen nicht über die benötigten Rechte.
