@@ -23,7 +23,7 @@
 
 require_once('./Services/Repository/classes/class.ilObjectPlugin.php');
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequestFormGUI.php');
-
+require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
 /**
  * Class ilObjDigiLit
  *
@@ -44,7 +44,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 	/**
 	 * @param int $a_ref_id
 	 */
-	public function __construct($a_ref_id = 0) {
+	public function __construct($a_ref_id = 0,  $whatever = true) {
 		/**
 		 * @var $ilDB ilDB
 		 */
