@@ -66,10 +66,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 	 * @param array $a_set
 	 */
 	public function fillRow($a_set) {
-		$obj = xdglRequest::find($a_set['id']);
-		//		$a_set['ext_id'] = $obj->getExtId();
 		$this->tpl->setVariable('VAL_EXT_ID', $a_set['ext_id']);
-
 		$this->tpl->setVariable('VAL_TITLE', $a_set['title']);
 		$this->tpl->setVariable('VAL_BOOK', $a_set['book']);
 		$this->tpl->setVariable('VAL_PUBLISHING_YEAR', $a_set['publishing_year']);
@@ -200,8 +197,6 @@ class xdglRequestTableGUI extends ilTable2GUI {
 						$xdglRequestList->where(array( $field => $value ));
 						break;
 					case 'ext_id':
-
-						//						$xdglRequestList->where(array( $field => $value ), 'LIKE');
 						$h = new arHaving();
 						$h->setFieldname('ext_id');
 						$h->setValue('%' . $value . '%');
