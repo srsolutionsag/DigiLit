@@ -1,4 +1,8 @@
 <?php
+require_once('./Services/UICore/classes/class.ilTemplateHTMLITX.php');
+require_once('./Services/Form/classes/class.ilMultiSelectInputGUI.php');
+require_once('./Services/User/classes/class.ilObjUser.php');
+require_once('./Services/UICore/classes/class.ilTemplate.php');
 
 /**
  * Class xdglMultiUserInputGUI

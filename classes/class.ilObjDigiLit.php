@@ -43,7 +43,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 	/**
 	 * @param int $a_ref_id
 	 */
-	public function __construct($a_ref_id = 0) {
+	public function __construct($a_ref_id = 0,  $whatever = true) {
 		/**
 		 * @var $ilDB ilDB
 		 */
@@ -72,6 +72,12 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 
 	public function doDelete() {
+		/**
+		 * @var $xdglRequest xdglRequest
+		 */
+		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
+		$xdglRequest->deleteFile();
+		$xdglRequest->delete();
 	}
 
 
