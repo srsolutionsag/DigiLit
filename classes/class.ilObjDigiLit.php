@@ -74,7 +74,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 	public function doDelete() {
 		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
-		ilUtil::delDir($xdglRequest->getFilePath());
+		$xdglRequest->deleteFile();
 		$xdglRequest->delete();
 	}
 
