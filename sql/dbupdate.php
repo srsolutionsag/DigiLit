@@ -83,7 +83,9 @@ xdglConfig::setConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY, true);
  if xdgl_request would be updated those columns wouldn't be available in update step 11
 */
 global $ilDB;
-$ilDB->manipulate('ALTER TABLE xdgl_request ADD COLUMN number_of_usages INT');
+if (!$ilDB->tableColumnExists('xdgl_request', 'number_of_usages')) {
+	$ilDB->manipulate('ALTER TABLE xdgl_request ADD COLUMN number_of_usages INT');
+}
 ?>
 <#10>
 <?php
@@ -122,6 +124,8 @@ while($row = $ilDB->fetchAssoc($res))
 <#12>
 <?php
 global $ilDB;
-$ilDB->manipulate('ALTER TABLE xdgl_request DROP digi_lit_object_id, DROP crs_ref_id');
+if ($ilDB->tableColumnExists('xdgl_request', 'digi_lit_object_id')) {
+	$ilDB->manipulate('ALTER TABLE xdgl_request DROP digi_lit_object_id, DROP crs_ref_id');
+}
 ?>
 

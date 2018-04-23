@@ -75,6 +75,13 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 		$ilDB->manipulate("DELETE FROM object_data WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
 	}
 
+
+	public function deleteRequestUsageByObjId($obj_id) {
+		global $ilDB;
+		$ilDB->manipulate("DELETE FROM xdgl_request_usage WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
+	}
+
+
 	/**
 	 * @inheritdoc
 	 */

@@ -19,7 +19,6 @@ class ilObjDigiLitFacadeFactory implements ilObjDigiLitFacadeInterface {
 	 * ilObjDigiLitFacadeFactory constructor.
 	 */
 	public function __construct() {
-		//$this->ilias_object = $ilObjBibliographic;
 		$this->request_usage_factory = new xdglRequestUsageFactory();
 	}
 

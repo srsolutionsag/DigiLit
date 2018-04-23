@@ -55,6 +55,11 @@ interface xdglRequestUsageFactoryInterface {
 	public function deleteRequestUsageAndDigiLitByObjId($obj_id);
 
 	/**
+	 * @param int $obj_id
+	 */
+	public function deleteRequestUsageByObjId($obj_id);
+
+	/**
 	 * @param \xdglRequestUsage $old_request_usage
 	 * @param int          $obj_id
 	 *

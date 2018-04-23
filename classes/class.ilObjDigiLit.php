@@ -72,12 +72,17 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 
 	public function doDelete() {
-		/**
-		 * @var $xdglRequest xdglRequest
-		 */
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
-		$xdglRequest->deleteFile();
-		$xdglRequest->delete();
+		$use_search = xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH);
+		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+		$xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
+		if($use_search) {
+			$xdglRequestUsage->delete();
+		} else {
+			$xdglRequest = xdglRequest::find($xdglRequestUsage->getRequestId());
+			$xdglRequest->deleteFile();
+			$xdglRequest->delete();
+			$xdglRequestUsage->delete();
+		}
 	}
 
 
