@@ -48,6 +48,13 @@ class xdglRequest extends ActiveRecord {
 	/**
 	 * @return string
 	 */
+	static function returnDbTableName() {
+		return self::TABLE_NAME;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getConnectorContainerName() {
 		return self::TABLE_NAME;
 	}
