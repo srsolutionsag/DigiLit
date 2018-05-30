@@ -221,7 +221,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 					$props[] = array(
 						'alert'               => false,
 						'property'            => $lng->txt('size'),
-						'value'               => ilUtil::formatSize(filesize($file), 'short'),
+						'value'               => self::formatSize(filesize($file), 'short'),
 						'propertyNameVisible' => false,
 						'newline'             => true,
 					);
@@ -317,6 +317,94 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		}
 
 		return $date . ', ' . date('H:i', $unix_timestamp);
+	}
+
+
+	public static function formatSize($size, $a_mode = 'short', $a_lng = null)
+	{
+		global $lng;
+
+		if ($a_lng == null) {
+			$a_lng = $lng;
+		}
+
+		$mag = 1024;
+
+		if ($size >= $mag * $mag * $mag) {
+			$scaled_size = $size / $mag / $mag / $mag;
+			$scaled_unit = 'lang_size_gb';
+		} else {
+			if ($size >= $mag * $mag) {
+				$scaled_size = $size / $mag / $mag;
+				$scaled_unit = 'lang_size_mb';
+			} else {
+				if ($size >= $mag) {
+					$scaled_size = $size / $mag;
+					$scaled_unit = 'lang_size_kb';
+				} else {
+					$scaled_size = $size;
+					$scaled_unit = 'lang_size_bytes';
+				}
+			}
+		}
+
+		$result = self::fmtFloat($scaled_size, ($scaled_unit
+				== 'lang_size_bytes') ? 0 : 1, $a_lng->txt('lang_sep_decimal'), $a_lng->txt('lang_sep_thousand'), true)
+			. ' ' . $a_lng->txt($scaled_unit);
+		if ($a_mode == 'long' && $size > $mag) {
+			$result .= ' (' . self::fmtFloat($size, 0, $a_lng->txt('lang_sep_decimal'), $a_lng->txt('lang_sep_thousand')) . ' '
+				. $a_lng->txt('lang_size_bytes') . ')';
+		}
+
+		return $result;
+	}
+
+	/**
+	 * format a float
+	 *
+	 * this functions takes php's number_format function and
+	 * formats the given value with appropriate thousand and decimal
+	 * separator.
+	 * @access	public
+	 * @param	float		the float to format
+	 * @param	integer		count of decimals
+	 * @param	integer		display thousands separator
+	 * @param	boolean		whether .0 should be suppressed
+	 * @return	string		formatted number
+	 */
+	protected static function fmtFloat($a_float, $a_decimals=0, $a_dec_point = null, $a_thousands_sep = null, $a_suppress_dot_zero=false)
+	{
+		global $lng;
+
+		if ($a_dec_point == null) {
+			{
+				$a_dec_point = ".";
+			}
+		}
+		if ($a_dec_point == '-lang_sep_decimal-') {
+			$a_dec_point = ".";
+		}
+
+		if ($a_thousands_sep == null) {
+			$a_thousands_sep = $lng->txt('lang_sep_thousand');
+		}
+		if ($a_thousands_sep == '-lang_sep_thousand-') {
+			$a_thousands_sep = ",";
+		}
+
+		$txt = number_format($a_float, $a_decimals, $a_dec_point, $a_thousands_sep);
+
+		// remove trailing ".0"
+		if (($a_suppress_dot_zero == 0 || $a_decimals == 0)
+			&& substr($txt, - 2) == $a_dec_point . '0'
+		) {
+			$txt = substr($txt, 0, strlen($txt) - 2);
+		}
+		if ($a_float == 0 and $txt == "") {
+			$txt = "0";
+		}
+
+		return $txt;
 	}
 }
 

@@ -39,6 +39,17 @@ class xdglConfig extends ActiveRecord {
 	protected $ar_safe_read = false;
 
 
+	/**
+	 * @return string
+	 */
+	static function returnDbTableName() {
+		return self::TABLE_NAME;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getConnectorContainerName(){
 		return self::TABLE_NAME;
 	}

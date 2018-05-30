@@ -13,7 +13,7 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 
 	const F_FILE_UPLOAD = 'file_upload';
 	/**
-	 * @var bool 
+	 * @var bool
 	 */
 	protected $replace;
 	/**
