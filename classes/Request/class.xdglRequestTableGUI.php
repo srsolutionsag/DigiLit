@@ -254,6 +254,9 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->leftjoin(xdglLibrary::TABLE_NAME, 'library_id', 'id', array('id', 'title'));
 		$xdglRequestList->leftjoin(xdglLibrarian::TABLE_NAME, 'librarian_id', 'usr_id', array('usr_id', 'library_id'));
 		$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array('email'));
+		$xdglRequestList->leftjoin('xdgl_request_usage', 'id', 'request_id', array( 'crs_ref_id'), '=');
+		$xdglRequestList->leftjoin('object_reference', 'xdgl_request_usage.crs_ref_id', 'ref_id', array( 'ref_id', 'obj_id' ), '=', true);
+		$xdglRequestList->leftjoin('object_data', 'object_reference.obj_id', 'obj_id', array( 'title' ), '=', true);
 		$sel = new arSelect();
 		$sel->setAs('ext_id');
 		if (xdglConfig::hasValidRegex()) {
