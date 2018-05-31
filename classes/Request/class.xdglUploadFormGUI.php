@@ -13,6 +13,10 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 
 	const F_FILE_UPLOAD = 'file_upload';
 	/**
+	 * @var bool
+	 */
+	protected $replace;
+	/**
 	 * @var  xdglRequest
 	 */
 	protected $request;
@@ -48,7 +52,6 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 		$this->parent_gui = $parent_gui;
 		$this->ctrl = $ilCtrl;
 		$this->replace = $this->request->fileExists();
-		var_dump($this->replace); // FSX
 		$this->pl = ilDigiLitPlugin::getInstance();
 		if ($_GET['rl'] == 'true') {
 			$this->pl->updateLanguageFiles();
