@@ -126,7 +126,8 @@ class xdglSearchGUI {
 		$ilObjDigiLit->create();
 		$ilObjectDigiLitGUI = new ilObjDigiLitGUI();
 		$ilObjectDigiLitGUI->putObjectInTree($ilObjDigiLit, $ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));
-		$this->ilObjDigiLitFacadeFactory->requestUsageFactory()->createRequestUsageFromRequestAndDigiLitObject($oldRequest, $ilObjDigiLit);
-		$ilObjectDigiLitGUI->afterSave($ilObjDigiLit);
+		//pass $oldRequestId as array to afterSave in order that in afterSave the function function_get_args behaves correctly in this case as well as in the case a new xdlgRequest was created
+		$oldRequestIdArray = array($oldRequestId);
+		$ilObjectDigiLitGUI->afterSave($ilObjDigiLit, $oldRequestIdArray);
 	}
 }

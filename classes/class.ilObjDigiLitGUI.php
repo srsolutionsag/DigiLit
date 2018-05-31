@@ -119,20 +119,15 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	 * @param bool      $only_parent_func
 	 */
 	public function afterSave(ilObject $newObj) {
-/*		$numargs = func_get_args();
-		if(is_array($numargs[1])) {
-			$request = new xdglRequest($numargs[1][0]);
-		} else {
-			$request = new xdglRequest($numargs[1]);
-		}
-		$request->setDigiLitObjectId($newObj->getId());
-		$request->update();*/
 		global $DIC;
 		$args = func_get_args();
 		$xdglRequestUsage = new xdglRequestUsage();
 		$xdglRequestUsage->setCrsRefId($DIC->repositoryTree()->getParentId($newObj->ref_id));
 		$xdglRequestUsage->setRequestId($args[1][0]);
 		$xdglRequestUsage->setObjId($newObj->getId());
+		$xdglRequest = xdglRequest::find($args[1][0]);
+		$xdglRequest->setNumberOfUsages($xdglRequest->getNumberOfUsages() + 1);
+		$xdglRequest->update();
 		$xdglRequestUsage->create();
 		parent::afterSave($newObj);
 	}

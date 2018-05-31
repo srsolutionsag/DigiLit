@@ -30,6 +30,9 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 		$xdglRequestUsage->setObjId($ilObjDigiLit->getId());
 		$xdglRequestUsage->setCrsRefId(ilObjDigiLit::returnParentCrsRefId($ilObjDigiLit->getRefId()));
 		$xdglRequestUsage->setRequestId($xdglRequest->getId());
+		$xdglRequest = xdglRequest::find($xdglRequest->getId());
+		$xdglRequest->setNumberOfUsages($xdglRequest->getNumberOfUsages() + 1);
+		$xdglRequest->update();
 		$xdglRequestUsage->create();
 		return $xdglRequestUsage;
 	}
