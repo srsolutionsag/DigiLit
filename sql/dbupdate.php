@@ -78,21 +78,10 @@ xdglConfig::setConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY, true);
 ?>
 <#9>
 <?php
-/* column numer of usages has to be added to the table xdgl_request because it is needed in update step 11
- updateDB is not possible in this step because the xdgl_request active record class has not the fields crs_ref_id and digi_lit_object_id
- if xdgl_request would be updated those columns wouldn't be available in update step 11
-*/
-global $ilDB;
-if (!$ilDB->tableColumnExists('xdgl_request', 'number_of_usages')) {
-	$ilDB->manipulate('ALTER TABLE xdgl_request ADD COLUMN number_of_usages INT');
-}
-?>
-<#10>
-<?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
 xdglRequestUsage::updateDB();
 ?>
-<#11>
+<#10>
 <?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php';
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/RequestUsage/class.xdglRequestUsage.php';
@@ -112,8 +101,6 @@ while($row = $ilDB->fetchAssoc($res))
 		$xdglRequest->delete();
 	} else {
 		$xdglRequestUsage->setRequestId($row['id']);
-		$xdglRequest->setNumberOfUsages($xdglRequest->getNumberOfUsages() + 1);
-		$xdglRequest->update();
 	}
 	$xdglRequestUsage->setObjId($row['digi_lit_object_id']);
 	$xdglRequestUsage->setCrsRefId($row['crs_ref_id']);
@@ -121,7 +108,7 @@ while($row = $ilDB->fetchAssoc($res))
 }
 
 ?>
-<#12>
+<#11>
 <?php
 global $ilDB;
 if ($ilDB->tableColumnExists('xdgl_request', 'digi_lit_object_id')) {

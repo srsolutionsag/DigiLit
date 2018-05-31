@@ -125,9 +125,6 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$xdglRequestUsage->setCrsRefId($DIC->repositoryTree()->getParentId($newObj->ref_id));
 		$xdglRequestUsage->setRequestId($args[1][0]);
 		$xdglRequestUsage->setObjId($newObj->getId());
-		$xdglRequest = xdglRequest::find($args[1][0]);
-		$xdglRequest->setNumberOfUsages($xdglRequest->getNumberOfUsages() + 1);
-		$xdglRequest->update();
 		$xdglRequestUsage->create();
 		parent::afterSave($newObj);
 	}

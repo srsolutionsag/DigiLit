@@ -281,14 +281,6 @@ class xdglRequest extends ActiveRecord {
 	 * @var string
 	 */
 	protected $ext_id = '';
-	/**
-	 * @var int
-	 *
-	 * @db_has_field        true
-	 * @db_fieldtype        integer
-	 * @db_length           4
-	 */
-	protected $number_of_usages;
 
 
 
@@ -1134,21 +1126,5 @@ class xdglRequest extends ActiveRecord {
 	 */
 	public function setLastChange($last_change) {
 		$this->last_change = $last_change;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getNumberOfUsages() {
-		return $this->number_of_usages;
-	}
-
-
-	/**
-	 * @param int $number_of_usages
-	 */
-	public function setNumberOfUsages($number_of_usages) {
-		$this->number_of_usages = $number_of_usages;
 	}
 }

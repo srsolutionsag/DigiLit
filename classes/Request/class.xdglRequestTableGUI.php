@@ -257,6 +257,8 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->leftjoin('xdgl_request_usage', 'id', 'request_id', array( 'crs_ref_id'), '=');
 		$xdglRequestList->leftjoin('object_reference', 'xdgl_request_usage.crs_ref_id', 'ref_id', array( 'ref_id', 'obj_id' ), '=', true);
 		$xdglRequestList->leftjoin('object_data', 'object_reference.obj_id', 'obj_id', array( 'title' ), '=', true);
+
+		// Ext_ID
 		$sel = new arSelect();
 		$sel->setAs('ext_id');
 		if (xdglConfig::hasValidRegex()) {
@@ -272,6 +274,12 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		}
 		$xdglRequestList->getArSelectCollection()->add($sel);
 
+		// number_of_usages
+		$sel = new arSelect();
+		$sel->setAs('number_of_usages');
+		$sel->setFieldName('COUNT(xdgl_request_usage.id)');
+		$xdglRequestList->getArSelectCollection()->add($sel);
+
 		if (!ilObjDigiLitAccess::showAllLibraries()) {
 			$lib_ids = xdglLibrary::getLibraryIdsForUser($ilUser);
 			$xdglRequestList->where(array('xdgl_library.id' => $lib_ids));
@@ -285,7 +293,6 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
 
-		//		$xdglRequestList->debug();
 		$a_data = $xdglRequestList->getArray();
 
 		$this->setData($a_data);
