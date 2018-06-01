@@ -227,7 +227,19 @@ class xdglRequestTableGUI extends ilTable2GUI {
 					case 'number_of_usages':
 						$start_between = substr($value, 0, strpos($value, '-'));
 						$end_between = str_replace($start_between . '-', '', $value);
-						$xdglRequestList->where('number_of_usages'  . ' BETWEEN ' . $start_between . ' AND ' . $end_between);
+
+						$h = new arHaving();
+						$h->setFieldname('number_of_usages');
+						$h->setOperator('>');
+						$h->setValue($start_between);
+						$xdglRequestList->getArHavingCollection()->add($h);
+
+						$h = new arHaving();
+						$h->setFieldname('number_of_usages');
+						$h->setOperator('<');
+						$h->setValue($end_between);
+						$xdglRequestList->getArHavingCollection()->add($h);
+
 						break;
 					default:
 						$xdglRequestList->where(array($field => $value));
@@ -293,7 +305,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
 
-		$xdglRequestList->where("1=1 GROUP BY xdgl_request_usage.id"); // ActiveRecors currently does not support GROUP BY, therefore we add a whereStatement with the GROUP BY but must prepend a 1=1 because of the automatic concatinating of the query with a AND.
+		$xdglRequestList->where("1=1 GROUP BY xdgl_request.id"); // ActiveRecors currently does not support GROUP BY, therefore we add a whereStatement with the GROUP BY but must prepend a 1=1 because of the automatic concatinating of the query with a AND.
 
 		$a_data = $xdglRequestList->getArray();
 
