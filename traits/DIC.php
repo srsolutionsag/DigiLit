@@ -7,11 +7,10 @@ namespace xdgl;
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 trait DIC {
 
 	/**
-	 * @return \ILIAS\DI\Container|LegacyDIC
+	 * @return Container
 	 */
 	public function dic() {
 		if (!is_object($GLOBALS['DIC'])) {
@@ -65,7 +64,7 @@ trait DIC {
 
 
 	/**
-	 * @return \ILIAS\DI\UIServices
+	 * @return UIServices
 	 */
 	protected function ui() {
 		return $this->dic()->ui();
@@ -85,13 +84,24 @@ trait DIC {
 	}
 }
 
-class LegacyDIC implements \ArrayAccess {
+/**
+ * Class LegacyDIC
+ *
+ * @package xdgl
+ */
+class LegacyDIC implements Container {
 
+	/**
+	 * @inheritdoc
+	 */
 	public function offsetExists($offset) {
 		return true;
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function offsetGet($offset) {
 		switch ($offset) {
 		case 'tree':
@@ -100,52 +110,137 @@ class LegacyDIC implements \ArrayAccess {
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function offsetSet($offset, $value) {
 		// TODO: Implement offsetSet() method.
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function offsetUnset($offset) {
 		// TODO: Implement offsetUnset() method.
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function ctrl() {
 		return $GLOBALS['ilCtrl'];
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function user() {
 		return $GLOBALS['ilUser'];
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function ui() {
 		return new LegacyUI();
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function tabs() {
 		return $GLOBALS['ilTabs'];
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function language() {
 		return $GLOBALS['lng'];
 	}
 
 
+	/**
+	 * @inheritdoc
+	 */
 	public function repositoryTree() {
 		return $GLOBALS['tree'];
 	}
 }
 
-class LegacyUI {
+/**
+ * Class LegacyUI
+ *
+ * @package xdgl
+ */
+class LegacyUI implements UIServices {
 
 	/**
-	 * @return \ilTemplate
+	 * @inheritdoc
 	 */
 	public function mainTemplate() {
 		return $GLOBALS['tpl'];
 	}
+}
+
+/**
+ * Interface UIServices
+ *
+ * @package xdgl
+ */
+interface UIServices {
+
+	/**
+	 * @return \ilTemplate
+	 */
+	public function mainTemplate();
+}
+
+/**
+ * Interface Container
+ *
+ * @package xdgl
+ */
+interface Container extends \ArrayAccess {
+
+	/**
+	 * @return \ilCtrl
+	 */
+	public function ctrl();
+
+
+	/**
+	 * @return \ilObjUser
+	 */
+	public function user();
+
+
+	/**
+	 * @return LegacyUI
+	 */
+	public function ui();
+
+
+	/**
+	 * @return \ilTabsGUI
+	 */
+	public function tabs();
+
+
+	/**
+	 * @return \ilLanguage
+	 */
+	public function language();
+
+
+	/**
+	 * @return ilTree
+	 */
+	public function repositoryTree();
 }
