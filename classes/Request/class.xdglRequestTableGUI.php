@@ -293,6 +293,8 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
 
+		$xdglRequestList->where("1=1 GROUP BY xdgl_request_usage.id"); // ActiveRecors currently does not support GROUP BY, therefore we add a whereStatement with the GROUP BY but must prepend a 1=1 because of the automatic concatinating of the query with a AND.
+
 		$a_data = $xdglRequestList->getArray();
 
 		$this->setData($a_data);
