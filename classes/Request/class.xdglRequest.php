@@ -609,13 +609,13 @@ class xdglRequest extends ActiveRecord {
 		 * @var $ilObjDigiLitFacadeFactory ilObjDigiLitFacadeFactory
 		 */
 		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
-		$xdglRequestUsageArray = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesArrayByRequestId($this->getId());
+		$xdglRequestUsageArray = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesByRequestId($this->getId());
 		foreach($xdglRequestUsageArray as $key => $data) {
-			if($data['obj_id']) {
+			if($data->getObjId()) {
 				/**
 				 * @var $ilObjDigiLit ilObjDigiLit
 				 */
-				$ilObjDigiLit_rec = ilObjDigiLit::getObjectById($data['obj_id']);
+				$ilObjDigiLit_rec = ilObjDigiLit::getObjectById($data->getObjId());
 				$ilObjDigiLit_rec['title'] = $this->getTitle();
 				ilObjDigiLit::updateObjDigiLitTitle($ilObjDigiLit_rec);
 			}

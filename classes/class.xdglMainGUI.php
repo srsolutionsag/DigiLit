@@ -1,5 +1,4 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * Class xdglMainGUI
@@ -84,10 +83,9 @@ class xdglMainGUI {
 
 				break;
 		}
-		if (xdglConfig::is50()) {
-			$this->tpl->getStandardTemplate();
-			$this->tpl->show();
-		}
+		$this->tpl->getStandardTemplate();
+		$this->tpl->show();
+
 	}
 }
 

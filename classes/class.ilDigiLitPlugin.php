@@ -61,7 +61,7 @@ class ilDigiLitPlugin extends ilRepositoryObjectPlugin {
 	}
 
 	public function allowCopy() {
-		return true;
+		return false;
 	}
 
 

@@ -21,7 +21,6 @@
 	+-----------------------------------------------------------------------------+
 */
 
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * User Interface class for example repository object.
@@ -366,12 +365,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$pl = ilDigiLitPlugin::getInstance();
 		$tpl->setTitle($title);
 		$tpl->setDescription('');
-		if (xdglConfig::is50()) {
-			$tpl->setTitleIcon(ilUtil::getImagePath('icon_xdgl.svg', 'Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit'));
-		} else {
-			$tpl->setTitleIcon($pl->getImagePath('icon_' . ilDigiLitPlugin::getStaticPluginPrefix() . '_b.png'),
-				$pl->txt('xdgl_icon') . ' ' . $pl->txt('obj_' . ilDigiLitPlugin::getStaticPluginPrefix()));
-		}
+		$tpl->setTitleIcon(ilUtil::getImagePath('icon_xdgl.svg', 'Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit'));
 	}
 
 

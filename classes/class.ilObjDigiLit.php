@@ -21,7 +21,6 @@
 	+-----------------------------------------------------------------------------+
 */
 
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
 
 /**
  * Class ilObjDigiLit

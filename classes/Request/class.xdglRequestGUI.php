@@ -298,7 +298,7 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$ilConfirmationGUI = new ilConfirmationGUI();
 		$ilConfirmationGUI->setFormAction($this->ctrl->getFormAction($this));
-		$xdglRequestUsageArray = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesArrayByRequestId($this->xdglRequest->getId());
+		$xdglRequestUsageArray = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesByRequestId($this->xdglRequest->getId());
 		$crs_titles_array = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getAllCoursTitlesWithRequestUsages($xdglRequestUsageArray);
 		$ilConfirmationGUI->setCancel($this->pl->txt('request_cancel'), self::CMD_CANCEL);
 		if(!empty($crs_titles_array)) {

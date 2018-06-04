@@ -30,9 +30,9 @@ interface xdglRequestUsageFactoryInterface {
 	/**
 	 * @param int $request_id
 	 *
-	 * @return array of xdglRequestUsage | null
+	 * @return array of xdglRequestUsages | null
 	 */
-	public function getRequestUsagesArrayByRequestId($request_id);
+	public function getRequestUsagesByRequestId($request_id);
 
 
 	/**

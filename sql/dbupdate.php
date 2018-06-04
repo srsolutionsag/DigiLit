@@ -32,9 +32,8 @@ global $ilDB;
 /**
  * @var $ilDB ilDB
  */
-$xdglRequest = new xdglRequest();
-$ilDB->manipulate('UPDATE ' . $xdglRequest->getConnectorContainerName() . ' SET library_id = ' . $ilDB->quote(xdglLibrary::getPrimaryId(), 'integer'));
-$ilDB->manipulate('UPDATE ' . $xdglRequest->getConnectorContainerName() . ' SET librarian_id = ' . $ilDB->quote(xdglRequest::LIBRARIAN_ID_NONE, 'integer') . ' WHERE librarian_id IS NULL');
+$ilDB->manipulate('UPDATE ' . xdglRequest::TABLE_NAME . ' SET library_id = ' . $ilDB->quote(xdglLibrary::getPrimaryId(), 'integer'));
+$ilDB->manipulate('UPDATE ' . xdglRequest::TABLE_NAME . ' SET librarian_id = ' . $ilDB->quote(xdglRequest::LIBRARIAN_ID_NONE, 'integer') . ' WHERE librarian_id IS NULL');
 ?>
 <#5>
 <?php
@@ -111,8 +110,9 @@ while($row = $ilDB->fetchAssoc($res))
 <#11>
 <?php
 global $ilDB;
-if ($ilDB->tableColumnExists('xdgl_request', 'digi_lit_object_id')) {
-	$ilDB->manipulate('ALTER TABLE xdgl_request DROP digi_lit_object_id, DROP crs_ref_id');
+if ($ilDB->tableColumnExists('xdgl_request', 'digi_lit_object_id') && $ilDB->tableColumnExists('xdgl_request', 'crs_ref_id')) {
+	$ilDB->dropTableColumn('xdgl_request', 'digi_lit_object_id');
+	$ilDB->dropTableColumn('xdgl_request', 'crs_ref_id');
 }
 ?>
 

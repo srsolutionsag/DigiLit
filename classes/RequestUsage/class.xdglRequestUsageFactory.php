@@ -37,9 +37,9 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function getRequestUsagesArrayByRequestId($request_id) {
-		$xdglRequestUsageArray = xdglRequestUsage::where(array('request_id' => $request_id))->getArray();
-		return $xdglRequestUsageArray;
+	public function getRequestUsagesByRequestId($request_id) {
+		$xdglRequestUsagesArray = xdglRequestUsage::where(array('request_id' => $request_id))->get();
+		return $xdglRequestUsagesArray;
 	}
 
 	/**
@@ -48,7 +48,7 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 	public function getAllCoursTitlesWithRequestUsages($request_usages_array) {
 		$crs_titles_array = [];
 		foreach($request_usages_array as $key => $data) {
-			$crs_obj_id = ilObject2::_lookupObjectId($data['crs_ref_id']);
+			$crs_obj_id = ilObject2::_lookupObjectId($data->getCrsRefId());
 			$crs_titles_array[] = ilObject2::_lookupTitle($crs_obj_id);
 		}
 		return $crs_titles_array;
@@ -59,9 +59,9 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 	 */
 	public function deleteUsagesAndDigiLitObjectsByRequestId($request_id) {
 		global $ilDB;
-		$xdglRequestUsageArray = $this->getRequestUsagesArrayByRequestId($request_id);
+		$xdglRequestUsageArray = $this->getRequestUsagesByRequestId($request_id);
 		foreach($xdglRequestUsageArray as $key => $data) {
-			$ilDB->manipulate("DELETE FROM object_data WHERE obj_id = "  . $ilDB->quote($data['obj_id'], 'integer'));
+			$ilDB->manipulate("DELETE FROM object_data WHERE obj_id = "  . $ilDB->quote($data->getObjId(), 'integer'));
 		}
 		$ilDB->manipulate("DELETE FROM xdgl_request_usage WHERE request_id = "  . $ilDB->quote($request_id, 'integer'));
 	}

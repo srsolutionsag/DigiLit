@@ -13,7 +13,7 @@
     },
     "classmap": [
       "classes",
-      "Interface",
+      "interfaces",
       "traits",
       "../../../../../../../Services/ActiveRecord",
       "../../../../../../../Services/Repository",
