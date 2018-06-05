@@ -110,8 +110,11 @@ while($row = $ilDB->fetchAssoc($res))
 <#11>
 <?php
 global $ilDB;
-if ($ilDB->tableColumnExists('xdgl_request', 'digi_lit_object_id') && $ilDB->tableColumnExists('xdgl_request', 'crs_ref_id')) {
+if ($ilDB->tableColumnExists('xdgl_request', 'digi_lit_object_id')) {
 	$ilDB->dropTableColumn('xdgl_request', 'digi_lit_object_id');
+
+}
+if ($ilDB->tableColumnExists('xdgl_request', 'crs_ref_id')) {
 	$ilDB->dropTableColumn('xdgl_request', 'crs_ref_id');
 }
 ?>
