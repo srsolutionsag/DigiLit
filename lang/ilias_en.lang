@@ -1,3 +1,4 @@
+add_literature#:#Add literature
 admin_common#:#Common
 admin_eula#:#EULA
 admin_eula_text#:#EULA
@@ -20,6 +21,10 @@ admin_regex_info#:#With Delimiter (e.g. /([0-9]{5}-[0-9]{2})/uim)
 admin_use_libraries#:#Use mutliple Libraries
 admin_use_regex#:#User Regular Expression für DigiLit-ID
 admin_use_regex_info#:#Regex-Search in Course-Title, the first match will be used
+admin_use_search#:#Use literature search
+admin_use_search_info#:#With the literature search you can search for already available digital content before you if necessary make an proposal for a ditial version of a print medium.
+author#:#Author
+Über die Literatursuche kann nach bereits digital verfügbarem Inhalt gesucht werden, bevor ggf. ein Antrag für eine digitale Version eines Printmediums gemacht wird.
 common_actions#:#Actions
 common_bool_0#:#No
 common_bool_1#:#Yes
@@ -123,16 +128,20 @@ request_status_2#:#In Progress
 request_status_3#:#File available
 request_status_4#:#Request refused
 request_status_5#:#Copied
+request_status_6#:#Assigned
 request_title#:#Title of Article
 request_update#:#Save
 request_upload_date#:#Uploaded
 request_view#:#View
 request_volume#:#Jahrgang
+search#:#Suchen
+search_literature#:#Search literature
 status_no_access_to_download#:#Due to legal restrictions you are not allowed to download this DigiLit
 tab_content#:#Requests
 tab_libraries#:#Libraries
 tab_requests#:#Manage Requests
 tab_settings#:#Settings
+title#:#Title
 upload_cancel#:#Cancel
 upload_file#:#File
 upload_replace#:#Replace
@@ -147,3 +156,9 @@ xdgl_read#:#Download
 xdgl_visible#:#Visible
 xdgl_write#:#Edit
 xdgl_new#:#Request new DigiLit
+number_of_usages#:#Number of usages
+msg_request_delete#:#Do you really want to delete the shown entry?
+msg_request_delete_with_usages#:#The entry can not be deleted, because the entry is used in the following courses:
+permission_denied#:#You don't have the necessary permissions.
+delete_request#:#Delete request
+msg_request_deleted#:#The request was deleted.

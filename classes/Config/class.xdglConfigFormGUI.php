@@ -1,6 +1,4 @@
 <?php
-require_once('./Services/Form/classes/class.ilPropertyFormGUI.php');
-require_once('class.xdglConfig.php');
 
 /**
  * Form-Class xdglConfigFormGUI
@@ -91,6 +89,9 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 		$this->addItem($te);
 
+		$h = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_SEARCH), xdglConfig::F_USE_SEARCH);
+		$this->addItem($h);
+
 		//		// Mailadress
 		//		$te = new ilTextInputGUI($this->txt(xdglConfig::F_MAIL), xdglConfig::F_MAIL);
 		//		$te->setRequired(true);
@@ -139,7 +140,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 		// EULA
 		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_EULA_TEXT), xdglConfig::F_EULA_TEXT);
 		$te->setUseRte(true);
-		$te->setRteTags(array( 'a', 'p', 'ul', 'li', 'ol' ));
+		$te->setRteTags(array('a', 'p', 'ul', 'li', 'ol'));
 		$te->setCols(self::A_COLS);
 		$te->setRows(self::A_ROWS);
 		$this->addItem($te);
@@ -166,7 +167,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	private function getValuesForItem($item, &$array) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
-			$array[$key] = xdglConfig::get($key);
+			$array[$key] = xdglConfig::getConfigValue($key);
 			//			echo '<pre>' . print_r($array, 1) . '</pre>';
 			if (self::checkForSubItem($item)) {
 				foreach ($item->getSubItems() as $subitem) {
@@ -181,13 +182,13 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public function saveObject() {
-		if (! $this->checkInput()) {
+		if (!$this->checkInput()) {
 			return false;
 		}
 		foreach ($this->getItems() as $item) {
 			$this->saveValueForItem($item);
 		}
-		xdglConfig::set(xdglConfig::F_CONFIG_VERSION, xdglConfig::CONFIG_VERSION);
+		xdglConfig::setConfigValue(xdglConfig::F_CONFIG_VERSION, xdglConfig::CONFIG_VERSION);
 
 		return true;
 	}
@@ -217,12 +218,12 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 		$use_regex = $this->getItemByPostVar(xdglConfig::F_USE_REGEX);
 		if ($use_regex->getChecked()) {
 			$regex = $this->getItemByPostVar(xdglConfig::F_REGEX);
-			if (! xdglConfig::isRegexValid($regex->getValue())) {
+			if (!xdglConfig::isRegexValid($regex->getValue())) {
 				$check = false;
 				$regex->setAlert('Regular Expression not valid');
 			}
 		}
-		if (! $check) {
+		if (!$check) {
 			global $lng;
 			ilUtil::sendFailure($lng->txt("form_input_not_valid"));
 
@@ -239,7 +240,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	private function saveValueForItem($item) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
-			xdglConfig::set($key, $this->getInput($key));
+			xdglConfig::setConfigValue($key, $this->getInput($key));
 			if (self::checkForSubItem($item)) {
 				foreach ($item->getSubItems() as $subitem) {
 					$this->saveValueForItem($subitem);
@@ -255,7 +256,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public static function checkForSubItem($item) {
-		return ! $item instanceof ilFormSectionHeaderGUI AND ! $item instanceof ilMultiSelectInputGUI;
+		return !$item instanceof ilFormSectionHeaderGUI AND !$item instanceof ilMultiSelectInputGUI;
 	}
 
 
@@ -265,7 +266,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @return bool
 	 */
 	public static function checkItem($item) {
-		return ! $item instanceof ilFormSectionHeaderGUI;
+		return !$item instanceof ilFormSectionHeaderGUI;
 	}
 
 

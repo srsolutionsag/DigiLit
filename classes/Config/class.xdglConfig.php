@@ -1,6 +1,4 @@
 <?php
-require_once('./Services/ActiveRecord/class.ActiveRecord.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
 
 /**
  * Class xdglConfig
@@ -10,6 +8,7 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
  */
 class xdglConfig extends ActiveRecord {
 
+	const TABLE_NAME = 'xdgl_config';
 	const CONFIG_VERSION = 2;
 	const F_ROLES_ADMIN = 'permission';
 	const F_ROLES_MANAGER = 'permission_manager';
@@ -22,6 +21,7 @@ class xdglConfig extends ActiveRecord {
 	const F_MAX_DIGILITS = 'max_digilits';
 	const F_EULA_TEXT = 'eula_text';
 	const F_USE_LIBRARIES = 'use_libraries';
+	const F_USE_SEARCH = 'use_search';
 	const F_OWN_LIBRARY_ONLY = 'own_library_only';
 	const F_USE_REGEX = 'use_regex';
 	const F_REGEX = 'regex';
@@ -40,10 +40,26 @@ class xdglConfig extends ActiveRecord {
 
 
 	/**
+	 * @return string
+	 */
+	static function returnDbTableName() {
+		return self::TABLE_NAME;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getConnectorContainerName(){
+		return self::TABLE_NAME;
+	}
+
+
+	/**
 	 * @return bool
 	 */
 	public static function isConfigUpToDate() {
-		return self::get(self::F_CONFIG_VERSION) == self::CONFIG_VERSION;
+		return self::getConfigValue(self::F_CONFIG_VERSION) == self::CONFIG_VERSION;
 	}
 
 
@@ -51,11 +67,11 @@ class xdglConfig extends ActiveRecord {
 	 * @return bool
 	 */
 	public static function hasValidRegex() {
-		if (! self::get(self::F_USE_REGEX)) {
+		if (!self::getConfigValue(self::F_USE_REGEX)) {
 			return false;
 		}
 
-		return self::isRegexValid(self::get(self::F_REGEX));
+		return self::isRegexValid(self::getConfigValue(self::F_REGEX));
 	}
 
 
@@ -64,8 +80,8 @@ class xdglConfig extends ActiveRecord {
 	 *
 	 * @return mixed
 	 */
-	public static function get($name) {
-		if (! self::$cache_loaded[$name]) {
+	public static function getConfigValue($name) {
+		if (!self::$cache_loaded[$name]) {
 			$obj = new self($name);
 			if ($_SERVER['REMOTE_ADDR'] == '212.41.220.231') {
 				//				var_dump(json_decode($obj->getValue())); // FSX
@@ -82,11 +98,11 @@ class xdglConfig extends ActiveRecord {
 	 * @param $name
 	 * @param $value
 	 */
-	public static function set($name, $value) {
+	public static function setConfigValue($name, $value) {
 		$obj = new self($name);
 		$obj->setValue(json_encode($value));
 
-		if (self::where(array( 'name' => $name ))->hasSets()) {
+		if (self::where(array('name' => $name))->hasSets()) {
 			$obj->update();
 		} else {
 			$obj->create();
@@ -162,14 +178,6 @@ class xdglConfig extends ActiveRecord {
 
 
 	/**
-	 * @return string
-	 */
-	static function returnDbTableName() {
-		return 'xdgl_config';
-	}
-
-
-	/**
 	 * @return bool
 	 * @deprecated use xdgl::is50()
 	 */
@@ -178,4 +186,4 @@ class xdglConfig extends ActiveRecord {
 	}
 }
 
-?>
+

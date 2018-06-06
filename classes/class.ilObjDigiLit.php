@@ -21,9 +21,7 @@
 	+-----------------------------------------------------------------------------+
 */
 
-require_once('./Services/Repository/classes/class.ilObjectPlugin.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequestFormGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
+
 /**
  * Class ilObjDigiLit
  *
@@ -73,24 +71,43 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 
 	public function doDelete() {
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
-		$xdglRequest->deleteFile();
-		$xdglRequest->delete();
+		$use_search = xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH);
+		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+		$xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
+		if($use_search) {
+			$xdglRequestUsage->delete();
+		} else {
+			$xdglRequest = xdglRequest::find($xdglRequestUsage->getRequestId());
+			$xdglRequest->deleteFile();
+			$xdglRequest->delete();
+			$xdglRequestUsage->delete();
+		}
 	}
 
 
+
 	/**
-	 * @param ilObjDigiLit $new_obj
-	 * @param              $a_target_id
-	 * @param null         $a_copy_id
+	 * @param      $new_obj
+	 * @param      $a_target_id
+	 * @param null $a_copy_id
 	 *
-	 * @return bool|void
+	 * @return bool
+	 * @throws \Exception
 	 */
-	protected function doCloneObject(ilObjDigiLit $new_obj, $a_target_id, $a_copy_id = NULL) {
-		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
+	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null) {
+		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+		$xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
+		$ilObjDigiLitFacadeFactory->requestUsageFactory()->copyRequestUsage($xdglRequestUsage, $new_obj->getId());
+		return true;
+
+/*		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
 		xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
 
-		return true;
+		return true;*/
+
+/*
+ *
+ */
 	}
 
 
@@ -105,7 +122,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 		 * @var $tree ilTree
 		 */
 		while (ilObject2::_lookupType($ref_id, true) != 'crs') {
-			if($ref_id == 1) {
+			if ($ref_id == 1) {
 				ilUtil::sendFailure('DigiLit-Objects can be created in courses only.', true);
 				ilUtil::redirect('/');
 			}
@@ -114,6 +131,20 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 		return $ref_id;
 	}
+
+	public static function getObjectById($obj_id) {
+		global $ilDB;
+		$query = "SELECT * FROM ilias.object_data where obj_id = ".
+			$ilDB->quote($obj_id, "text");
+		$obj_set = $ilDB->query($query);
+		$obj_rec = $ilDB->fetchAssoc($obj_set);
+		return $obj_rec;
+	}
+
+	public static function updateObjDigiLitTitle($ilObjDigiLit_rec) {
+		global $ilDB;
+		$ilDB->manipulate("UPDATE object_data SET title = ".$ilDB->quote($ilObjDigiLit_rec['title']) . " WHERE obj_id = ".$ilDB->quote($ilObjDigiLit_rec['obj_id'], "integer"));
+	}
 }
 
-?>
+

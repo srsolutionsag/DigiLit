@@ -1,5 +1,4 @@
 <?php
-require_once('./Services/Form/classes/class.ilPropertyFormGUI.php');
 
 /**
  * Class xdglLibraryFormGUI
@@ -108,12 +107,12 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 
 	public function fillForm() {
 		$array = array(
-			self::F_TITLE => $this->library->getTitle(),
-			self::F_DESCRIPTION => $this->library->getDescription(),
-			self::F_EMAIL => $this->library->getEmail(),
-			self::F_REQUEST_COUNT => $this->library->getRequestCount(),
+			self::F_TITLE           => $this->library->getTitle(),
+			self::F_DESCRIPTION     => $this->library->getDescription(),
+			self::F_EMAIL           => $this->library->getEmail(),
+			self::F_REQUEST_COUNT   => $this->library->getRequestCount(),
 			self::F_LIBRARIAN_COUNT => $this->library->getLibrarianCount(),
-			self::F_ACTIVE => $this->library->isActive(),
+			self::F_ACTIVE          => $this->library->isActive(),
 		);
 
 		$this->setValuesByArray($array);
@@ -170,4 +169,4 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 	}
 }
 
-?>
+

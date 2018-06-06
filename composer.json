@@ -1,0 +1,32 @@
+{
+  "name": "srag/digilit",
+  "authors": [
+    {
+      "name": "Fabian Schmid",
+      "email": "fs@studer-raimann.ch"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "SRAG\\Plugins\\eBook\\": "src/"
+    },
+    "classmap": [
+      "classes",
+      "interfaces",
+      "traits",
+      "../../../../../../../Services/ActiveRecord",
+      "../../../../../../../Services/Repository",
+      "../../../../../../../Services/Link",
+      "../../../../../../../Services/InfoScreen",
+      "../../../../../../../Services/Table",
+      "../../../../../../../Services/UIComponent",
+      "../../../../../../../Services/Component",
+      "../../../../../../../Services/Mail",
+      "../../../../../../../Services/Utilities",
+      "../../../../../../../Services/UICore",
+      "../../../../../../../Services/User",
+      "../../../../../../../Services/Form"
+    ]
+  }
+}

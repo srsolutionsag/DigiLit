@@ -1,9 +1,5 @@
 <?php
 
-require_once('./Services/Component/classes/class.ilPluginConfigGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfigGUI.php');
-require_once('class.xdglMainGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php');
 /**
  * ilDigiLitConfigGUI
  *
@@ -39,7 +35,7 @@ class ilDigiLitConfigGUI extends ilPluginConfigGUI {
 
 		$a_gui_object = new xdglMainGUI();
 		$a_gui_object->executeCommand();
-//		$ilCtrl->forwardCommand($a_gui_object);
+		//		$ilCtrl->forwardCommand($a_gui_object);
 	}
 
 
@@ -47,4 +43,4 @@ class ilDigiLitConfigGUI extends ilPluginConfigGUI {
 	}
 }
 
-?>
+

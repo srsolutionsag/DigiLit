@@ -1,11 +1,4 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilObjDigiLitAccess.php');
-require_once('class.xdglRequestFormGUI.php');
-require_once('class.xdglRequest.php');
-require_once('class.xdglRequestTableGUI.php');
-require_once('class.xdglUploadFormGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilObjDigiLitGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfigGUI.php');
 
 /**
  * GUI-Class xdglRequestGUI
@@ -19,7 +12,7 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
 class xdglRequestGUI {
 
 	const XDGL_ID = 'xdgl_id';
-	const CDM_CONFIRM_REFUSE = self::CMD_CONFIRM_REFUSE;
+	const CDM_CONFIRM_REFUSE = 'confirmRefuse';
 	const CMD_SELECT_FILE = 'selectFile';
 	const CMD_CANCEL = 'cancel';
 	const CMD_INDEX = 'index';
@@ -29,6 +22,8 @@ class xdglRequestGUI {
 	const CMD_DOWNLOAD_FILE = 'downloadFile';
 	const CMD_DELETE_FILE = 'confirmDeleteFile';
 	const CMD_PERFORM_DELETE_FILE = 'deleteFile';
+	const CMD_DELETE_REQUEST = 'confirmDeleteRequest';
+	const CMD_PERFORM_DELETE_REQUEST = 'deleteRequest';
 	const CMD_SAVE = 'save';
 	const CMD_VIEW = 'view';
 	const CMD_UPDATE = 'update';
@@ -75,6 +70,10 @@ class xdglRequestGUI {
 	 * @var xdglRequest
 	 */
 	protected $xdglRequest;
+	/**
+	 * @var ilObjDigiLitFacadeFactory
+	 */
+	protected $ilObjDigiLitFacadeFactory;
 
 
 	public function __construct() {
@@ -85,6 +84,7 @@ class xdglRequestGUI {
 		$this->access = $ilAccess;
 		$this->ctrl = $ilCtrl;
 		$this->toolbar = $ilToolbar;
+		$this->ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 
 		if ($_GET['rl'] == 'true') {
 			$this->pl->updateLanguageFiles();
@@ -124,6 +124,8 @@ class xdglRequestGUI {
 			case self::CMD_REPLACE_FILE:
 			case self::CMD_DELETE_FILE:
 			case self::CMD_PERFORM_DELETE_FILE:
+			case self::CMD_DELETE_REQUEST:
+			case self::CMD_PERFORM_DELETE_REQUEST:
 			case self::CMD_SANDBOX:
 			case self::CMD_DOWNLOAD_FILE:
 				$this->$cmd();
@@ -179,9 +181,9 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $this->xdglRequest, false, false, false);
 		$xdglRequestFormGUI->setValuesByPost();
-		if ($xdglRequestFormGUI->saveObject(NULL)) {
+		if ($xdglRequestFormGUI->saveObject(null)) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_edit'), true);
-			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+			$this->ctrl->setParameter($this, self::XDGL_ID, null);
 			$this->ctrl->redirect($this);
 		} else {
 			$this->tpl->setContent($xdglRequestFormGUI->getHTML());
@@ -193,9 +195,9 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $this->xdglRequest);
 		$xdglRequestFormGUI->setValuesByPost();
-		if ($xdglRequestFormGUI->saveObject(NULL)) {
+		if ($xdglRequestFormGUI->saveObject(null)) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
-			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+			$this->ctrl->setParameter($this, self::XDGL_ID, null);
 			$this->ctrl->redirect($this);
 		} else {
 			$this->tpl->setContent($xdglRequestFormGUI->getHTML());
@@ -220,7 +222,7 @@ class xdglRequestGUI {
 			$this->xdglRequest->setLibrarianId($ilUser->getId());
 			$this->xdglRequest->update();
 			xdglNotification::sendRejected($this->xdglRequest);
-			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+			$this->ctrl->setParameter($this, self::XDGL_ID, null);
 			$this->ctrl->redirect($this);
 		} else {
 			$form->setValuesByPost();
@@ -235,7 +237,7 @@ class xdglRequestGUI {
 		$this->xdglRequest->setStatus(xdglRequest::STATUS_IN_PROGRRESS);
 		$this->xdglRequest->setLibrarianId($ilUser->getId());
 		$this->xdglRequest->update();
-		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+		$this->ctrl->setParameter($this, self::XDGL_ID, null);
 		$this->ctrl->redirect($this);
 	}
 
@@ -259,7 +261,7 @@ class xdglRequestGUI {
 		$upload_form = new xdglUploadFormGUI($this, $this->xdglRequest);
 		$upload_form->uploadFile();
 
-		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
+		$this->ctrl->setParameter($this, self::XDGL_ID, null);
 		$this->ctrl->redirect($this);
 	}
 
@@ -286,6 +288,41 @@ class xdglRequestGUI {
 			global $ilUser;
 			$this->xdglRequest->setLibrarianId($ilUser->getId());
 			ilUtil::sendSuccess($this->pl->txt('msg_request_file_deleted'), true);
+		} catch (Exception $e) {
+			ilUtil::sendFailure($e->getMessage(), true);
+		}
+		$this->ctrl->redirect($this);
+	}
+
+	protected function confirmDeleteRequest() {
+		ilObjDigiLitAccess::isManager(true);
+		$ilConfirmationGUI = new ilConfirmationGUI();
+		$ilConfirmationGUI->setFormAction($this->ctrl->getFormAction($this));
+		$xdglRequestUsageArray = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesByRequestId($this->xdglRequest->getId());
+		$crs_titles_array = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getAllCoursTitlesWithRequestUsages($xdglRequestUsageArray);
+		$ilConfirmationGUI->setCancel($this->pl->txt('request_cancel'), self::CMD_CANCEL);
+		if(!empty($crs_titles_array)) {
+			$ilConfirmationGUI->setHeaderText($this->pl->txt('msg_request_delete_with_usages') . "<pre>".implode(PHP_EOL,$crs_titles_array)."</pre>");
+		}
+		else {
+			$ilConfirmationGUI->setHeaderText($this->pl->txt('msg_request_delete'));
+			$ilConfirmationGUI->setConfirm($this->pl->txt('delete_request'), self::CMD_PERFORM_DELETE_REQUEST);
+		}
+		$ilConfirmationGUI->addItem(self::XDGL_ID, $this->xdglRequest->getId(), $this->xdglRequest->getTitle());
+		$this->tpl->setContent($ilConfirmationGUI->getHTML());
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	protected function deleteRequest() {
+		ilObjDigiLitAccess::isManager(true);
+		try {
+			$this->ilObjDigiLitFacadeFactory->requestUsageFactory()->deleteUsagesAndDigiLitObjectsByRequestId($this->xdglRequest->getId());
+			$this->xdglRequest->setStatus(xdglRequest::STATUS_DELETED);
+			$this->xdglRequest->update();
+			ilUtil::sendSuccess($this->pl->txt('msg_request_deleted'), true);
 		} catch (Exception $e) {
 			ilUtil::sendFailure($e->getMessage(), true);
 		}
@@ -320,4 +357,3 @@ class xdglRequestGUI {
 	}
 }
 
-?>

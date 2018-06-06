@@ -1,7 +1,4 @@
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.xdgl.php');
-require_once('./Services/ActiveRecord/class.ActiveRecord.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php');
 
 /**
  * Class xdglLibrary
@@ -101,25 +98,9 @@ class xdglLibrary extends ActiveRecord {
 		/**
 		 * @var $res xdglLibrary
 		 */
-		return self::where(array( 'is_primary' => 1 ))->first();
+		return self::where(array('is_primary' => 1))->first();
 	}
 
-
-	//	/**
-	//	 * @param ilObjUser $ilObjUser
-	//	 *
-	//	 * @return ActiveRecord|xdglLibrary
-	//	 */
-	//	public static function getLibraryForUser(ilObjUser $ilObjUser) {
-	//		$xdglLibrarian = xdglLibrarian::find($ilObjUser->getId());
-	//		if ($xdglLibrarian instanceof xdglLibrarian) {
-	//			$libraryId = $xdglLibrarian->getLibraryId();
-	//
-	//			return self::find($libraryId);
-	//		}
-	//
-	//		return self::getPrimary();
-	//	}
 
 	/**
 	 * @param ilObjUser $ilObjUser
@@ -127,7 +108,7 @@ class xdglLibrary extends ActiveRecord {
 	 * @return array
 	 */
 	public static function getLibraryIdsForUser(ilObjUser $ilObjUser) {
-		return xdglLibrarian::where(array( 'usr_id' => $ilObjUser->getId() ))->getArray(NULL, 'library_id');
+		return xdglLibrarian::where(array('usr_id' => $ilObjUser->getId()))->getArray(null, 'library_id');
 	}
 
 
@@ -154,10 +135,15 @@ class xdglLibrary extends ActiveRecord {
 
 	/**
 	 * @return string
-	 * @description Return the Name of your Database Table
-	 * @deprecated
 	 */
 	static function returnDbTableName() {
+		return self::TABLE_NAME;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getConnectorContainerName() {
 		return self::TABLE_NAME;
 	}
 
@@ -188,7 +174,7 @@ class xdglLibrary extends ActiveRecord {
 
 
 	public function afterObjectLoad() {
-		$this->setLibrarians(xdglLibrarian::where(array( 'library_id' => $this->getId() ))->get());
+		$this->setLibrarians(xdglLibrarian::where(array('library_id' => $this->getId()))->get());
 	}
 
 
@@ -199,7 +185,7 @@ class xdglLibrary extends ActiveRecord {
 		if ($this->getIsPrimary()) {
 			return false;
 		}
-		if (self::where(array( 'is_primary' => 1 ))->count() == 0) {
+		if (self::where(array('is_primary' => 1))->count() == 0) {
 			$this->makePrimary();
 
 			return false;
@@ -223,9 +209,9 @@ class xdglLibrary extends ActiveRecord {
 	 * @return bool
 	 */
 	public function getRequestCount() {
-		static $count = NULL;
-		if ($count === NULL) {
-			$count = xdglRequest::where(array( 'library_id' => $this->getId() ))->count();
+		static $count = null;
+		if ($count === null) {
+			$count = xdglRequest::where(array('library_id' => $this->getId()))->count();
 		}
 
 		return $count;
@@ -400,4 +386,4 @@ class xdglLibrary extends ActiveRecord {
 	}
 }
 
-?>
+

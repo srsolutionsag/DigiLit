@@ -1,7 +1,4 @@
 <?php
-require_once('./Services/Form/classes/class.ilPropertyFormGUI.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilObjDigiLit.php');
 
 /**
  * GUI-Class xdglRequestFormGUI
@@ -15,6 +12,10 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
 class xdglUploadFormGUI extends ilPropertyFormGUI {
 
 	const F_FILE_UPLOAD = 'file_upload';
+	/**
+	 * @var bool
+	 */
+	protected $replace;
 	/**
 	 * @var  xdglRequest
 	 */
@@ -51,7 +52,6 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 		$this->parent_gui = $parent_gui;
 		$this->ctrl = $ilCtrl;
 		$this->replace = $this->request->fileExists();
-		var_dump($this->replace); // FSX
 		$this->pl = ilDigiLitPlugin::getInstance();
 		if ($_GET['rl'] == 'true') {
 			$this->pl->updateLanguageFiles();
@@ -71,7 +71,7 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 
 		// Add File-Upload
 		$in_file = new ilFileInputGUI($this->pl->txt('upload_file'), self::F_FILE_UPLOAD);
-		$in_file->setSuffixes(array( 'pdf' ));
+		$in_file->setSuffixes(array('pdf'));
 		$in_file->setRequired(true);
 		$this->addItem($in_file);
 

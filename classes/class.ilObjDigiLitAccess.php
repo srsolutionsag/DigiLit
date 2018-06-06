@@ -21,11 +21,6 @@
 	+-----------------------------------------------------------------------------+
 */
 
-require_once('./Services/Repository/classes/class.ilObjectPluginAccess.php');
-require_once('class.ilObjDigiLit.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php');
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/class.ilDigiLitPlugin.php');
-
 /**
  * Access/Condition checking for DigiLit object
  *
@@ -66,8 +61,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 		}
 		switch ($a_permission) {
 			case 'read':
-				if (!ilObjDigiLitAccess::checkOnline($a_obj_id) AND !$ilAccess->checkAccessOfUser($a_user_id, 'write', '', $a_ref_id)
-				) {
+				if (!ilObjDigiLitAccess::checkOnline($a_obj_id) AND !$ilAccess->checkAccessOfUser($a_user_id, 'write', '', $a_ref_id)) {
 					return true;
 				}
 				break;
@@ -98,7 +92,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 
 		$is_member = ($p->isAdmin($a_usr_id) OR $p->isTutor($a_usr_id) OR $p->isMember($a_usr_id));
 
-		$checkAccess = self::_checkAccess('read', 'read', $digi_lit_ref_id, ilObject2::_lookupObjectId($digi_lit_ref_id));
+		$checkAccess = (new self)->_checkAccess('read', 'read', $digi_lit_ref_id, ilObject2::_lookupObjectId($digi_lit_ref_id));
 
 		$not_anonymous = $ilUser->getId() != ANONYMOUS_USER_ID;
 
@@ -131,7 +125,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	 * @return bool
 	 */
 	public static function showAllLibraries() {
-		if (!xdglConfig::get(xdglConfig::F_USE_LIBRARIES)) {
+		if (!xdglConfig::getConfigValue(xdglConfig::F_USE_LIBRARIES)) {
 			return true;
 		}
 		if (self::isAdmin()) {
@@ -142,7 +136,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 			return true;
 		}
 
-		if (xdglConfig::get(xdglConfig::F_OWN_LIBRARY_ONLY)) {
+		if (xdglConfig::getConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY)) {
 			return false;
 		}
 
@@ -157,7 +151,9 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	 */
 	public static function isAdmin($redirect = false) {
 		global $rbacreview, $ilUser;
-		foreach (xdglConfig::get(xdglConfig::F_ROLES_ADMIN) as $role_id) {
+		$configValue = xdglConfig::getConfigValue(xdglConfig::F_ROLES_ADMIN);
+		$configValue = is_array($configValue) ? $configValue : array();
+		foreach ($configValue as $role_id) {
 			if ($rbacreview->isAssigned($ilUser->getId(), $role_id)) {
 				return true;
 			}
@@ -181,7 +177,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	public static function isManager($redirect = false) {
 		global $rbacreview, $ilUser;
 		if (ilDigiLitPlugin::getInstance()->isActive()) {
-			foreach (xdglConfig::get(xdglConfig::F_ROLES_MANAGER) as $role_id) {
+			foreach (xdglConfig::getConfigValue(xdglConfig::F_ROLES_MANAGER) as $role_id) {
 				if ($rbacreview->isAssigned($ilUser->getId(), $role_id)) {
 					return true;
 				}
@@ -213,4 +209,4 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	}
 }
 
-?>
+

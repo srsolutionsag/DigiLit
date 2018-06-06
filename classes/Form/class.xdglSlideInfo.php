@@ -8,6 +8,9 @@
  */
 class xdglSlideInfo {
 
+	/**
+	 * @var string
+	 */
 	protected $body = '';
 
 
@@ -19,7 +22,7 @@ class xdglSlideInfo {
 
 	public function getHTML() {
 		$this->tpl->setVariable('TXT_SHOW', $this->pl->txt('request_eula_show'));
-		$this->tpl->setVariable('EULA', xdglConfig::get(xdglConfig::F_EULA_TEXT));
+		$this->tpl->setVariable('EULA', xdglConfig::getConfigValue(xdglConfig::F_EULA_TEXT));
 	}
 
 
@@ -39,4 +42,4 @@ class xdglSlideInfo {
 	}
 }
 
-?>
+
