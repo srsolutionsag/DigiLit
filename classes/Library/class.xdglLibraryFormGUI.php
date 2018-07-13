@@ -38,6 +38,7 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 	 * @param bool        $view
 	 */
 	public function __construct($parent_gui, xdglLibrary $library, $view = false) {
+		parent::__construct();
 		global $ilCtrl;
 		$this->library = $library;
 		$this->parent_gui = $parent_gui;

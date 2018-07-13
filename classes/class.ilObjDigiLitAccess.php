@@ -74,7 +74,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	protected static function redirectNonAccess() {
 		global $ilCtrl;
 		ilUtil::sendFailure(ilDigiLitPlugin::getInstance()->txt(self::TXT_PERMISSION_DENIED), true);
-		$ilCtrl->redirectByClass('ilRepositoryGUI');
+		$ilCtrl->redirectByClass(ilRepositoryGUI::class);
 	}
 
 
@@ -208,5 +208,3 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 		return true;
 	}
 }
-
-

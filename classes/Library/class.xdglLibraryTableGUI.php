@@ -93,7 +93,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		//		}
 		$this->setMaxCount($xdglLibraryList->count());
 		if (!$xdglLibraryList->hasSets()) {
-			ilUtil::sendInfo('Keine Ergebnisse für diesen Filter');
+			ilUtil::sendInfo('Keine Ergebnisse für diesen Filter'); // TODO: Translate
 		}
 		$xdglLibraryList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglLibraryList->orderBy('title');
@@ -126,13 +126,13 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		$current_selection_list->setUseImages(false);
 
 		$this->ctrl->setParameter($this->parent_obj, xdglLibraryGUI::XDGL_LIB_ID, $a_set['id']);
-		$this->ctrl->setParameterByClass('xdglLibrarianGUI', xdglLibrarianGUI::XDGL_LIBRARIAN_ID, $a_set['id']);
+		$this->ctrl->setParameterByClass(xdglLibrarianGUI::class, xdglLibrarianGUI::XDGL_LIBRARIAN_ID, $a_set['id']);
 		$current_selection_list->addItem($this->pl->txt('library_view'), 'library_view',
 			$this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_VIEW));
 		$current_selection_list->addItem($this->pl->txt('library_edit'), 'library_edit',
 			$this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_EDIT));
 		$current_selection_list->addItem($this->pl->txt('library_assign'), 'library_assign',
-			$this->ctrl->getLinkTargetByClass('xdglLibrarianGUI', xdglLibrarianGUI::CMD_ASSIGN));
+			$this->ctrl->getLinkTargetByClass(xdglLibrarianGUI::class, xdglLibrarianGUI::CMD_ASSIGN));
 		if ($obj->isDeletable()) {
 			$current_selection_list->addItem($this->pl->txt('library_delete'), 'library_delete',
 				$this->ctrl->getLinkTarget($this->parent_obj, xdglLibraryGUI::CMD_CONFIRM_DELETE));

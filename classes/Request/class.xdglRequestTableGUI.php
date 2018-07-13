@@ -104,7 +104,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 
 		// edit the request
 		$this->ctrl->setParameter($this->parent_obj, xdglRequestGUI::XDGL_ID, $a_set['id']);
-		$this->ctrl->setParameterByClass('xdglLibraryGUI', xdglRequestGUI::XDGL_ID, $a_set['id']);
+		$this->ctrl->setParameterByClass(xdglLibraryGUI::class, xdglRequestGUI::XDGL_ID, $a_set['id']);
 
 		switch ($a_set['status']) {
 			case xdglRequest::STATUS_NEW:
@@ -120,7 +120,7 @@ class xdglRequestTableGUI extends ilTable2GUI {
 				$current_selection_list->addItem($this->pl->txt('request_refuse'), 'refuse_request',
 					$this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CDM_CONFIRM_REFUSE));
 				$current_selection_list->addItem($this->pl->txt('request_assign'), 'assign_request',
-					$this->ctrl->getLinkTargetByClass('xdglLibraryGUI', xdglLibraryGUI::CMD_ASSIGN_LIBRARY));
+					$this->ctrl->getLinkTargetByClass(xdglLibraryGUI::class, xdglLibraryGUI::CMD_ASSIGN_LIBRARY));
 				$current_selection_list->addItem($this->pl->txt('delete_request'), 'delete_request',
 					$this->ctrl->getLinkTarget($this->parent_obj, xdglRequestGUI::CMD_DELETE_REQUEST));
 				break;
@@ -262,8 +262,8 @@ class xdglRequestTableGUI extends ilTable2GUI {
 		$xdglRequestList->leftjoin(xdglLibrary::TABLE_NAME, 'library_id', 'id', array('id', 'title'));
 		$xdglRequestList->leftjoin(xdglLibrarian::TABLE_NAME, 'librarian_id', 'usr_id', array('usr_id', 'library_id'));
 		$xdglRequestList->leftjoin('usr_data', 'librarian_id', 'usr_id', array('email'));
-		$xdglRequestList->leftjoin('xdgl_request_usage', 'id', 'request_id', array( 'crs_ref_id'), '=');
-		$xdglRequestList->leftjoin('object_reference', 'xdgl_request_usage.crs_ref_id', 'ref_id', array( 'ref_id', 'obj_id' ), '=', true);
+		$xdglRequestList->leftjoin(xdglRequestUsage::TABLE_NAME, 'id', 'request_id', array( 'crs_ref_id'), '=');
+		$xdglRequestList->leftjoin('object_reference', xdglRequestUsage::TABLE_NAME.'.crs_ref_id', 'ref_id', array( 'ref_id', 'obj_id' ), '=', true);
 		$xdglRequestList->leftjoin('object_data', 'object_reference.obj_id', 'obj_id', array( 'title' ), '=', true);
 
 		// Ext_ID
@@ -273,35 +273,35 @@ class xdglRequestTableGUI extends ilTable2GUI {
 			$regex = xdglConfig::getConfigValue(xdglConfig::F_REGEX);
 			preg_match('/\/\((.*)\)\//', $regex, $matches);
 			$sel->setFieldName('CASE object_data.title REGEXP "' . $matches[1] . '"
-				WHEN "1" THEN CONCAT(SUBSTRING_INDEX(object_data.title, " ", 1), "-", LPAD(xdgl_request.id, 6, 0))
-				WHEN "0" THEN CONCAT("UNKNOWN-", LPAD(xdgl_request.id, 6, 0)) END');
+				WHEN "1" THEN CONCAT(SUBSTRING_INDEX(object_data.title, " ", 1), "-", LPAD('.xdglRequest::TABLE_NAME.'.id, 6, 0))
+				WHEN "0" THEN CONCAT("UNKNOWN-", LPAD('.xdglRequest::TABLE_NAME.'.id, 6, 0)) END');
 			$sel->setTableName('');
 		} else {
 			$sel->setFieldName('id');
-			$sel->setTableName('xdgl_request');
+			$sel->setTableName(xdglRequest::TABLE_NAME);
 		}
 		$xdglRequestList->getArSelectCollection()->add($sel);
 
 		// number_of_usages
 		$sel = new arSelect();
 		$sel->setAs('number_of_usages');
-		$sel->setFieldName('COUNT(xdgl_request_usage.id)');
+		$sel->setFieldName('COUNT('.xdglRequestUsage::TABLE_NAME.'.id)');
 		$xdglRequestList->getArSelectCollection()->add($sel);
 
 		if (!ilObjDigiLitAccess::showAllLibraries()) {
 			$lib_ids = xdglLibrary::getLibraryIdsForUser($ilUser);
-			$xdglRequestList->where(array('xdgl_library.id' => $lib_ids));
+			$xdglRequestList->where(array(xdglLibrary::TABLE_NAME.'.id' => $lib_ids));
 		}
 
 		$this->filterResults($usr_id, $xdglRequestList);
 		$this->setMaxCount($xdglRequestList->count());
 		if (!$xdglRequestList->hasSets()) {
-			ilUtil::sendInfo('Keine Ergebnisse für diesen Filter');
+			ilUtil::sendInfo('Keine Ergebnisse für diesen Filter'); // TODO: Translate
 		}
 		$xdglRequestList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglRequestList->dateFormat('d.m.Y - H:i:s');
 
-		$xdglRequestList->where("1=1 GROUP BY xdgl_request.id"); // ActiveRecors currently does not support GROUP BY, therefore we add a whereStatement with the GROUP BY but must prepend a 1=1 because of the automatic concatinating of the query with a AND.
+		$xdglRequestList->where("1=1 GROUP BY ".xdglRequest::TABLE_NAME.".id"); // ActiveRecors currently does not support GROUP BY, therefore we add a whereStatement with the GROUP BY but must prepend a 1=1 because of the automatic concatinating of the query with a AND.
 
 		$a_data = $xdglRequestList->getArray();
 

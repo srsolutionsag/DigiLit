@@ -85,7 +85,7 @@ class xdglLibraryGUI {
 			case self::CMD_GET_AJAX_DATA:
 			case self::CMD_PERFORM_LIBRARY_ASSIGNEMENT:
 				$this->tabs_gui->clearTargets();
-				$this->tabs_gui->setBackTarget($this->pl->txt('library_back'), $this->ctrl->getLinkTargetByClass('xdglRequestGUI'));
+				$this->tabs_gui->setBackTarget($this->pl->txt('library_back'), $this->ctrl->getLinkTargetByClass(xdglRequestGUI::class));
 				$this->{$cmd}();
 				break;
 		}
@@ -220,8 +220,8 @@ class xdglLibraryGUI {
 
 
 	protected function returnToRequests() {
-		$this->ctrl->setParameterByClass('xdglRequestGUI', xdglRequestGUI::XDGL_ID, null);
-		$this->ctrl->redirectByClass('xdglRequestGUI', xdglRequestGUI::CMD_INDEX);
+		$this->ctrl->setParameterByClass(xdglRequestGUI::class, xdglRequestGUI::XDGL_ID, null);
+		$this->ctrl->redirectByClass(xdglRequestGUI::class, xdglRequestGUI::CMD_INDEX);
 	}
 
 

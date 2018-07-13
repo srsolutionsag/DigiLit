@@ -225,11 +225,11 @@ class xdglNotification extends ilMailNotification {
 				return $return;
 
 			case self::ADMIN_LINK:
-				$ilCtrl->setParameterByClass('xdglRequestGUI', xdglRequestGUI::XDGL_ID, $this->getXdglRequest()->getId());
+				$ilCtrl->setParameterByClass(xdglRequestGUI::class, xdglRequestGUI::XDGL_ID, $this->getXdglRequest()->getId());
 
 			//				return urldecode(ilUtil::_getHttpPath() . '/' . $ilCtrl->getLinkTargetByClass(array(
-			//						'ilRouterGUI',
-			//						'xdglRequestGUI'
+			//						ilUIPluginRouterGUI::class,
+			//						xdglRequestGUI::class
 			//					), xdglRequestGUI::CMD_VIEW, '', false, false));
 			case self::R_TITLE:
 				return $this->getXdglRequest()->getTitle();

@@ -48,7 +48,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 
 
 	public function initType() {
-		$this->setType(ilDigiLitPlugin::XDGL);
+		$this->setType(ilDigiLitPlugin::PLUGIN_ID);
 	}
 
 
@@ -68,6 +68,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 
 		return parent::getCommands();
 	}
+
 
 	/**
 	 * @return array
@@ -89,15 +90,17 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		$commands = array(
 			array(
 				'permission' => 'read',
-				'cmd'        => ilObjDigiLitGUI::CMD_SEND_FILE,
-				'default'    => true,
-			),array(
-				'txt'        => $this->plugin->txt('common_cmd_delete'),
+				'cmd' => ilObjDigiLitGUI::CMD_SEND_FILE,
+				'default' => true,
+			),
+			array(
+				'txt' => $this->plugin->txt('common_cmd_delete'),
 				'permission' => 'delete',
-				'cmd'        => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
-				'default'    => false,
+				'cmd' => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
+				'default' => false,
 			)
 		);
+
 		return $commands;
 	}
 
@@ -138,67 +141,67 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		$info_string .= $request->getPages();
 
 		$props[] = array(
-			'alert'               => false,
-			'newline'             => true,
-			'property'            => 'description',
-			'value'               => $info_string,
+			'alert' => false,
+			'newline' => true,
+			'property' => 'description',
+			'value' => $info_string,
 			'propertyNameVisible' => false,
 		);
 
 		switch ($request->getStatus()) {
 			case xdglRequest::STATUS_NEW:
 				$props[] = array(
-					'alert'               => true,
-					'newline'             => true,
-					'property'            => $lng->txt('status'),
-					'value'               => $this->plugin->txt('request_status_' . xdglRequest::STATUS_NEW),
+					'alert' => true,
+					'newline' => true,
+					'property' => $lng->txt('status'),
+					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_NEW),
 					'propertyNameVisible' => true,
 				);
 				$props[] = array(
-					'alert'               => false,
-					'newline'             => true,
-					'property'            => $this->plugin->txt('request_creation_date'),
-					'value'               => self::format_date_time($request->getCreateDate()),
+					'alert' => false,
+					'newline' => true,
+					'property' => $this->plugin->txt('request_creation_date'),
+					'value' => self::format_date_time($request->getCreateDate()),
 					'propertyNameVisible' => true,
 				);
 				break;
 			case xdglRequest::STATUS_IN_PROGRRESS:
 				$props[] = array(
-					'alert'               => true,
-					'newline'             => true,
-					'property'            => $lng->txt('status'),
-					'value'               => $this->plugin->txt('request_status_' . xdglRequest::STATUS_IN_PROGRRESS),
+					'alert' => true,
+					'newline' => true,
+					'property' => $lng->txt('status'),
+					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_IN_PROGRRESS),
 					'propertyNameVisible' => true,
 				);
 				$props[] = array(
-					'alert'               => false,
-					'newline'             => true,
-					'property'            => $this->plugin->txt('request_creation_date'),
-					'value'               => self::format_date_time($request->getCreateDate()),
+					'alert' => false,
+					'newline' => true,
+					'property' => $this->plugin->txt('request_creation_date'),
+					'value' => self::format_date_time($request->getCreateDate()),
 					'propertyNameVisible' => true,
 				);
 				break;
 
 			case xdglRequest::STATUS_REFUSED:
 				$props[] = array(
-					'alert'               => true,
-					'newline'             => true,
-					'property'            => $lng->txt('status'),
-					'value'               => $this->plugin->txt('request_status_' . xdglRequest::STATUS_REFUSED),
+					'alert' => true,
+					'newline' => true,
+					'property' => $lng->txt('status'),
+					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_REFUSED),
 					'propertyNameVisible' => true,
 				);
 				$props[] = array(
-					'alert'               => false,
-					'newline'             => true,
-					'property'            => $this->plugin->txt('request_creation_date'),
-					'value'               => self::format_date_time($request->getCreateDate()),
+					'alert' => false,
+					'newline' => true,
+					'property' => $this->plugin->txt('request_creation_date'),
+					'value' => self::format_date_time($request->getCreateDate()),
 					'propertyNameVisible' => true,
 				);
 				$props[] = array(
-					'alert'               => false,
-					'newline'             => true,
-					'property'            => $this->plugin->txt('request_refusing_date'),
-					'value'               => self::format_date_time($request->getDateLastStatusChange()),
+					'alert' => false,
+					'newline' => true,
+					'property' => $this->plugin->txt('request_refusing_date'),
+					'value' => self::format_date_time($request->getDateLastStatusChange()),
 					'propertyNameVisible' => true,
 				);
 				break;
@@ -210,35 +213,35 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 
 				if (!preg_match('/^\\.|\\.[a-zA-Z0-9]+$/', $file)) {
 					$props[] = array(
-						'alert'               => false,
-						'property'            => $lng->txt('filename_interoperability'),
-						'value'               => $lng->txt('filename_extension_missing'),
+						'alert' => false,
+						'property' => $lng->txt('filename_interoperability'),
+						'value' => $lng->txt('filename_extension_missing'),
 						'propertyNameVisible' => false,
 					);
 				}
-				if(file_exists($file)) {
+				if (file_exists($file)) {
 					$props[] = array(
-						'alert'               => false,
-						'property'            => $lng->txt('size'),
-						'value'               => self::formatSize(filesize($file), 'short'),
+						'alert' => false,
+						'property' => $lng->txt('size'),
+						'value' => self::formatSize(filesize($file), 'short'),
 						'propertyNameVisible' => false,
-						'newline'             => true,
+						'newline' => true,
 					);
 				}
 				$props[] = array(
-					'alert'               => false,
-					'newline'             => true,
-					'property'            => $this->plugin->txt('request_upload_date'),
-					'value'               => self::format_date_time($request->getDateLastStatusChange()),
+					'alert' => false,
+					'newline' => true,
+					'property' => $this->plugin->txt('request_upload_date'),
+					'value' => self::format_date_time($request->getDateLastStatusChange()),
 					'propertyNameVisible' => true,
 				);
 
 				if (!ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
 					$props[] = array(
-						'alert'               => true,
-						'newline'             => true,
-						'property'            => 'description',
-						'value'               => $this->plugin->txt('status_no_access_to_download'),
+						'alert' => true,
+						'newline' => true,
+						'property' => 'description',
+						'value' => $this->plugin->txt('status_no_access_to_download'),
 						'propertyNameVisible' => false,
 					);
 				}
@@ -265,7 +268,6 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
 		$request = xdglRequest::find($request_usage->getRequestId());
 
-
 		switch ($request->getStatus()) {
 			case xdglRequest::STATUS_NEW:
 			case xdglRequest::STATUS_IN_PROGRRESS:
@@ -273,11 +275,11 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 				$this->default_command = false;
 				break;
 			case xdglRequest::STATUS_RELEASED:
-			$file = $request->getAbsoluteFilePath();
+				$file = $request->getAbsoluteFilePath();
 				if (ilObjDigiLitAccess::hasAccessToDownload($this->ref_id) && file_exists($file)) {
-					$ilCtrl->setParameterByClass('ilObjDigiLitGUI', xdglRequestGUI::XDGL_ID, $request->getId());
+					$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, xdglRequestGUI::XDGL_ID, $request->getId());
 					$this->default_command = array(
-						'link'  => $ilCtrl->getLinkTargetByClass('ilObjDigiLitGUI', ilObjDigiLitGUI::CMD_SEND_FILE),
+						'link' => $ilCtrl->getLinkTargetByClass(ilObjDigiLitGUI::class, ilObjDigiLitGUI::CMD_SEND_FILE),
 						'frame' => '_top',
 					);
 				} else {
@@ -319,11 +321,10 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	}
 
 
-	public static function formatSize($size, $a_mode = 'short', $a_lng = null)
-	{
+	public static function formatSize($size, $a_mode = 'short', $a_lng = NULL) {
 		global $lng;
 
-		if ($a_lng == null) {
+		if ($a_lng == NULL) {
 			$a_lng = $lng;
 		}
 
@@ -348,8 +349,8 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		}
 
 		$result = self::fmtFloat($scaled_size, ($scaled_unit
-				== 'lang_size_bytes') ? 0 : 1, $a_lng->txt('lang_sep_decimal'), $a_lng->txt('lang_sep_thousand'), true)
-			. ' ' . $a_lng->txt($scaled_unit);
+				== 'lang_size_bytes') ? 0 : 1, $a_lng->txt('lang_sep_decimal'), $a_lng->txt('lang_sep_thousand'), true) . ' '
+			. $a_lng->txt($scaled_unit);
 		if ($a_mode == 'long' && $size > $mag) {
 			$result .= ' (' . self::fmtFloat($size, 0, $a_lng->txt('lang_sep_decimal'), $a_lng->txt('lang_sep_thousand')) . ' '
 				. $a_lng->txt('lang_size_bytes') . ')';
@@ -358,24 +359,27 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		return $result;
 	}
 
+
 	/**
 	 * format a float
 	 *
 	 * this functions takes php's number_format function and
 	 * formats the given value with appropriate thousand and decimal
 	 * separator.
-	 * @access	public
-	 * @param	float		the float to format
-	 * @param	integer		count of decimals
-	 * @param	integer		display thousands separator
-	 * @param	boolean		whether .0 should be suppressed
-	 * @return	string		formatted number
+	 *
+	 * @access    public
+	 *
+	 * @param    float        the float to format
+	 * @param    integer        count of decimals
+	 * @param    integer        display thousands separator
+	 * @param    boolean        whether .0 should be suppressed
+	 *
+	 * @return    string        formatted number
 	 */
-	protected static function fmtFloat($a_float, $a_decimals=0, $a_dec_point = null, $a_thousands_sep = null, $a_suppress_dot_zero=false)
-	{
+	protected static function fmtFloat($a_float, $a_decimals = 0, $a_dec_point = NULL, $a_thousands_sep = NULL, $a_suppress_dot_zero = false) {
 		global $lng;
 
-		if ($a_dec_point == null) {
+		if ($a_dec_point == NULL) {
 			{
 				$a_dec_point = ".";
 			}
@@ -384,7 +388,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 			$a_dec_point = ".";
 		}
 
-		if ($a_thousands_sep == null) {
+		if ($a_thousands_sep == NULL) {
 			$a_thousands_sep = $lng->txt('lang_sep_thousand');
 		}
 		if ($a_thousands_sep == '-lang_sep_thousand-') {
@@ -395,8 +399,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 
 		// remove trailing ".0"
 		if (($a_suppress_dot_zero == 0 || $a_decimals == 0)
-			&& substr($txt, - 2) == $a_dec_point . '0'
-		) {
+			&& substr($txt, - 2) == $a_dec_point . '0') {
 			$txt = substr($txt, 0, strlen($txt) - 2);
 		}
 		if ($a_float == 0 and $txt == "") {
@@ -406,5 +409,3 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 		return $txt;
 	}
 }
-
-

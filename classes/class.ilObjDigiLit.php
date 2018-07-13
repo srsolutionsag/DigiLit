@@ -21,7 +21,6 @@
 	+-----------------------------------------------------------------------------+
 */
 
-
 /**
  * Class ilObjDigiLit
  *
@@ -42,7 +41,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 	/**
 	 * @param int $a_ref_id
 	 */
-	public function __construct($a_ref_id = 0,  $whatever = true) {
+	public function __construct($a_ref_id = 0, $whatever = true) {
 		/**
 		 * @var $ilDB ilDB
 		 */
@@ -54,7 +53,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 
 	final function initType() {
-		$this->setType(ilDigiLitPlugin::XDGL);
+		$this->setType(ilDigiLitPlugin::PLUGIN_ID);
 	}
 
 
@@ -74,7 +73,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 		$use_search = xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH);
 		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 		$xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
-		if($use_search) {
+		if ($use_search) {
 			$xdglRequestUsage->delete();
 		} else {
 			$xdglRequest = xdglRequest::find($xdglRequestUsage->getRequestId());
@@ -85,7 +84,6 @@ class ilObjDigiLit extends ilObjectPlugin {
 	}
 
 
-
 	/**
 	 * @param      $new_obj
 	 * @param      $a_target_id
@@ -94,20 +92,20 @@ class ilObjDigiLit extends ilObjectPlugin {
 	 * @return bool
 	 * @throws \Exception
 	 */
-	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null) {
+	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = NULL) {
 		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 		$xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
 		$ilObjDigiLitFacadeFactory->requestUsageFactory()->copyRequestUsage($xdglRequestUsage, $new_obj->getId());
+
 		return true;
 
-/*		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
-		xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
+		/*		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
+				xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
 
-		return true;*/
-
-/*
- *
- */
+				return true;*/
+		/*
+		 *
+		 */
 	}
 
 
@@ -123,7 +121,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 		 */
 		while (ilObject2::_lookupType($ref_id, true) != 'crs') {
 			if ($ref_id == 1) {
-				ilUtil::sendFailure('DigiLit-Objects can be created in courses only.', true);
+				ilUtil::sendFailure('DigiLit-Objects can be created in courses only.', true); // TODO: Translate
 				ilUtil::redirect('/');
 			}
 			$ref_id = $tree->getParentId($ref_id);
@@ -132,19 +130,20 @@ class ilObjDigiLit extends ilObjectPlugin {
 		return $ref_id;
 	}
 
+
 	public static function getObjectById($obj_id) {
 		global $ilDB;
-		$query = "SELECT * FROM ilias.object_data where obj_id = ".
-			$ilDB->quote($obj_id, "text");
+		$query = "SELECT * FROM ilias.object_data where obj_id = " . $ilDB->quote($obj_id, "text");
 		$obj_set = $ilDB->query($query);
 		$obj_rec = $ilDB->fetchAssoc($obj_set);
+
 		return $obj_rec;
 	}
 
+
 	public static function updateObjDigiLitTitle($ilObjDigiLit_rec) {
 		global $ilDB;
-		$ilDB->manipulate("UPDATE object_data SET title = ".$ilDB->quote($ilObjDigiLit_rec['title']) . " WHERE obj_id = ".$ilDB->quote($ilObjDigiLit_rec['obj_id'], "integer"));
+		$ilDB->manipulate("UPDATE object_data SET title = " . $ilDB->quote($ilObjDigiLit_rec['title']) . " WHERE obj_id = "
+			. $ilDB->quote($ilObjDigiLit_rec['obj_id'], "integer"));
 	}
 }
-
-

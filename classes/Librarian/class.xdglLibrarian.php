@@ -14,14 +14,16 @@ class xdglLibrarian extends ActiveRecord {
 	/**
 	 * @return string
 	 */
-	static function returnDbTableName() {
+	public function getConnectorContainerName() {
 		return self::TABLE_NAME;
 	}
 
+
 	/**
 	 * @return string
+	 * @deprecated
 	 */
-	public function getConnectorContainerName() {
+	public static function returnDbTableName() {
 		return self::TABLE_NAME;
 	}
 
@@ -32,8 +34,8 @@ class xdglLibrarian extends ActiveRecord {
 	public function isDeletable() {
 		return !xdglRequest::where(array(
 			'librarian_id' => $this->getUsrId(),
-			'status'       => array(xdglRequest::STATUS_REFUSED, xdglRequest::STATUS_RELEASED),
-		), array('librarian_id' => '=', 'status' => 'NOT IN'))->hasSets();
+			'status' => array( xdglRequest::STATUS_REFUSED, xdglRequest::STATUS_RELEASED ),
+		), array( 'librarian_id' => '=', 'status' => 'NOT IN' ))->hasSets();
 	}
 
 
@@ -49,12 +51,12 @@ class xdglLibrarian extends ActiveRecord {
 	 * @return xdglLibrarian
 	 */
 	public static function findLibrarian($usr_id, $library_id) {
-		$obj = self::where(array('usr_id' => $usr_id, 'library_id' => $library_id))->first();
+		$obj = self::where(array( 'usr_id' => $usr_id, 'library_id' => $library_id ))->first();
 		if ($obj instanceof xdglLibrarian) {
 			return $obj;
 		}
 
-		return null;
+		return NULL;
 	}
 
 
@@ -66,7 +68,7 @@ class xdglLibrarian extends ActiveRecord {
 	 */
 	public static function findOrGetInstanceOfLibrarian($usr_id, $library_id) {
 		$obj = self::findLibrarian($usr_id, $library_id);
-		if ($obj === null) {
+		if ($obj === NULL) {
 			$obj = new self();
 			$obj->setLibraryId($library_id);
 			$obj->setUsrId($usr_id);
@@ -82,18 +84,18 @@ class xdglLibrarian extends ActiveRecord {
 	 *
 	 * @return array
 	 */
-	public static function getAssignedLibrariansForLibrary($lib_id = null, $exclude = null, $all = false) {
-		if ($lib_id === null) {
+	public static function getAssignedLibrariansForLibrary($lib_id = NULL, $exclude = NULL, $all = false) {
+		if ($lib_id === NULL) {
 			$lib_id = xdglLibrary::getPrimaryId();
 		}
 		$list = self::getCollection();
 		if (!$all) {
-			$list->where(array('library_id' => $lib_id));
+			$list->where(array( 'library_id' => $lib_id ));
 		}
-		$list->innerjoin('usr_data', 'usr_id', 'usr_id', array('firstname', 'lastname', 'email'));
-		$list->concat(array('firstname', '" "', 'lastname', '" ("', 'email', '")"'), 'user_fullname');
+		$list->innerjoin('usr_data', 'usr_id', 'usr_id', array( 'firstname', 'lastname', 'email' ));
+		$list->concat(array( 'firstname', '" "', 'lastname', '" ("', 'email', '")"' ), 'user_fullname');
 		if ($exclude) {
-			$list->where(array('usr_id' => $exclude), '!=');
+			$list->where(array( 'usr_id' => $exclude ), '!=');
 		}
 
 		$list->orderBy('user_fullname');
@@ -202,5 +204,3 @@ class xdglLibrarian extends ActiveRecord {
 		$this->id = $id;
 	}
 }
-
-

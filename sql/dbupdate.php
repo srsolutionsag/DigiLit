@@ -1,17 +1,17 @@
 <#1>
 <?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php';
-xdglRequest::installDB();
+xdglRequest::updateDB();
 ?>
 <#2>
 <?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Config/class.xdglConfig.php';
-xdglConfig::installDB();
+xdglConfig::updateDB();
 ?>
 <#3>
 <?php
 require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Library/class.xdglLibrary.php';
-xdglLibrary::installDB();
+xdglLibrary::updateDB();
 if (!xdglLibrary::where(array( 'is_primary' => 1 ))->hasSets()) {
 	$xdglLibrary = new xdglLibrary();
 	$xdglLibrary->setTitle('Primary Library');
@@ -38,7 +38,7 @@ $ilDB->manipulate('UPDATE ' . xdglRequest::TABLE_NAME . ' SET librarian_id = ' .
 <#5>
 <?php
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Librarian/class.xdglLibrarian.php');
-xdglLibrarian::installDB();
+xdglLibrarian::updateDB();
 ?>
 <#6>
 <?php
@@ -89,7 +89,7 @@ global $ilDB;
 global $ilDB;
 
 
-$res = $ilDB->query('SELECT * FROM xdgl_request');
+$res = $ilDB->query('SELECT * FROM '.xdglRequest::TABLE_NAME);
 
 while($row = $ilDB->fetchAssoc($res))
 {
@@ -109,13 +109,13 @@ while($row = $ilDB->fetchAssoc($res))
 ?>
 <#11>
 <?php
+require_once "Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/classes/Request/class.xdglRequest.php";
 global $ilDB;
-if ($ilDB->tableColumnExists('xdgl_request', 'digi_lit_object_id')) {
-	$ilDB->dropTableColumn('xdgl_request', 'digi_lit_object_id');
+if ($ilDB->tableColumnExists(xdglRequest::TABLE_NAME, 'digi_lit_object_id')) {
+	$ilDB->dropTableColumn(xdglRequest::TABLE_NAME, 'digi_lit_object_id');
 
 }
-if ($ilDB->tableColumnExists('xdgl_request', 'crs_ref_id')) {
-	$ilDB->dropTableColumn('xdgl_request', 'crs_ref_id');
+if ($ilDB->tableColumnExists(xdglRequest::TABLE_NAME, 'crs_ref_id')) {
+	$ilDB->dropTableColumn(xdglRequest::TABLE_NAME, 'crs_ref_id');
 }
 ?>
-

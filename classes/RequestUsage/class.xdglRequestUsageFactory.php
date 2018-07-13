@@ -63,7 +63,7 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 		foreach($xdglRequestUsageArray as $key => $data) {
 			$ilDB->manipulate("DELETE FROM object_data WHERE obj_id = "  . $ilDB->quote($data->getObjId(), 'integer'));
 		}
-		$ilDB->manipulate("DELETE FROM xdgl_request_usage WHERE request_id = "  . $ilDB->quote($request_id, 'integer'));
+		$ilDB->manipulate("DELETE FROM ".xdglRequest::TABLE_NAME." WHERE request_id = "  . $ilDB->quote($request_id, 'integer'));
 	}
 
 	/**
@@ -71,14 +71,14 @@ class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 	 */
 	public function deleteRequestUsageAndDigiLitByObjId($obj_id) {
 		global $ilDB;
-		$ilDB->manipulate("DELETE FROM xdgl_request_usage WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
+		$ilDB->manipulate("DELETE FROM ".xdglRequestUsage::TABLE_NAME." WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
 		$ilDB->manipulate("DELETE FROM object_data WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
 	}
 
 
 	public function deleteRequestUsageByObjId($obj_id) {
 		global $ilDB;
-		$ilDB->manipulate("DELETE FROM xdgl_request_usage WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
+		$ilDB->manipulate("DELETE FROM ".xdglRequestUsage::TABLE_NAME." WHERE obj_id = "  . $ilDB->quote($obj_id, 'integer'));
 	}
 
 

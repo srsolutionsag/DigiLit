@@ -26,6 +26,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @param xdglConfigGUI $parent_gui
 	 */
 	public function __construct(xdglConfigGUI $parent_gui) {
+		parent::__construct();
 		global $ilCtrl;
 		$this->parent_gui = $parent_gui;
 		$this->ctrl = $ilCtrl;
@@ -140,7 +141,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 		// EULA
 		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_EULA_TEXT), xdglConfig::F_EULA_TEXT);
 		$te->setUseRte(true);
-		$te->setRteTags(array('a', 'p', 'ul', 'li', 'ol'));
+		$te->setRteTags(array( 'a', 'p', 'ul', 'li', 'ol' ));
 		$te->setCols(self::A_COLS);
 		$te->setRows(self::A_ROWS);
 		$this->addItem($te);
@@ -271,8 +272,8 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	protected function addCommandButtons() {
-		$this->addCommandButton('save', $this->pl->txt('admin_form_button_save'));
-		$this->addCommandButton('cancel', $this->pl->txt('admin_form_button_cancel'));
+		$this->addCommandButton(xdglConfigGUI::CMD_SAVE, $this->pl->txt('admin_form_button_save'));
+		$this->addCommandButton(xdglConfigGUI::CMD_CANCEL, $this->pl->txt('admin_form_button_cancel'));
 	}
 
 

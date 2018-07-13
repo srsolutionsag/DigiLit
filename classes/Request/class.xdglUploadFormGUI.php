@@ -47,6 +47,7 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 	 * @param xdglRequest $request
 	 */
 	public function __construct($parent_gui, xdglRequest $request) {
+		parent::__construct();
 		global $ilCtrl;
 		$this->request = $request;
 		$this->parent_gui = $parent_gui;

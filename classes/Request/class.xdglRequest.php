@@ -13,7 +13,7 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
 class xdglRequest extends ActiveRecord {
 
 	const TABLE_NAME = 'xdgl_request';
-	const STATUS_DELETED = -1;
+	const STATUS_DELETED = - 1;
 	const STATUS_NEW = 1;
 	const STATUS_IN_PROGRRESS = 2;
 	const STATUS_RELEASED = 3;
@@ -32,7 +32,6 @@ class xdglRequest extends ActiveRecord {
 		self::STATUS_IN_PROGRRESS,
 		self::STATUS_RELEASED,
 	);
-
 	/**
 	 * @var array
 	 */
@@ -48,14 +47,16 @@ class xdglRequest extends ActiveRecord {
 	/**
 	 * @return string
 	 */
-	static function returnDbTableName() {
+	public function getConnectorContainerName() {
 		return self::TABLE_NAME;
 	}
 
+
 	/**
 	 * @return string
+	 * @deprecated
 	 */
-	public function getConnectorContainerName() {
+	public static function returnDbTableName() {
 		return self::TABLE_NAME;
 	}
 
@@ -244,7 +245,7 @@ class xdglRequest extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $copy_id = null;
+	protected $copy_id = NULL;
 	/**
 	 * @var int
 	 *
@@ -283,7 +284,6 @@ class xdglRequest extends ActiveRecord {
 	protected $ext_id = '';
 
 
-
 	public function afterObjectLoad() {
 		if (xdglConfig::getConfigValue(xdglConfig::F_USE_REGEX)) {
 			preg_match(xdglConfig::getConfigValue(xdglConfig::F_REGEX), $this->getCourseNumber(), $matches);
@@ -304,7 +304,7 @@ class xdglRequest extends ActiveRecord {
 	 * @param bool $update_title
 	 */
 	public function update($prevent_last_change = false, $update_title = true) {
-		if ($this->getLibrarianId() === null) {
+		if ($this->getLibrarianId() === NULL) {
 			$this->setLibrarianId(self::LIBRARIAN_ID_NONE);
 		}
 		if (!$prevent_last_change) {
@@ -321,7 +321,7 @@ class xdglRequest extends ActiveRecord {
 
 	public function create() {
 		global $ilUser;
-		if ($this->getLibrarianId() === null) {
+		if ($this->getLibrarianId() === NULL) {
 			$this->setLibrarianId(self::LIBRARIAN_ID_NONE);
 		}
 		$this->setRequesterUsrId($ilUser->getId());
@@ -402,15 +402,15 @@ class xdglRequest extends ActiveRecord {
 		 * @var $tree ilTree
 		 */
 
-		foreach ($tree->getChildsByType($ref_id, ilDigiLitPlugin::XDGL) as $dig) {
+		foreach ($tree->getChildsByType($ref_id, ilDigiLitPlugin::PLUGIN_ID) as $dig) {
 			$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 			$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($dig['obj_id']);
 			if (xdglRequest::find($request_usage->getRequestId())->doesCount()) {
-				$count++;
+				$count ++;
 			}
 		}
 
-		foreach ($tree->getChildsByTypeFilter($ref_id, array('fold', 'grp')) as $sub) {
+		foreach ($tree->getChildsByTypeFilter($ref_id, array( 'fold', 'grp' )) as $sub) {
 			$count = self::getAmoutOfDigiLitsInContainer($count, $sub['ref_id']);
 		}
 
@@ -442,7 +442,7 @@ class xdglRequest extends ActiveRecord {
 	 * @return string
 	 */
 	public function getFilePath() {
-		$xdgl = ilDigiLitPlugin::getStaticPluginPrefix();
+		$xdgl = ilDigiLitPlugin::PLUGIN_ID;
 		$path = ilUtil::getDataDir() . DIRECTORY_SEPARATOR . $xdgl . DIRECTORY_SEPARATOR . self::createPathFromId($this->getId());
 
 		return $path;
@@ -508,8 +508,7 @@ class xdglRequest extends ActiveRecord {
 	public function uploadFileFromForm(xdglUploadFormGUI $xdglUploadFormGUI) {
 		$this->createDir();
 
-		if (ilUtil::moveUploadedFile($xdglUploadFormGUI->getUploadTempName(), $xdglUploadFormGUI->getUploadTempName(),
-			$this->getAbsoluteFilePath())) {
+		if (ilUtil::moveUploadedFile($xdglUploadFormGUI->getUploadTempName(), $xdglUploadFormGUI->getUploadTempName(), $this->getAbsoluteFilePath())) {
 			global $ilUser;
 			$this->setLibrarianId($ilUser->getId());
 			$this->setStatus(self::STATUS_RELEASED);
@@ -586,7 +585,7 @@ class xdglRequest extends ActiveRecord {
 		$path = array();
 		$found = false;
 		$id = (int)$id;
-		for ($i = 2; $i >= 0; $i--) {
+		for ($i = 2; $i >= 0; $i --) {
 			$factor = pow(100, $i);
 			if (($tmp = (int)($id / $factor)) or $found) {
 				$path[] = $tmp;
@@ -610,8 +609,8 @@ class xdglRequest extends ActiveRecord {
 		 */
 		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 		$xdglRequestUsageArray = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesByRequestId($this->getId());
-		foreach($xdglRequestUsageArray as $key => $data) {
-			if($data->getObjId()) {
+		foreach ($xdglRequestUsageArray as $key => $data) {
+			if ($data->getObjId()) {
 				/**
 				 * @var $ilObjDigiLit ilObjDigiLit
 				 */
@@ -627,7 +626,7 @@ class xdglRequest extends ActiveRecord {
 	 * @return string
 	 */
 	protected function returnFileName() {
-		return ilDigiLitPlugin::getStaticPluginName() . '_' . $this->getVersion() . '.pdf';
+		return ilDigiLitPlugin::PLUGIN_NAME . '_' . $this->getVersion() . '.pdf';
 	}
 
 
@@ -650,7 +649,6 @@ class xdglRequest extends ActiveRecord {
 	// ------------------------------------ //
 	//           Static Functions           //
 	// ------------------------------------ //
-
 
 	/**
 	 * Set the status of one specific digilit object
@@ -676,18 +674,19 @@ class xdglRequest extends ActiveRecord {
 	 */
 	public static function findDistinctRequestsByTitleAndAuthor($search_title, $search_author, $limit) {
 		global $ilDB;
-		$query = "SELECT DISTINCT id, status, author, title, book, publisher, location, publishing_year, pages FROM ilias.xdgl_request where title LIKE ".
-			$ilDB->quote("%" . $search_title . "%", "text") . " AND author LIKE ". $ilDB->quote("%" . $search_author . "%", "text") . " AND status != -1 GROUP BY author, title, book LIMIT " . $ilDB->quote($limit, "integer");
+		$query = "SELECT DISTINCT id, status, author, title, book, publisher, location, publishing_year, pages FROM ilias." . xdglRequest::TABLE_NAME
+			. " where title LIKE " . $ilDB->quote("%" . $search_title . "%", "text") . " AND author LIKE " . $ilDB->quote("%" . $search_author
+				. "%", "text") . " AND status != -1 GROUP BY author, title, book LIMIT " . $ilDB->quote($limit, "integer");
 		$set = $ilDB->query($query);
 		$requests = [];
-		while ($rec = $ilDB->fetchAssoc($set))
-		{
+		while ($rec = $ilDB->fetchAssoc($set)) {
 			$requests[] = $rec;
 		}
 		$pl = ilDigiLitPlugin::getInstance();
-		foreach($requests as $key => $request_data) {
+		foreach ($requests as $key => $request_data) {
 			$requests[$key]['status'] = $pl->txt(self::$status_to_string_map[$request_data['status']]);
 		}
+
 		return $requests;
 	}
 

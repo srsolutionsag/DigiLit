@@ -42,15 +42,16 @@ class xdglConfig extends ActiveRecord {
 	/**
 	 * @return string
 	 */
-	static function returnDbTableName() {
+	public function getConnectorContainerName() {
 		return self::TABLE_NAME;
 	}
 
 
 	/**
 	 * @return string
+	 * @deprecated
 	 */
-	public function getConnectorContainerName(){
+	public static function returnDbTableName() {
 		return self::TABLE_NAME;
 	}
 
@@ -102,7 +103,7 @@ class xdglConfig extends ActiveRecord {
 		$obj = new self($name);
 		$obj->setValue(json_encode($value));
 
-		if (self::where(array('name' => $name))->hasSets()) {
+		if (self::where(array( 'name' => $name ))->hasSets()) {
 			$obj->update();
 		} else {
 			$obj->create();
@@ -175,15 +176,4 @@ class xdglConfig extends ActiveRecord {
 	public function getValue() {
 		return $this->value;
 	}
-
-
-	/**
-	 * @return bool
-	 * @deprecated use xdgl::is50()
-	 */
-	public static function is50() {
-		return xdgl::is50();
-	}
 }
-
-

@@ -50,13 +50,13 @@ class xdglLibrarianGUI {
 		$cmd = $this->ctrl->getCmd(self::CMD_STANDARD);
 		$this->ctrl->saveParameter($this, self::XDGL_LIBRARIAN_ID);
 		$this->ctrl->saveParameter($this, xdglLibraryGUI::XDGL_LIB_ID);
-		$this->ctrl->saveParameterByClass('xdglLibraryGUI', xdglLibraryGUI::XDGL_LIB_ID);
+		$this->ctrl->saveParameterByClass(xdglLibraryGUI::class, xdglLibraryGUI::XDGL_LIB_ID);
 		switch ($cmd) {
 			case self::CMD_ASSIGN:
 			case self::CMD_RETURN:
 			case self::CMD_UPDATEASSIGNMENT:
 				$this->tabs_gui->clearTargets();
-				$this->tabs_gui->setBackTarget($this->pl->txt('librarian_back'), $this->ctrl->getLinkTargetByClass('xdglLibraryGUI'));
+				$this->tabs_gui->setBackTarget($this->pl->txt('librarian_back'), $this->ctrl->getLinkTargetByClass(xdglLibraryGUI::class));
 				$this->{$cmd}();
 				break;
 		}
@@ -107,8 +107,8 @@ class xdglLibrarianGUI {
 
 
 	protected function returnToLibrary() {
-		$this->ctrl->setParameterByClass('xdglLibraryGUI', xdglLibraryGUI::XDGL_LIB_ID, null);
-		$this->ctrl->redirectByClass('xdglLibraryGUI');
+		$this->ctrl->setParameterByClass(xdglLibraryGUI::class, xdglLibraryGUI::XDGL_LIB_ID, null);
+		$this->ctrl->redirectByClass(xdglLibraryGUI::class);
 	}
 
 
@@ -131,7 +131,7 @@ class xdglLibrarianGUI {
 		$q = "SELECT ua.usr_id, usr.firstname, usr.lastname, usr.email, lib.library_id AS assigned_to
 				FROM rbac_ua ua
 				JOIN usr_data usr ON usr.usr_id = ua.usr_id
-				LEFT JOIN xdgl_librarian lib ON lib.usr_id = ua.usr_id AND lib.library_id = " . $ilDB->quote($lib_id, 'integer') . "
+				LEFT JOIN ".xdglLibrarian::TABLE_NAME." lib ON lib.usr_id = ua.usr_id AND lib.library_id = " . $ilDB->quote($lib_id, 'integer') . "
 				WHERE  " . $ilDB->in('ua.rol_id', array_values($role_ids), false, 'integer') . " GROUP BY ua.usr_id";
 
 		$a_set = $ilDB->query($q);
@@ -179,7 +179,7 @@ class xdglLibrarianGUI {
 		$form->setTitle($this->pl->txt('librarian_form_title'));
 
 		$xdglMultiUserInputGUI = new xdglMultiUserInputGUI($this->pl->txt('librarian_users'), 'usr_ids');
-		$ajax_link = $this->ctrl->getLinkTarget($this, 'getAjaxData', '', true);
+		$ajax_link = $this->ctrl->getLinkTarget($this, self::CMD_GETAJAX, '', true);
 		$xdglMultiUserInputGUI->setAjaxLink($ajax_link);
 		$form->addItem($xdglMultiUserInputGUI);
 
