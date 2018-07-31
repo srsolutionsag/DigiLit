@@ -36,7 +36,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 	const F_NOTICE = 'notice';
 	const F_INTERNAL_NOTICE = 'internal_notice';
 	/**
-	 * @var  xdglRequest
+	 * @var xdglRequest
 	 */
 	protected $request;
 	/**
@@ -44,7 +44,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 	 */
 	protected $parent_gui;
 	/**
-	 * @var  ilCtrl
+	 * @var ilCtrl
 	 */
 	protected $ctrl;
 	/**
@@ -58,12 +58,12 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param             $parent_gui
-	 * @param xdglRequest $request
+	 * @param xdglRequestGUI $parent_gui
+	 * @param xdglRequest    $request
 	 *
-	 * @param bool        $view
+	 * @param bool           $view
 	 *
-	 * @param bool        $infopage
+	 * @param bool           $infopage
 	 *
 	 */
 	public function __construct($parent_gui, xdglRequest $request, $view = false, $infopage = false, $external = true) {
@@ -136,7 +136,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 
 		$this->initForm();
 		/**
-		 * @var $item ilNonEditableValueGUI
+		 * @var ilNonEditableValueGUI $item
 		 */
 		foreach ($this->getItems() as $item) {
 			$te = new ilNonEditableValueGUI($this->txt($item->getPostVar()), $item->getPostVar());
@@ -332,7 +332,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 		}
 		if ($this->is_new AND !$this->getInput(self::F_CONFIRM_EULA)) {
 			/**
-			 * @var $item ilCheckboxInputGUI
+			 * @var ilCheckboxInputGUI $item
 			 */
 			$item = $this->getItemByPostVar(self::F_CONFIRM_EULA);
 			$item->setAlert($this->txt(self::F_CONFIRM_EULA . '_warning'));
@@ -369,7 +369,7 @@ class xdglRequestFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $key
+	 * @param string $key
 	 *
 	 * @return string
 	 */

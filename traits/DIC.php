@@ -2,6 +2,13 @@
 
 namespace xdgl;
 
+use ilCtrl;
+use ilLanguage;
+use ilObjUser;
+use ilTabsGUI;
+use ilTemplate;
+use ilTree;
+
 /**
  * Class DIC
  *
@@ -22,7 +29,7 @@ trait DIC {
 
 
 	/**
-	 * @return \ilCtrl
+	 * @return ilCtrl
 	 */
 	protected function ctrl() {
 		return $this->dic()->ctrl();
@@ -30,7 +37,7 @@ trait DIC {
 
 
 	/**
-	 * @param $variable
+	 * @param string $variable
 	 *
 	 * @return string
 	 */
@@ -40,7 +47,7 @@ trait DIC {
 
 
 	/**
-	 * @return \ilTemplate
+	 * @return ilTemplate
 	 */
 	protected function tpl() {
 		return $this->dic()->ui()->mainTemplate();
@@ -48,7 +55,7 @@ trait DIC {
 
 
 	/**
-	 * @return \ilLanguage
+	 * @return ilLanguage
 	 */
 	protected function lng() {
 		return $this->dic()->language();
@@ -56,7 +63,7 @@ trait DIC {
 
 
 	/**
-	 * @return \ilTabsGUI
+	 * @return ilTabsGUI
 	 */
 	protected function tabs() {
 		return $this->dic()->tabs();
@@ -72,20 +79,17 @@ trait DIC {
 
 
 	/**
-	 * @return \ilObjUser
+	 * @return ilObjUser
 	 */
 	protected function user() {
 		return $this->dic()->user();
 	}
 
 
+	/**
+	 * @return ilTree
+	 */
 	protected function tree() {
 		return $this->dic()->repositoryTree();
 	}
 }
-
-
-
-
-
-

@@ -45,8 +45,8 @@ class xdglLibrarian extends ActiveRecord {
 
 
 	/**
-	 * @param       $usr_id
-	 * @param       $library_id
+	 * @param int $usr_id
+	 * @param int $library_id
 	 *
 	 * @return xdglLibrarian
 	 */
@@ -61,8 +61,8 @@ class xdglLibrarian extends ActiveRecord {
 
 
 	/**
-	 * @param       $usr_id
-	 * @param       $library_id
+	 * @param int $usr_id
+	 * @param int $library_id
 	 *
 	 * @return xdglLibrarian
 	 */

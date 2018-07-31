@@ -106,7 +106,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 
 
 	/**
-	 * @param $title
+	 * @param string $title
 	 *
 	 * @return bool|void
 	 */
@@ -123,7 +123,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	/**
 	 * Get item properties
 	 *
-	 * @return    array        array of property arrays:
+	 * @return array        array of property arrays:
 	 *                        "alert" (boolean) => display as an alert property (usually in red)
 	 *                        "property" (string) => property name
 	 *                        "value" (string) => property value
@@ -294,7 +294,7 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 
 
 	/**
-	 * @param $unix_timestamp
+	 * @param int $unix_timestamp
 	 *
 	 * @return string formatted date
 	 */
@@ -369,12 +369,12 @@ class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
 	 *
 	 * @access    public
 	 *
-	 * @param    float        the float to format
-	 * @param    integer        count of decimals
-	 * @param    integer        display thousands separator
-	 * @param    boolean        whether .0 should be suppressed
+	 * @param float        the float to format
+	 * @param integer        count of decimals
+	 * @param integer        display thousands separator
+	 * @param boolean        whether .0 should be suppressed
 	 *
-	 * @return    string        formatted number
+	 * @return string        formatted number
 	 */
 	protected static function fmtFloat($a_float, $a_decimals = 0, $a_dec_point = NULL, $a_thousands_sep = NULL, $a_suppress_dot_zero = false) {
 		global $lng;

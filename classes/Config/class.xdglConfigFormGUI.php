@@ -17,7 +17,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 */
 	protected $parent_gui;
 	/**
-	 * @var  ilCtrl
+	 * @var ilCtrl
 	 */
 	protected $ctrl;
 
@@ -37,7 +37,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $field
+	 * @param string $field
 	 *
 	 * @return string
 	 */
@@ -160,12 +160,12 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $item
-	 * @param $array
+	 * @param ilFormPropertyGUI $item
+	 * @param array             $array
 	 *
 	 * @internal param $key
 	 */
-	private function getValuesForItem($item, &$array) {
+	private function getValuesForItem(ilFormPropertyGUI $item, array &$array) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
 			$array[$key] = xdglConfig::getConfigValue($key);
@@ -197,10 +197,10 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 	public function checkInput() {
 		/**
-		 * @var $roles_admin       ilMultiSelectInputGUI
-		 * @var $roles_manager     ilMultiSelectInputGUI
-		 * @var $regex             ilTextInputGUI
-		 * @var $use_regex         ilCheckboxInputGUI
+		 * @var ilMultiSelectInputGUI $roles_admin
+		 * @var ilMultiSelectInputGUI $roles_manager
+		 * @var ilTextInputGUI        $regex
+		 * @var ilCheckboxInputGUI    $use_regex
 		 */
 		$check = true;
 		if (ilObjDigiLitAccess::isGlobalAdmin()) {
@@ -236,9 +236,9 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $item
+	 * @param ilFormPropertyGUI $item
 	 */
-	private function saveValueForItem($item) {
+	private function saveValueForItem(ilFormPropertyGUI $item) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
 			xdglConfig::setConfigValue($key, $this->getInput($key));
@@ -252,21 +252,21 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $item
+	 * @param ilFormPropertyGUI $item
 	 *
 	 * @return bool
 	 */
-	public static function checkForSubItem($item) {
+	public static function checkForSubItem(ilFormPropertyGUI $item) {
 		return !$item instanceof ilFormSectionHeaderGUI AND !$item instanceof ilMultiSelectInputGUI;
 	}
 
 
 	/**
-	 * @param $item
+	 * @param ilFormPropertyGUI $item
 	 *
 	 * @return bool
 	 */
-	public static function checkItem($item) {
+	public static function checkItem(ilFormPropertyGUI $item) {
 		return !$item instanceof ilFormSectionHeaderGUI;
 	}
 

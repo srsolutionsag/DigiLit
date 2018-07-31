@@ -115,7 +115,7 @@ class xdglLibrary extends ActiveRecord {
 	 */
 	public static function getPrimary() {
 		/**
-		 * @var $res xdglLibrary
+		 * @var xdglLibrary $res
 		 */
 		return self::where(array( 'is_primary' => 1 ))->first();
 	}
@@ -133,7 +133,7 @@ class xdglLibrary extends ActiveRecord {
 
 	/**
 	 * @param ilObjUser $ilObjUser
-	 * @param           $lib_id
+	 * @param int       $lib_id
 	 *
 	 * @return bool
 	 */
@@ -201,7 +201,7 @@ class xdglLibrary extends ActiveRecord {
 	public function makePrimary() {
 		global $ilDB;
 		/**
-		 * @var $ilDB ilDB
+		 * @var ilDB $ilDB
 		 */
 		$ilDB->manipulate('UPDATE ' . $this->getConnectorContainerName() . ' SET is_primary = 0');
 		$this->setIsPrimary(true);

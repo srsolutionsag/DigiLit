@@ -30,7 +30,7 @@ require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/
 xdglRequest::updateDB();
 global $ilDB;
 /**
- * @var $ilDB ilDB
+ * @var ilDB $ilDB
  */
 $ilDB->manipulate('UPDATE ' . xdglRequest::TABLE_NAME . ' SET library_id = ' . $ilDB->quote(xdglLibrary::getPrimaryId(), 'integer'));
 $ilDB->manipulate('UPDATE ' . xdglRequest::TABLE_NAME . ' SET librarian_id = ' . $ilDB->quote(xdglRequest::LIBRARIAN_ID_NONE, 'integer') . ' WHERE librarian_id IS NULL');
@@ -46,7 +46,7 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
 xdglRequest::updateDB();
 foreach(xdglRequest::get() as $xdglRequest) {
 	/**
-	 * @var $xdglRequest xdglRequest
+	 * @var xdglRequest $xdglRequest
 	 */
 	$xdglRequest->setLastChange($xdglRequest->getDateLastStatusChange());
 	$xdglRequest->setLibrarianId(xdglRequest::LIBRARIAN_ID_NONE);

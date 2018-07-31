@@ -77,7 +77,7 @@ class xdglConfig extends ActiveRecord {
 
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 *
 	 * @return mixed
 	 */
@@ -96,8 +96,8 @@ class xdglConfig extends ActiveRecord {
 
 
 	/**
-	 * @param $name
-	 * @param $value
+	 * @param string $name
+	 * @param mixed  $value
 	 */
 	public static function setConfigValue($name, $value) {
 		$obj = new self($name);
@@ -133,7 +133,7 @@ class xdglConfig extends ActiveRecord {
 
 
 	/**
-	 * @param $regex
+	 * @param string $regex
 	 *
 	 * @return bool
 	 */

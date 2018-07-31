@@ -359,10 +359,10 @@ class xdglRequest extends ActiveRecord {
 
 
 	/**
-	 * @param       $primary_key
+	 * @param int   $primary_key
 	 * @param array $add_constructor_args
 	 *
-	 * @return \xdglRequest
+	 * @return xdglRequest
 	 */
 	public static function find($primary_key, array $add_constructor_args = array()) {
 		return parent::find($primary_key, $add_constructor_args);
@@ -391,15 +391,15 @@ class xdglRequest extends ActiveRecord {
 
 
 	/**
-	 * @param $count
-	 * @param $ref_id
+	 * @param int $count
+	 * @param int $ref_id
 	 *
 	 * @return mixed
 	 */
 	protected static function getAmoutOfDigiLitsInContainer($count, $ref_id) {
 		global $tree;
 		/**
-		 * @var $tree ilTree
+		 * @var ilTree $tree
 		 */
 
 		foreach ($tree->getChildsByType($ref_id, ilDigiLitPlugin::PLUGIN_ID) as $dig) {
@@ -539,8 +539,8 @@ class xdglRequest extends ActiveRecord {
 	//       Sleep & Wakeup Function        //
 	// ------------------------------------ //
 	/**
-	 * @param $field_name
-	 * @param $field_value
+	 * @param string $field_name
+	 * @param string $field_value
 	 *
 	 * @return int
 	 */
@@ -556,7 +556,7 @@ class xdglRequest extends ActiveRecord {
 
 
 	/**
-	 * @param $field_name
+	 * @param string $field_name
 	 *
 	 * @return bool|string
 	 */
@@ -605,14 +605,14 @@ class xdglRequest extends ActiveRecord {
 
 	protected function updateIliasObjTitle() {
 		/**
-		 * @var $ilObjDigiLitFacadeFactory ilObjDigiLitFacadeFactory
+		 * @var ilObjDigiLitFacadeFactory $ilObjDigiLitFacadeFactory
 		 */
 		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 		$xdglRequestUsageArray = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesByRequestId($this->getId());
 		foreach ($xdglRequestUsageArray as $key => $data) {
 			if ($data->getObjId()) {
 				/**
-				 * @var $ilObjDigiLit ilObjDigiLit
+				 * @var ilObjDigiLit $ilObjDigiLit
 				 */
 				$ilObjDigiLit_rec = ilObjDigiLit::getObjectById($data->getObjId());
 				$ilObjDigiLit_rec['title'] = $this->getTitle();
@@ -631,7 +631,7 @@ class xdglRequest extends ActiveRecord {
 
 
 	/**
-	 * @param        $value
+	 * @param string $value
 	 *
 	 * @param string $appendix
 	 *

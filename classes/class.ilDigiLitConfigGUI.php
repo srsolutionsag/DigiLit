@@ -15,7 +15,7 @@ class ilDigiLitConfigGUI extends ilPluginConfigGUI {
 	public function executeCommand() {
 		global $ilCtrl, $ilTabs, $lng, $tpl;
 		/**
-		 * @var $ilCtrl ilCtrl
+		 * @var ilCtrl $ilCtrl
 		 */
 
 		$ilCtrl->redirectByClass(array( ilUIPluginRouterGUI::class, xdglMainGUI::class ));

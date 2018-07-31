@@ -43,7 +43,7 @@ class ilObjDigiLit extends ilObjectPlugin {
 	 */
 	public function __construct($a_ref_id = 0, $whatever = true) {
 		/**
-		 * @var $ilDB ilDB
+		 * @var ilDB $ilDB
 		 */
 		global $ilDB;
 
@@ -85,9 +85,9 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 
 	/**
-	 * @param      $new_obj
-	 * @param      $a_target_id
-	 * @param null $a_copy_id
+	 * @param object $new_obj
+	 * @param int    $a_target_id
+	 * @param null   $a_copy_id
 	 *
 	 * @return bool
 	 * @throws \Exception
@@ -110,14 +110,14 @@ class ilObjDigiLit extends ilObjectPlugin {
 
 
 	/**
-	 * @param $ref_id
+	 * @param int $ref_id
 	 *
 	 * @return int
 	 */
 	public static function returnParentCrsRefId($ref_id) {
 		global $tree;
 		/**
-		 * @var $tree ilTree
+		 * @var ilTree $tree
 		 */
 		while (ilObject2::_lookupType($ref_id, true) != 'crs') {
 			if ($ref_id == 1) {
