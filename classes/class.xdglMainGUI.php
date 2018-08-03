@@ -57,13 +57,13 @@ class xdglMainGUI {
 		}
 		$nextClass = $this->ctrl->getNextClass();
 		if (!xdglConfig::isConfigUpToDate()) {
-			ilUtil::sendInfo('Configuraion out of date'); // TODO: Translate
-			$nextClass = 'xdglconfiggui';
+			ilUtil::sendInfo($this->pl->txt("conf_out_of_date"));
+			$nextClass = strtolower(xdglConfigGUI::class);
 		}
 		global $ilUser;
 		if (xdglConfig::getConfigValue(xdglConfig::F_USE_LIBRARIES) AND xdglConfig::getConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY)
 			AND !xdglLibrary::isAssignedToAnyLibrary($ilUser)) {
-			ilUtil::sendInfo('You cannot use DigiLit since you are not assigned to any Library', true); // TODO: Translate
+			ilUtil::sendInfo($this->pl->txt('no_library_assigned'), true);
 			ilUtil::redirect('/');
 		}
 

@@ -119,9 +119,10 @@ class ilObjDigiLit extends ilObjectPlugin {
 		/**
 		 * @var ilTree $tree
 		 */
+		$pl = ilDigiLitPlugin::getInstance();
 		while (ilObject2::_lookupType($ref_id, true) != 'crs') {
 			if ($ref_id == 1) {
-				ilUtil::sendFailure('DigiLit-Objects can be created in courses only.', true); // TODO: Translate
+				ilUtil::sendFailure($pl->txt("course_needed"), true);
 				ilUtil::redirect('/');
 			}
 			$ref_id = $tree->getParentId($ref_id);

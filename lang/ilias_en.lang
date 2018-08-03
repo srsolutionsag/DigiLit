@@ -24,17 +24,19 @@ admin_use_regex_info#:#Regex-Search in Course-Title, the first match will be use
 admin_use_search#:#Use literature search
 admin_use_search_info#:#With the literature search you can search for already available digital content before you if necessary make an proposal for a ditial version of a print medium.
 author#:#Author
-Über die Literatursuche kann nach bereits digital verfügbarem Inhalt gesucht werden, bevor ggf. ein Antrag für eine digitale Version eines Printmediums gemacht wird.
 common_actions#:#Actions
 common_bool_0#:#No
 common_bool_1#:#Yes
 common_cmd_delete#:#Delete
+crs_create_xdgl#:#Create DigiLits
 filter_librarian#:#Librarian
 filter_library#:#Library
 filter_mine#:#Only assigned to me
 filter_none#:#Nobody is assigned
 filter_status#:#Status
+fold_create_xdgl#:#Create DigiLits
 form_usr_placeholder#:#Search Users
+grp_create_xdgl#:#Create DigiLits
 librarian_already_assigned#:#Already assigned to a library
 librarian_back#:#Back
 librarian_form_title#:#Librarian
@@ -74,6 +76,7 @@ notification_subject_mail_moved#:#DigiLit assigned
 notification_subject_mail_new_request#:#New DigiLit-Request
 notification_subject_mail_rejected#:#DigiLit-Request rejected
 notification_subject_mail_uploaded#:#DigiLit uploaded
+objs_xdgl#:#DigiLits
 obj_list_page#:#Page(s)
 obj_xdgl#:#DigiLit
 obj_xdgls#:#DigiLits
@@ -162,3 +165,10 @@ msg_request_delete_with_usages#:#The entry can not be deleted, because the entry
 permission_denied#:#You don't have the necessary permissions.
 delete_request#:#Delete request
 msg_request_deleted#:#The request was deleted.
+course_needed#:#DigiLit-Objects can be created in courses only.
+conf_out_of_date#:#Configuraion out of date
+no_library_assigned#:#You cannot use DigiLit since you are not assigned to any Library
+no_results_for_filter#:#No results for this filter
+rbac_create_xdgl#:#Create DigiLit
+obj_xdgl_duplicate#:#Copy DigiLit
+objs_xdgl_duplicate#:#Copy DigiLits

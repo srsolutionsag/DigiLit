@@ -92,7 +92,7 @@ class xdglLibraryTableGUI extends ilTable2GUI {
 		//		}
 		$this->setMaxCount($xdglLibraryList->count());
 		if (!$xdglLibraryList->hasSets()) {
-			ilUtil::sendInfo('Keine Ergebnisse für diesen Filter'); // TODO: Translate
+			ilUtil::sendInfo($this->pl->txt('no_results_for_filter'));
 		}
 		$xdglLibraryList->limit($this->getOffset(), $this->getOffset() + $this->getLimit());
 		$xdglLibraryList->orderBy('title');

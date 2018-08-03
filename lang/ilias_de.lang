@@ -165,3 +165,10 @@ msg_request_delete_with_usages#:#Der Eintrag kann nicht gelöscht werden, da die
 permission_denied#:#Sie verügen nicht über die benötigten Rechte.
 delete_request#:#Anfrage löschen
 msg_request_deleted#:#Die Anfrage wurde gelöscht.
+course_needed#:#DigiLit-Objekte können nur in Kursen angelegt werden.
+conf_out_of_date#:#Die Konfiguration ist veraltet
+no_library_assigned#:#Sie können DigiLit nicht verwenden, da Sie keiner Bibliothek zugewiesen sind
+no_results_for_filter#:#Keine Ergebnisse für diesen Filter
+rbac_create_xdgl#:#DigiLit anlegen
+obj_xdgl_duplicate#:#DigiLit kopieren
+objs_xdgl_duplicate#:#DigiLits kopieren
