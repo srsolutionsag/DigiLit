@@ -20,6 +20,10 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 * @var ilCtrl
 	 */
 	protected $ctrl;
+	/**
+	 * @var ilDigiLitPlugin
+	 */
+	private $pl;
 
 
 	/**
@@ -47,7 +51,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	protected function initForm() {
-		$this->setTitle($this->pl->txt('admin_form_title'));
+		$this->setTitle($this->txt('form_title'));
 		if (ilObjDigiLitAccess::isGlobalAdmin()) {
 			// Roles Admin
 			$global_roles = self::getRoles(ilRbacReview::FILTER_ALL_GLOBAL);
@@ -165,7 +169,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 *
 	 * @internal param $key
 	 */
-	private function getValuesForItem(ilFormPropertyGUI $item, array &$array) {
+	private function getValuesForItem($item, array &$array) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
 			$array[$key] = xdglConfig::getConfigValue($key);
@@ -207,13 +211,13 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 			$roles_admin = $this->getItemByPostVar(xdglConfig::F_ROLES_ADMIN);
 			if (count($roles_admin->getValue()) == 0) {
 				$check = false;
-				$roles_admin->setAlert('Check at least one role.');
+				$roles_admin->setAlert($this->txt("check_role"));
 			}
 
 			$roles_manager = $this->getItemByPostVar(xdglConfig::F_ROLES_MANAGER);
 			if (count($roles_manager->getValue()) == 0) {
 				$check = false;
-				$roles_manager->setAlert('Check at least one role.');
+				$roles_manager->setAlert($this->txt("check_role"));
 			}
 		}
 		$use_regex = $this->getItemByPostVar(xdglConfig::F_USE_REGEX);
@@ -221,7 +225,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 			$regex = $this->getItemByPostVar(xdglConfig::F_REGEX);
 			if (!xdglConfig::isRegexValid($regex->getValue())) {
 				$check = false;
-				$regex->setAlert('Regular Expression not valid');
+				$regex->setAlert($this->txt("invalid_regexp"));
 			}
 		}
 		if (!$check) {
@@ -238,7 +242,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	/**
 	 * @param ilFormPropertyGUI $item
 	 */
-	private function saveValueForItem(ilFormPropertyGUI $item) {
+	private function saveValueForItem($item) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
 			xdglConfig::setConfigValue($key, $this->getInput($key));
@@ -256,7 +260,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 *
 	 * @return bool
 	 */
-	public static function checkForSubItem(ilFormPropertyGUI $item) {
+	public static function checkForSubItem($item) {
 		return !$item instanceof ilFormSectionHeaderGUI AND !$item instanceof ilMultiSelectInputGUI;
 	}
 
@@ -266,14 +270,14 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 *
 	 * @return bool
 	 */
-	public static function checkItem(ilFormPropertyGUI $item) {
+	public static function checkItem($item) {
 		return !$item instanceof ilFormSectionHeaderGUI;
 	}
 
 
 	protected function addCommandButtons() {
-		$this->addCommandButton(xdglConfigGUI::CMD_SAVE, $this->pl->txt('admin_form_button_save'));
-		$this->addCommandButton(xdglConfigGUI::CMD_CANCEL, $this->pl->txt('admin_form_button_cancel'));
+		$this->addCommandButton(xdglConfigGUI::CMD_SAVE, $this->txt('form_button_save'));
+		$this->addCommandButton(xdglConfigGUI::CMD_CANCEL, $this->txt('form_button_cancel'));
 	}
 
 

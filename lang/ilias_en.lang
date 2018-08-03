@@ -169,6 +169,8 @@ course_needed#:#DigiLit-Objects can be created in courses only.
 conf_out_of_date#:#Configuraion out of date
 no_library_assigned#:#You cannot use DigiLit since you are not assigned to any Library
 no_results_for_filter#:#No results for this filter
+admin_check_role#:#Check at least one role.
+admin_invalid_regexp#:#Regular Expression not valid
 rbac_create_xdgl#:#Create DigiLit
 obj_xdgl_duplicate#:#Copy DigiLit
 objs_xdgl_duplicate#:#Copy DigiLits

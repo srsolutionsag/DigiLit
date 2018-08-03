@@ -137,6 +137,18 @@
           "de": "Regex-Suche nach String in Kurs-Titel, der erste Treffer wird verwendet.",
           "en": "Regex-Search in Course-Title, the first match will be used"
         }
+      },
+      "check_role": {
+        "translations": {
+          "de": "Überprüfen Sie mindestens eine Rolle.",
+          "en": "Check at least one role."
+        }
+      },
+      "invalid_regexp": {
+        "translations": {
+          "de": "Regulärer Ausdruck ist nicht gültig",
+          "en": "Regular Expression not valid"
+        }
       }
     },
     "common": {
