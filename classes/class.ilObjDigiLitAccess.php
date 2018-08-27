@@ -54,7 +54,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	function _checkAccess($a_cmd, $a_permission, $a_ref_id, $a_obj_id, $a_user_id = '') {
 		global $ilUser, $ilAccess;
 		/**
-		 * @var $ilAccess ilAccessHandler
+		 * @var ilAccessHandler $ilAccess
 		 */
 		if ($a_user_id == '') {
 			$a_user_id = $ilUser->getId();
@@ -74,12 +74,12 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	protected static function redirectNonAccess() {
 		global $ilCtrl;
 		ilUtil::sendFailure(ilDigiLitPlugin::getInstance()->txt(self::TXT_PERMISSION_DENIED), true);
-		$ilCtrl->redirectByClass('ilRepositoryGUI');
+		$ilCtrl->redirectByClass(ilRepositoryGUI::class);
 	}
 
 
 	/**
-	 * @param $digi_lit_ref_id
+	 * @param int $digi_lit_ref_id
 	 *
 	 * @return bool
 	 */
@@ -108,7 +108,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	public static function isGlobalAdmin($redirect = false) {
 		global $rbacreview, $ilUser;
 		/**
-		 * @var $rbacreview ilRbacReview
+		 * @var ilRbacReview $rbacreview
 		 */
 
 		$isAssigned = $rbacreview->isAssigned($ilUser->getId(), 2);
@@ -200,7 +200,7 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 
 
 	/**
-	 * @param $a_id
+	 * @param int $a_id
 	 *
 	 * @return bool
 	 */
@@ -208,5 +208,3 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 		return true;
 	}
 }
-
-

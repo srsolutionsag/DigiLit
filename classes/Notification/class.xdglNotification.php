@@ -60,7 +60,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
 		),
-		self::TYPE_ULOADED     => array(
+		self::TYPE_ULOADED => array(
 			xdglNotification::R_TITLE,
 			xdglNotification::R_AUTHOR,
 			xdglNotification::R_COURSE_NUMBER,
@@ -78,7 +78,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
 		),
-		self::TYPE_REJECTED    => array(
+		self::TYPE_REJECTED => array(
 			xdglNotification::R_TITLE,
 			xdglNotification::R_AUTHOR,
 			xdglNotification::R_REASON,
@@ -97,7 +97,7 @@ class xdglNotification extends ilMailNotification {
 			xdglNotification::R_NOTICE,
 			xdglNotification::R_ALL,
 		),
-		self::TYPE_MOVED       => array(
+		self::TYPE_MOVED => array(
 			xdglNotification::R_TITLE,
 			xdglNotification::R_AUTHOR,
 			xdglNotification::R_REQUESTER_FULLNAME,
@@ -122,7 +122,7 @@ class xdglNotification extends ilMailNotification {
 
 
 	/**
-	 * @param $type
+	 * @param int $type
 	 *
 	 * @return array
 	 */
@@ -202,14 +202,14 @@ class xdglNotification extends ilMailNotification {
 
 
 	/**
-	 * @param $field
+	 * @param string $field
 	 *
 	 * @return string
 	 */
 	protected function getReplace($field) {
 		global $ilCtrl;
 		/**
-		 * @var $ilCtrl ilCtrl
+		 * @var ilCtrl $ilCtrl
 		 */
 		$this->initUser();
 
@@ -225,11 +225,11 @@ class xdglNotification extends ilMailNotification {
 				return $return;
 
 			case self::ADMIN_LINK:
-				$ilCtrl->setParameterByClass('xdglRequestGUI', xdglRequestGUI::XDGL_ID, $this->getXdglRequest()->getId());
+				$ilCtrl->setParameterByClass(xdglRequestGUI::class, xdglRequestGUI::XDGL_ID, $this->getXdglRequest()->getId());
 
 			//				return urldecode(ilUtil::_getHttpPath() . '/' . $ilCtrl->getLinkTargetByClass(array(
-			//						'ilRouterGUI',
-			//						'xdglRequestGUI'
+			//						ilUIPluginRouterGUI::class,
+			//						xdglRequestGUI::class
 			//					), xdglRequestGUI::CMD_VIEW, '', false, false));
 			case self::R_TITLE:
 				return $this->getXdglRequest()->getTitle();
@@ -274,7 +274,7 @@ class xdglNotification extends ilMailNotification {
 			case self::R_ASSIGNED_LIBRARY:
 				$lib_id = $this->getXdglRequest()->getLibraryId();
 				/**
-				 * @var $xdglLibrary xdglLibrary
+				 * @var xdglLibrary $xdglLibrary
 				 */
 				$xdglLibrary = xdglLibrary::find($lib_id);
 				if ($xdglLibrary instanceof xdglLibrary) {
@@ -286,10 +286,10 @@ class xdglNotification extends ilMailNotification {
 					return 'NOBODY';
 				}
 				/**
-				 * @var $xdglLibrary xdglLibrarian
+				 * @var xdglLibrarian $xdglLibrary
 				 */
 
-				$activeRecordList = xdglLibrarian::where(array('usr_id' => $lib_id));
+				$activeRecordList = xdglLibrarian::where(array( 'usr_id' => $lib_id ));
 				if ($activeRecordList->hasSets()) {
 					$xdglLibrarian = $activeRecordList->first();
 					if ($xdglLibrarian instanceof xdglLibrarian) {
@@ -316,7 +316,7 @@ class xdglNotification extends ilMailNotification {
 			case self::TYPE_NEW_REQUEST:
 				$lib_id = $this->getXdglRequest()->getLibraryId();
 				/**
-				 * @var $xdglLibrary xdglLibrary
+				 * @var xdglLibrary $xdglLibrary
 				 */
 				$xdglLibrary = xdglLibrary::find($lib_id);
 				if ($xdglLibrary instanceof xdglLibrary) {
@@ -356,7 +356,7 @@ class xdglNotification extends ilMailNotification {
 	public function send() {
 		global $ilUser;
 		/**
-		 * @var $ilUser ilObjUser
+		 * @var ilObjUser $ilUser
 		 */
 		$this->setSender($ilUser->getId());
 		$this->initUser();
@@ -366,7 +366,7 @@ class xdglNotification extends ilMailNotification {
 		$this->setSubject($a_subject);
 		$this->replaceBody();
 
-		$this->sendMail(array($this->getAdress()), array('normal'), false);
+		$this->sendMail(array( $this->getAdress() ), array( 'normal' ), false);
 	}
 
 
@@ -387,7 +387,7 @@ class xdglNotification extends ilMailNotification {
 
 
 	/**
-	 * @return \xdglRequest
+	 * @return xdglRequest
 	 */
 	public function getXdglRequest() {
 		return $this->xdglRequest;
@@ -395,7 +395,7 @@ class xdglNotification extends ilMailNotification {
 
 
 	/**
-	 * @param \xdglRequest $xdglRequest
+	 * @param xdglRequest $xdglRequest
 	 */
 	public function setXdglRequest($xdglRequest) {
 		$this->xdglRequest = $xdglRequest;
@@ -408,4 +408,3 @@ class xdglNotification extends ilMailNotification {
 		}
 	}
 }
-

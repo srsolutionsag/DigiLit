@@ -17,7 +17,7 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 	 */
 	protected $replace;
 	/**
-	 * @var  xdglRequest
+	 * @var xdglRequest
 	 */
 	protected $request;
 	/**
@@ -25,7 +25,7 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 	 */
 	protected $parent_gui;
 	/**
-	 * @var  ilCtrl
+	 * @var ilCtrl
 	 */
 	protected $ctrl;
 	/**
@@ -43,10 +43,11 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param             $parent_gui
-	 * @param xdglRequest $request
+	 * @param xdglRequestGUI $parent_gui
+	 * @param xdglRequest    $request
 	 */
 	public function __construct($parent_gui, xdglRequest $request) {
+		parent::__construct();
 		global $ilCtrl;
 		$this->request = $request;
 		$this->parent_gui = $parent_gui;
@@ -71,7 +72,7 @@ class xdglUploadFormGUI extends ilPropertyFormGUI {
 
 		// Add File-Upload
 		$in_file = new ilFileInputGUI($this->pl->txt('upload_file'), self::F_FILE_UPLOAD);
-		$in_file->setSuffixes(array('pdf'));
+		$in_file->setSuffixes(array( 'pdf' ));
 		$in_file->setRequired(true);
 		$this->addItem($in_file);
 

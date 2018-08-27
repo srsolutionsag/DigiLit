@@ -2,6 +2,8 @@
 
 namespace xdgl;
 
+use ilTemplate;
+
 /**
  * Interface UIServices
  *
@@ -10,7 +12,7 @@ namespace xdgl;
 interface UIServices {
 
 	/**
-	 * @return \ilTemplate
+	 * @return ilTemplate
 	 */
 	public function mainTemplate();
 }

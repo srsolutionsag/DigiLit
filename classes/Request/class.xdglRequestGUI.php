@@ -51,11 +51,13 @@ class xdglRequestGUI {
 	 */
 	protected $tpl;
 	/**
-	 * @var  srObjAlbum
+	 * @var srObjAlbum
+	 * TODO: What?
 	 */
 	protected $album;
 	/**
 	 * @var ilObjPhotoGallery
+	 * TODO: What?
 	 */
 	public $obj_photo_gallery;
 	/**
@@ -64,6 +66,7 @@ class xdglRequestGUI {
 	protected $access;
 	/**
 	 * @var ilObjPhotoGalleryGUI
+	 * TODO: What?
 	 */
 	protected $parent_gui;
 	/**
@@ -181,9 +184,9 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $this->xdglRequest, false, false, false);
 		$xdglRequestFormGUI->setValuesByPost();
-		if ($xdglRequestFormGUI->saveObject(null)) {
+		if ($xdglRequestFormGUI->saveObject(NULL)) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_edit'), true);
-			$this->ctrl->setParameter($this, self::XDGL_ID, null);
+			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 			$this->ctrl->redirect($this);
 		} else {
 			$this->tpl->setContent($xdglRequestFormGUI->getHTML());
@@ -195,9 +198,9 @@ class xdglRequestGUI {
 		ilObjDigiLitAccess::isManager(true);
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $this->xdglRequest);
 		$xdglRequestFormGUI->setValuesByPost();
-		if ($xdglRequestFormGUI->saveObject(null)) {
+		if ($xdglRequestFormGUI->saveObject(NULL)) {
 			ilUtil::sendSuccess($this->pl->txt('msg_success_add'), true);
-			$this->ctrl->setParameter($this, self::XDGL_ID, null);
+			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 			$this->ctrl->redirect($this);
 		} else {
 			$this->tpl->setContent($xdglRequestFormGUI->getHTML());
@@ -222,7 +225,7 @@ class xdglRequestGUI {
 			$this->xdglRequest->setLibrarianId($ilUser->getId());
 			$this->xdglRequest->update();
 			xdglNotification::sendRejected($this->xdglRequest);
-			$this->ctrl->setParameter($this, self::XDGL_ID, null);
+			$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 			$this->ctrl->redirect($this);
 		} else {
 			$form->setValuesByPost();
@@ -237,7 +240,7 @@ class xdglRequestGUI {
 		$this->xdglRequest->setStatus(xdglRequest::STATUS_IN_PROGRRESS);
 		$this->xdglRequest->setLibrarianId($ilUser->getId());
 		$this->xdglRequest->update();
-		$this->ctrl->setParameter($this, self::XDGL_ID, null);
+		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 		$this->ctrl->redirect($this);
 	}
 
@@ -261,7 +264,7 @@ class xdglRequestGUI {
 		$upload_form = new xdglUploadFormGUI($this, $this->xdglRequest);
 		$upload_form->uploadFile();
 
-		$this->ctrl->setParameter($this, self::XDGL_ID, null);
+		$this->ctrl->setParameter($this, self::XDGL_ID, NULL);
 		$this->ctrl->redirect($this);
 	}
 
@@ -294,6 +297,7 @@ class xdglRequestGUI {
 		$this->ctrl->redirect($this);
 	}
 
+
 	protected function confirmDeleteRequest() {
 		ilObjDigiLitAccess::isManager(true);
 		$ilConfirmationGUI = new ilConfirmationGUI();
@@ -301,10 +305,10 @@ class xdglRequestGUI {
 		$xdglRequestUsageArray = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getRequestUsagesByRequestId($this->xdglRequest->getId());
 		$crs_titles_array = $this->ilObjDigiLitFacadeFactory->requestUsageFactory()->getAllCoursTitlesWithRequestUsages($xdglRequestUsageArray);
 		$ilConfirmationGUI->setCancel($this->pl->txt('request_cancel'), self::CMD_CANCEL);
-		if(!empty($crs_titles_array)) {
-			$ilConfirmationGUI->setHeaderText($this->pl->txt('msg_request_delete_with_usages') . "<pre>".implode(PHP_EOL,$crs_titles_array)."</pre>");
-		}
-		else {
+		if (!empty($crs_titles_array)) {
+			$ilConfirmationGUI->setHeaderText($this->pl->txt('msg_request_delete_with_usages') . "<pre>" . implode(PHP_EOL, $crs_titles_array)
+				. "</pre>");
+		} else {
 			$ilConfirmationGUI->setHeaderText($this->pl->txt('msg_request_delete'));
 			$ilConfirmationGUI->setConfirm($this->pl->txt('delete_request'), self::CMD_PERFORM_DELETE_REQUEST);
 		}

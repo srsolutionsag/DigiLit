@@ -9,18 +9,21 @@
  */
 class ilDigiLitConfigGUI extends ilPluginConfigGUI {
 
+	/**
+	 * TODO: Refactor
+	 */
 	public function executeCommand() {
 		global $ilCtrl, $ilTabs, $lng, $tpl;
 		/**
-		 * @var $ilCtrl ilCtrl
+		 * @var ilCtrl $ilCtrl
 		 */
 
-		$ilCtrl->redirectByClass(array('ilUIPluginRouterGUI', 'xdglMainGUI'));
-		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "ctype", $_GET["ctype"]);
-		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "cname", $_GET["cname"]);
-		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "slot_id", $_GET["slot_id"]);
-		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "plugin_id", $_GET["plugin_id"]);
-		$ilCtrl->setParameterByClass("ilobjcomponentsettingsgui", "pname", $_GET["pname"]);
+		$ilCtrl->redirectByClass(array( ilUIPluginRouterGUI::class, xdglMainGUI::class ));
+		$ilCtrl->setParameterByClass(ilObjComponentSettingsGUI::class, "ctype", $_GET["ctype"]);
+		$ilCtrl->setParameterByClass(ilObjComponentSettingsGUI::class, "cname", $_GET["cname"]);
+		$ilCtrl->setParameterByClass(ilObjComponentSettingsGUI::class, "slot_id", $_GET["slot_id"]);
+		$ilCtrl->setParameterByClass(ilObjComponentSettingsGUI::class, "plugin_id", $_GET["plugin_id"]);
+		$ilCtrl->setParameterByClass(ilObjComponentSettingsGUI::class, "pname", $_GET["pname"]);
 
 		$tpl->setTitle($lng->txt("cmps_plugin") . ": " . $_GET["pname"]);
 		$tpl->setDescription("");
@@ -28,9 +31,9 @@ class ilDigiLitConfigGUI extends ilPluginConfigGUI {
 		$ilTabs->clearTargets();
 
 		if ($_GET["plugin_id"]) {
-			$ilTabs->setBackTarget($lng->txt("cmps_plugin"), $ilCtrl->getLinkTargetByClass("ilobjcomponentsettingsgui", "showPlugin"));
+			$ilTabs->setBackTarget($lng->txt("cmps_plugin"), $ilCtrl->getLinkTargetByClass(ilObjComponentSettingsGUI::class, "showPlugin"));
 		} else {
-			$ilTabs->setBackTarget($lng->txt("cmps_plugins"), $ilCtrl->getLinkTargetByClass("ilobjcomponentsettingsgui", "listPlugins"));
+			$ilTabs->setBackTarget($lng->txt("cmps_plugins"), $ilCtrl->getLinkTargetByClass(ilObjComponentSettingsGUI::class, "listPlugins"));
 		}
 
 		$a_gui_object = new xdglMainGUI();
@@ -42,5 +45,3 @@ class ilDigiLitConfigGUI extends ilPluginConfigGUI {
 	public function performCommand($cmd) {
 	}
 }
-
-

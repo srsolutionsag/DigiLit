@@ -11,17 +11,19 @@ class xdglRequestUsage extends ActiveRecord implements xdglRequestUsageInterface
 	/**
 	 * @return string
 	 */
-	static function returnDbTableName() {
+	public function getConnectorContainerName() {
 		return self::TABLE_NAME;
 	}
 
 
 	/**
 	 * @return string
+	 * @deprecated
 	 */
-	public function getConnectorContainerName() {
+	public static function returnDbTableName() {
 		return self::TABLE_NAME;
 	}
+
 
 	/**
 	 * @var int
@@ -33,7 +35,6 @@ class xdglRequestUsage extends ActiveRecord implements xdglRequestUsageInterface
 	 * @db_is_primary         true
 	 */
 	protected $id;
-
 	/**
 	 * @var int
 	 *
@@ -42,7 +43,6 @@ class xdglRequestUsage extends ActiveRecord implements xdglRequestUsageInterface
 	 * @db_length             4
 	 */
 	protected $request_id;
-
 	/**
 	 * @var string
 	 *
@@ -51,7 +51,6 @@ class xdglRequestUsage extends ActiveRecord implements xdglRequestUsageInterface
 	 * @db_length           8
 	 */
 	protected $crs_ref_id;
-
 	/**
 	 * @var int
 	 *
@@ -124,7 +123,4 @@ class xdglRequestUsage extends ActiveRecord implements xdglRequestUsageInterface
 	public function setObjId($obj_id) {
 		$this->obj_id = $obj_id;
 	}
-
-
-
 }

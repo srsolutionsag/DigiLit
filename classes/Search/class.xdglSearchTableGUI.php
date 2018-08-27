@@ -51,7 +51,7 @@ class xdglSearchTableGUI extends ilTable2GUI {
 		$this->parent_obj = $a_parent_obj;
 		$this->setRowTemplate("tpl.search_row.html", "Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit");
 
-		//TODO based on previous cmd change formactionbyclass
+		//TODO: based on previous cmd change formactionbyclass
 		//$this->setFormAction($this->ctrl()->getFormActionByClass(ilObjDigiLitGUI::class));
 		$this->setFormAction($this->ctrl()->getFormActionByClass(xdglSearchGUI::class));
 

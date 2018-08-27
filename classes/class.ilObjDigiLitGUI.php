@@ -21,7 +21,6 @@
 	+-----------------------------------------------------------------------------+
 */
 
-
 /**
  * User Interface class for example repository object.
  *
@@ -52,12 +51,14 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	const CMD_UPDATE = 'update';
 	const CMD_CANCEL = 'cancel';
 	const CMD_INFO_SCREEN = 'infoScreen';
+	const TAB_PERMISSIONS = 'permissions';
+	const TAB_INFO = 'info';
 	/**
 	 * @var ilObjDigiLit
 	 */
 	public $object;
 	/**
-	 * @var \xdglRequest
+	 * @var xdglRequest
 	 */
 	protected $xdglRequest;
 	/**
@@ -97,10 +98,10 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	protected function afterConstructor() {
 		global $tpl, $ilCtrl, $ilAccess, $ilNavigationHistory, $ilTabs, $ilLocator;
 		/**
-		 * @var $tpl                 ilTemplate
-		 * @var $ilCtrl              ilCtrl
-		 * @var $ilAccess            ilAccessHandler
-		 * @var $ilNavigationHistory ilNavigationHistory
+		 * @var ilTemplate          $tpl
+		 * @var ilCtrl              $ilCtrl
+		 * @var ilAccessHandler     $ilAccess
+		 * @var ilNavigationHistory $ilNavigationHistory
 		 */
 		$this->tpl = $tpl;
 		$this->history = $ilNavigationHistory;
@@ -114,8 +115,8 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 
 
 	/**
-	 * @param \ilObject $newObj
-	 * @param bool      $only_parent_func
+	 * @param ilObject $newObj
+	 * @param bool     $only_parent_func
 	 */
 	public function afterSave(ilObject $newObj) {
 		global $DIC;
@@ -133,19 +134,20 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	 * @return string
 	 */
 	final public function getType() {
-		return ilDigiLitPlugin::XDGL;
+		return ilDigiLitPlugin::PLUGIN_ID;
 	}
 
 
 	/**
-	 * @param $ref_id
+	 * @param int $ref_id
 	 */
 	protected function isDigiLitObject($ref_id) {
 		$obj_id = ilObject2::_lookupObjectId($ref_id);
 		$ilObjDigiLit_rec = ilObjDigiLit::getObjectById($obj_id);
-		if($ilObjDigiLit_rec['type'] == self::getType()) {
+		if ($ilObjDigiLit_rec['type'] == self::getType()) {
 			return true;
 		}
+
 		return false;
 	}
 
@@ -155,7 +157,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$this->locator->addRepositoryItems();
 		$this->tpl->setLocator();
 
-		if(isset($_GET['xdgl_id'])) {
+		if (isset($_GET['xdgl_id'])) {
 			$this->xdglRequest = xdglRequest::find($_GET['xdgl_id']);
 		} else {
 			$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
@@ -164,7 +166,8 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		}
 
 		if ($this->access->checkAccess('read', '', $_GET['ref_id']) && $this->isDigiLitObject($_GET['ref_id'])
-			&& ilObjDigiLitAccess::hasAccessToDownload($_GET['ref_id']) && $this->xdglRequest->getStatus() == xdglRequest::STATUS_RELEASED) {
+			&& ilObjDigiLitAccess::hasAccessToDownload($_GET['ref_id'])
+			&& $this->xdglRequest->getStatus() == xdglRequest::STATUS_RELEASED) {
 			$this->history->addItem($_GET['ref_id'], $this->ctrl->getLinkTarget($this, self::CMD_SEND_FILE), $this->getType(), '');
 		}
 		$cmd = $this->ctrl->getCmd();
@@ -181,13 +184,13 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		switch ($next_class) {
 			case 'ilpermissiongui':
 				$this->setTabs();
-				$this->tabs_gui->setTabActive('permissions');
+				$this->tabs_gui->activateTab(self::TAB_PERMISSIONS);
 				$perm_gui = new ilPermissionGUI($this);
 				$this->ctrl->forwardCommand($perm_gui);
 				break;
 			case 'ilinfoscreengui':
 				$this->setTabs();
-				$this->tabs_gui->setTabActive('info');
+				$this->tabs_gui->activateTab(self::TAB_INFO);
 				$info_gui = new ilInfoScreenGUI($this);
 				$this->ctrl->forwardCommand($info_gui);
 				break;
@@ -201,9 +204,9 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 				switch ($cmd) {
 					case self::CMD_CREATE:
 						$this->tabs_gui->clearTargets();
-						if(xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH)) {
-							//TODO change method to search
-							$this->ctrl->redirectByClass([self::class, xdglSearchGUI::class], xdglSearchGUI::CMD_STANDARD);
+						if (xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH)) {
+							//TODO: change method to search
+							$this->ctrl->redirectByClass([ self::class, xdglSearchGUI::class ], xdglSearchGUI::CMD_STANDARD);
 						} else {
 							$this->create();
 						}
@@ -265,10 +268,10 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	/**
 	 * @return int
 	 */
-	public function getParentRefId($ref_id = null) {
+	public function getParentRefId($ref_id = NULL) {
 		global $tree;
 		/**
-		 * @var $tree ilTree
+		 * @var ilTree $tree
 		 */
 		if (!$ref_id) {
 			$ref_id = $_GET['ref_id'];
@@ -296,14 +299,14 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 	 *
 	 * this will create the default creation forms: new, import, clone
 	 *
-	 * @param    string $a_new_type
+	 * @param string $a_new_type
 	 *
-	 * @return    array
+	 * @return array
 	 */
 	protected function initCreationForms($a_new_type) {
-		$this->ctrl->setParameter($this, 'new_type', ilDigiLitPlugin::XDGL);
+		$this->ctrl->setParameter($this, 'new_type', ilDigiLitPlugin::PLUGIN_ID);
 
-		return array(self::CFORM_NEW => $this->initCreateForm($a_new_type));
+		return array( self::CFORM_NEW => $this->initCreateForm($a_new_type) );
 	}
 
 
@@ -317,7 +320,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$creation_form->fillForm(ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));
 		global $ilUser;
 		/**
-		 * @var $ilUser ilObjUser
+		 * @var ilObjUser $ilUser
 		 */
 		if ((strpos(gethostname(), '.local') OR strpos(gethostname(), 'vagrant-') === 0) AND $ilUser->getId() == 6) {
 			$creation_form->fillFormRandomized();
@@ -325,6 +328,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 
 		return $creation_form->getAsPropertyFormGui();
 	}
+
 
 	public function save() {
 		$creation_form = new xdglRequestFormGUI($this, new xdglRequest());
@@ -358,7 +362,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 
 
 	/**
-	 * @param $title
+	 * @param string $title
 	 */
 	public static function initHeader($title) {
 		global $tpl;
@@ -377,7 +381,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$xdglRequestFormGUI = new xdglRequestFormGUI($this, $xdglRequest, true, true);
 		$xdglRequestFormGUI->fillForm();
 		/**
-		 * @var $item ilTextInputGUI
+		 * @var ilTextInputGUI $item
 		 */
 		foreach ($xdglRequestFormGUI->getItems() as $item) {
 			$info->addProperty($item->getTitle(), $item->getValue());
@@ -390,7 +394,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 
 
 	public function confirmDeleteObject() {
-		$a_val = array($_GET['ref_id']);
+		$a_val = array( $_GET['ref_id'] );
 		ilSession::set('saved_post', $a_val);
 		$ru = new ilRepUtilGUI($this);
 		if (!$ru->showDeleteConfirmation($a_val, false)) {
@@ -422,11 +426,11 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		$ilCtrl->setTargetScript('ilias.php');
 		$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, xdglRequestGUI::XDGL_ID, $a_value);
 		$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, 'ref_id', $a_target[0]);
-		$ilCtrl->redirectByClass([ilObjPluginDispatchGUI::class, ilObjDigiLitGUI::class], ilObjDigiLitGUI::CMD_INFO_SCREEN);
+		$ilCtrl->redirectByClass([ ilObjPluginDispatchGUI::class, ilObjDigiLitGUI::class ], ilObjDigiLitGUI::CMD_INFO_SCREEN);
 	}
+
 
 	public function putObjectInTree(ilObject $a_obj, $a_parent_node_id = NULL) {
 		parent::putObjectInTree($a_obj, $a_parent_node_id); // TODO: Change the autogenerated stub
 	}
 }
-

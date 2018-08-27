@@ -47,7 +47,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 		$res = $ilDB->query($query);
 		$result = array();
 		while ($row = $ilDB->fetchAssoc($res)) {
-			$result[] = array("id" => $row['obj_id'], "text" => $row['title']);
+			$result[] = array( "id" => $row['obj_id'], "text" => $row['title'] );
 		}
 
 		return json_encode($result);
@@ -60,7 +60,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 	 */
 	public function __construct($title, $post_var) {
 		global $tpl, $ilUser, $lng;
-		if (substr($post_var, -2) != '[]') {
+		if (substr($post_var, - 2) != '[]') {
 			$post_var = $post_var . '[]';
 		}
 		parent::__construct($title, $post_var);
@@ -69,7 +69,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 		$this->pl = ilDigiLitPlugin::getInstance();
 		$tpl->addJavaScript('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/lib/select2/select2.min.js');
 		$tpl->addJavaScript('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/lib/select2/select2_locale_'
-		                    . $ilUser->getCurrentLanguage() . '.js');
+			. $ilUser->getCurrentLanguage() . '.js');
 		$tpl->addCss('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/lib/select2/select2.css');
 		$this->setInputTemplate($this->pl->getTemplate('tpl.multiple_select.html'));
 		$this->setWidth('300px');
@@ -129,7 +129,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 		$options = $this->getOptions();
 
 		$tpl->setVariable('POST_VAR', $this->getPostVar());
-		$tpl->setVariable('ID', substr($this->getPostVar(), 0, -2));
+		$tpl->setVariable('ID', substr($this->getPostVar(), 0, - 2));
 		$tpl->setVariable('WIDTH', $this->getWidth());
 		$tpl->setVariable('PRELOAD', $values);
 		$tpl->setVariable('HEIGHT', $this->getHeight());
@@ -251,7 +251,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 
 
 	/**
-	 * @param \srDefaultAccessChecker $access_checker
+	 * @param srDefaultAccessChecker $access_checker
 	 */
 	public function setAccessChecker($access_checker) {
 		$this->access_checker = $access_checker;
@@ -259,7 +259,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 
 
 	/**
-	 * @return \srDefaultAccessChecker
+	 * @return srDefaultAccessChecker
 	 */
 	public function getAccessChecker() {
 		return $this->access_checker;
@@ -267,7 +267,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 
 
 	/**
-	 * @param \ilTemplate $input_template
+	 * @param ilTemplate $input_template
 	 */
 	public function setInputTemplate($input_template) {
 		$this->input_template = $input_template;
@@ -275,7 +275,7 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 
 
 	/**
-	 * @return \ilTemplate
+	 * @return ilTemplate
 	 */
 	public function getInputTemplate() {
 		return $this->input_template;
@@ -289,8 +289,8 @@ class xdglMultiUserInputGUI extends ilMultiSelectInputGUI {
 	 * @return string the real postvar.
 	 */
 	protected function searchPostVar() {
-		if (substr($this->getPostVar(), -2) == '[]') {
-			return substr($this->getPostVar(), 0, -2);
+		if (substr($this->getPostVar(), - 2) == '[]') {
+			return substr($this->getPostVar(), 0, - 2);
 		} else {
 			return $this->getPostVar();
 		}

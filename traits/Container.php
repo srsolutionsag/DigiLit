@@ -2,6 +2,12 @@
 
 namespace xdgl;
 
+use ilCtrl;
+use ilLanguage;
+use ilObjUser;
+use ilTabsGUI;
+use ilTree;
+
 /**
  * Interface Container
  *
@@ -10,13 +16,13 @@ namespace xdgl;
 interface Container extends \ArrayAccess {
 
 	/**
-	 * @return \ilCtrl
+	 * @return ilCtrl
 	 */
 	public function ctrl();
 
 
 	/**
-	 * @return \ilObjUser
+	 * @return ilObjUser
 	 */
 	public function user();
 
@@ -28,13 +34,13 @@ interface Container extends \ArrayAccess {
 
 
 	/**
-	 * @return \ilTabsGUI
+	 * @return ilTabsGUI
 	 */
 	public function tabs();
 
 
 	/**
-	 * @return \ilLanguage
+	 * @return ilLanguage
 	 */
 	public function language();
 

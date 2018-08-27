@@ -42,7 +42,7 @@ class xdglMainGUI {
 
 
 	/**
-	 * @return bool
+	 *
 	 */
 	public function executeCommand() {
 		$xdglRequestGUI = new xdglRequestGUI();
@@ -57,36 +57,33 @@ class xdglMainGUI {
 		}
 		$nextClass = $this->ctrl->getNextClass();
 		if (!xdglConfig::isConfigUpToDate()) {
-			ilUtil::sendInfo('Configuraion out of date');
-			$nextClass = 'xdglconfiggui';
+			ilUtil::sendInfo($this->pl->txt("conf_out_of_date"));
+			$nextClass = strtolower(xdglConfigGUI::class);
 		}
 		global $ilUser;
 		if (xdglConfig::getConfigValue(xdglConfig::F_USE_LIBRARIES) AND xdglConfig::getConfigValue(xdglConfig::F_OWN_LIBRARY_ONLY)
-		                                                     AND !xdglLibrary::isAssignedToAnyLibrary($ilUser)) {
-			ilUtil::sendInfo('You cannot use DigiLit since you are not assigned to any Library', true);
+			AND !xdglLibrary::isAssignedToAnyLibrary($ilUser)) {
+			ilUtil::sendInfo($this->pl->txt('no_library_assigned'), true);
 			ilUtil::redirect('/');
 		}
 
 		switch ($nextClass) {
 			case 'xdglconfiggui';
-				$this->tabs->setTabActive(self::TAB_SETTINGS);
+				$this->tabs->activateTab(self::TAB_SETTINGS);
 				$this->ctrl->forwardCommand($xdglConfigGUI);
 
 				break;
 			case 'xdgllibrarygui';
-				$this->tabs->setTabActive(self::TAB_LIBRARIES);
+				$this->tabs->activateTab(self::TAB_LIBRARIES);
 				$this->ctrl->forwardCommand($xdglLibraryGUI);
 				break;
 			default:
-				$this->tabs->setTabActive(self::TAB_REQUESTS);
+				$this->tabs->activateTab(self::TAB_REQUESTS);
 				$this->ctrl->forwardCommand($xdglRequestGUI);
 
 				break;
 		}
 		$this->tpl->getStandardTemplate();
 		$this->tpl->show();
-
 	}
 }
-
-

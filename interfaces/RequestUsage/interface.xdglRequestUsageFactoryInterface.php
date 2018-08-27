@@ -7,7 +7,6 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 interface xdglRequestUsageFactoryInterface {
 
 	/**
@@ -19,7 +18,7 @@ interface xdglRequestUsageFactoryInterface {
 
 
 	/**
-	 * @param xdglRequest $xdglRequest
+	 * @param xdglRequest  $xdglRequest
 	 * @param ilObjDigiLit $ilObjDigiLit
 	 *
 	 * @return xdglRequestUsage
@@ -36,7 +35,7 @@ interface xdglRequestUsageFactoryInterface {
 
 
 	/**
-	 * @param $request_usages_array
+	 * @param array $request_usages_array
 	 *
 	 * @return array of cours titles
 	 */
@@ -54,17 +53,18 @@ interface xdglRequestUsageFactoryInterface {
 	 */
 	public function deleteRequestUsageAndDigiLitByObjId($obj_id);
 
+
 	/**
 	 * @param int $obj_id
 	 */
 	public function deleteRequestUsageByObjId($obj_id);
 
-	/**
-	 * @param \xdglRequestUsage $old_request_usage
-	 * @param int          $obj_id
-	 *
-	 * @return \xdglRequestUsage
-	 */
-	public function copyRequestUsage(xdglRequestUsage $old_request_usage, $obj_id = null);
 
+	/**
+	 * @param xdglRequestUsage $old_request_usage
+	 * @param int              $obj_id
+	 *
+	 * @return xdglRequestUsage
+	 */
+	public function copyRequestUsage(xdglRequestUsage $old_request_usage, $obj_id = NULL);
 }

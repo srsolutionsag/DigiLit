@@ -53,8 +53,8 @@ class xdglSearchGUI {
 	protected function searchForm() {
 			$xdglSearchFormGUI = new xdglSearchFormGUI($this);
 			$this->tpl()->setContent($xdglSearchFormGUI->getHTML());
-			$this->ctrl->setParameter($this, 'new_type', ilDigiLitPlugin::XDGL);
-			$this->ctrl->setParameterByClass(ilObjDigiLitGUI::class, 'new_type', ilDigiLitPlugin::XDGL);
+			$this->ctrl->setParameter($this, 'new_type', ilDigiLitPlugin::PLUGIN_ID);
+			$this->ctrl->setParameterByClass(ilObjDigiLitGUI::class, 'new_type', ilDigiLitPlugin::PLUGIN_ID);
 			$this->ctrl->setParameter($this, 'previous_cmd', self::CMD_STANDARD);
 			$this->ctrl->saveParameter($this, 'ref_id');
 	}
@@ -64,8 +64,8 @@ class xdglSearchGUI {
 		$xdglSearchFormGUI->setValuesByPost();
 		$xdglSearchTableGUI = new xdglSearchTableGUI($this, self::CMD_STANDARD, "", $_POST['title'], $_POST['author']);
 		$ilObjDigiLitGUI = new ilObjDigiLitGUI();
-		$this->ctrl->setParameter($this, 'new_type', ilDigiLitPlugin::XDGL);
-		$this->ctrl->setParameterByClass(ilObjDigiLitGUI::class, 'new_type', ilDigiLitPlugin::XDGL);
+		$this->ctrl->setParameter($this, 'new_type', ilDigiLitPlugin::PLUGIN_ID);
+		$this->ctrl->setParameterByClass(ilObjDigiLitGUI::class, 'new_type', ilDigiLitPlugin::PLUGIN_ID);
 		$this->ctrl->setParameter($this, 'previous_cmd', self::CMD_SEARCH);
 		$this->ctrl->saveParameterByClass(ilObjDigiLitGUI::class, 'ref_id');
 		if(!empty($xdglSearchTableGUI->row_data)) {

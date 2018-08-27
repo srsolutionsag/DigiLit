@@ -17,15 +17,20 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 	 */
 	protected $parent_gui;
 	/**
-	 * @var  ilCtrl
+	 * @var ilCtrl
 	 */
 	protected $ctrl;
+	/**
+	 * @var ilDigiLitPlugin
+	 */
+	private $pl;
 
 
 	/**
 	 * @param xdglConfigGUI $parent_gui
 	 */
 	public function __construct(xdglConfigGUI $parent_gui) {
+		parent::__construct();
 		global $ilCtrl;
 		$this->parent_gui = $parent_gui;
 		$this->ctrl = $ilCtrl;
@@ -36,7 +41,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $field
+	 * @param string $field
 	 *
 	 * @return string
 	 */
@@ -46,7 +51,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	protected function initForm() {
-		$this->setTitle($this->pl->txt('admin_form_title'));
+		$this->setTitle($this->txt('form_title'));
 		if (ilObjDigiLitAccess::isGlobalAdmin()) {
 			// Roles Admin
 			$global_roles = self::getRoles(ilRbacReview::FILTER_ALL_GLOBAL);
@@ -140,7 +145,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 		// EULA
 		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_EULA_TEXT), xdglConfig::F_EULA_TEXT);
 		$te->setUseRte(true);
-		$te->setRteTags(array('a', 'p', 'ul', 'li', 'ol'));
+		$te->setRteTags(array( 'a', 'p', 'ul', 'li', 'ol' ));
 		$te->setCols(self::A_COLS);
 		$te->setRows(self::A_ROWS);
 		$this->addItem($te);
@@ -159,12 +164,12 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $item
-	 * @param $array
+	 * @param ilFormPropertyGUI $item
+	 * @param array             $array
 	 *
 	 * @internal param $key
 	 */
-	private function getValuesForItem($item, &$array) {
+	private function getValuesForItem($item, array &$array) {
 		if (self::checkItem($item)) {
 			$key = $item->getPostVar();
 			$array[$key] = xdglConfig::getConfigValue($key);
@@ -196,23 +201,23 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 	public function checkInput() {
 		/**
-		 * @var $roles_admin       ilMultiSelectInputGUI
-		 * @var $roles_manager     ilMultiSelectInputGUI
-		 * @var $regex             ilTextInputGUI
-		 * @var $use_regex         ilCheckboxInputGUI
+		 * @var ilMultiSelectInputGUI $roles_admin
+		 * @var ilMultiSelectInputGUI $roles_manager
+		 * @var ilTextInputGUI        $regex
+		 * @var ilCheckboxInputGUI    $use_regex
 		 */
 		$check = true;
 		if (ilObjDigiLitAccess::isGlobalAdmin()) {
 			$roles_admin = $this->getItemByPostVar(xdglConfig::F_ROLES_ADMIN);
 			if (count($roles_admin->getValue()) == 0) {
 				$check = false;
-				$roles_admin->setAlert('Check at least one role.');
+				$roles_admin->setAlert($this->txt("check_role"));
 			}
 
 			$roles_manager = $this->getItemByPostVar(xdglConfig::F_ROLES_MANAGER);
 			if (count($roles_manager->getValue()) == 0) {
 				$check = false;
-				$roles_manager->setAlert('Check at least one role.');
+				$roles_manager->setAlert($this->txt("check_role"));
 			}
 		}
 		$use_regex = $this->getItemByPostVar(xdglConfig::F_USE_REGEX);
@@ -220,7 +225,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 			$regex = $this->getItemByPostVar(xdglConfig::F_REGEX);
 			if (!xdglConfig::isRegexValid($regex->getValue())) {
 				$check = false;
-				$regex->setAlert('Regular Expression not valid');
+				$regex->setAlert($this->txt("invalid_regexp"));
 			}
 		}
 		if (!$check) {
@@ -235,7 +240,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $item
+	 * @param ilFormPropertyGUI $item
 	 */
 	private function saveValueForItem($item) {
 		if (self::checkItem($item)) {
@@ -251,7 +256,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $item
+	 * @param ilFormPropertyGUI $item
 	 *
 	 * @return bool
 	 */
@@ -261,7 +266,7 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $item
+	 * @param ilFormPropertyGUI $item
 	 *
 	 * @return bool
 	 */
@@ -271,8 +276,8 @@ class xdglConfigFormGUI extends ilPropertyFormGUI {
 
 
 	protected function addCommandButtons() {
-		$this->addCommandButton('save', $this->pl->txt('admin_form_button_save'));
-		$this->addCommandButton('cancel', $this->pl->txt('admin_form_button_cancel'));
+		$this->addCommandButton(xdglConfigGUI::CMD_SAVE, $this->txt('form_button_save'));
+		$this->addCommandButton(xdglConfigGUI::CMD_CANCEL, $this->txt('form_button_cancel'));
 	}
 
 

@@ -15,7 +15,7 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 	const F_REQUEST_COUNT = 'request_count';
 	const F_ACTIVE = 'active';
 	/**
-	 * @var  xdglLibrary
+	 * @var xdglLibrary
 	 */
 	protected $library;
 	/**
@@ -23,7 +23,7 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 	 */
 	protected $parent_gui;
 	/**
-	 * @var  ilCtrl
+	 * @var ilCtrl
 	 */
 	protected $ctrl;
 	/**
@@ -33,11 +33,12 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param             $parent_gui
-	 * @param xdglLibrary $library
-	 * @param bool        $view
+	 * @param xdglLibraryGUI $parent_gui
+	 * @param xdglLibrary    $library
+	 * @param bool           $view
 	 */
 	public function __construct($parent_gui, xdglLibrary $library, $view = false) {
+		parent::__construct();
 		global $ilCtrl;
 		$this->library = $library;
 		$this->parent_gui = $parent_gui;
@@ -57,7 +58,7 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 	protected function initView() {
 		$this->initForm();
 		/**
-		 * @var $item ilNonEditableValueGUI
+		 * @var ilNonEditableValueGUI $item
 		 */
 		foreach ($this->getItems() as $item) {
 			$te = new ilNonEditableValueGUI($this->txt($item->getPostVar()), $item->getPostVar());
@@ -73,7 +74,7 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 
 
 	/**
-	 * @param $key
+	 * @param string $key
 	 *
 	 * @return string
 	 */
@@ -107,12 +108,12 @@ class xdglLibraryFormGUI extends ilPropertyFormGUI {
 
 	public function fillForm() {
 		$array = array(
-			self::F_TITLE           => $this->library->getTitle(),
-			self::F_DESCRIPTION     => $this->library->getDescription(),
-			self::F_EMAIL           => $this->library->getEmail(),
-			self::F_REQUEST_COUNT   => $this->library->getRequestCount(),
+			self::F_TITLE => $this->library->getTitle(),
+			self::F_DESCRIPTION => $this->library->getDescription(),
+			self::F_EMAIL => $this->library->getEmail(),
+			self::F_REQUEST_COUNT => $this->library->getRequestCount(),
 			self::F_LIBRARIAN_COUNT => $this->library->getLibrarianCount(),
-			self::F_ACTIVE          => $this->library->isActive(),
+			self::F_ACTIVE => $this->library->isActive(),
 		);
 
 		$this->setValuesByArray($array);
