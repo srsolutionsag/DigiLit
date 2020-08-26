@@ -1,7 +1,7 @@
 <?php
 $id = 'xdgl';
-$version = '2.1.2';
-$ilias_min_version = '5.3.0';
-$ilias_max_version = '5.3.999';
+$version = '3.0.0';
+$ilias_min_version = '5.4.0';
+$ilias_max_version = '6.999';
 $responsible = 'studer + raimann ag';
 $responsible_mail = 'support@studer-raimann.ch';

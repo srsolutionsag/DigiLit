@@ -1,13 +1,15 @@
 <?php
+
+use srag\DIC\DigiLit\DICTrait;
+
 /**
  * Class xdglSearchFormGUI
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 class xdglSearchFormGUI extends ilPropertyFormGUI {
 
-	use \xdgl\DIC;
+	use DICTrait;
 
 	/**
 	 * @var xdglSearchGUI
@@ -33,7 +35,7 @@ class xdglSearchFormGUI extends ilPropertyFormGUI {
 		$this->access = new ilObjDigiLitAccess();
 		$this->pl = ilDigiLitPlugin::getInstance();
 		parent::__construct();
-		$this->setFormAction($this->ctrl()->getFormAction($this->parent_gui));
+		$this->setFormAction(self::dic()->ctrl()->getFormAction($this->parent_gui));
 		$this->initForm();
 	}
 

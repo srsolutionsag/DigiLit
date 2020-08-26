@@ -21,6 +21,8 @@
 	+-----------------------------------------------------------------------------+
 */
 
+use srag\DIC\DigiLit\DICTrait;
+
 /**
  * User Interface class for example repository object.
  *
@@ -39,7 +41,7 @@
  *
  */
 class ilObjDigiLitGUI extends ilObjectPluginGUI {
-
+    use DICTrait;
 	const CMD_CONFIRM_DELETE_OBJECT = 'confirmDeleteObject';
 	const CMD_REDIRECT_PARENT_GUI = 'redirectParentGui';
 	const CMD_SHOW_CONTENT = 'showContent';
@@ -172,7 +174,11 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		}
 		$cmd = $this->ctrl->getCmd();
 		$next_class = $this->ctrl->getNextClass($this);
-		$this->tpl->getStandardTemplate();
+        if (self::version()->is6()) {
+            $this->tpl->loadStandardTemplate();
+        } else {
+            $this->tpl->getStandardTemplate();
+        }
 
 		if ($this->xdglRequest->getId()) {
 			self::initHeader($this->xdglRequest->getTitle());
@@ -238,7 +244,11 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 						$this->ctrl->setCmd('showSummary');
 						$this->ctrl->setCmdClass('ilinfoscreengui');
 						$this->infoScreen();
-						$this->tpl->show();
+                        if (self::version()->is6()) {
+                            $this->tpl->printToStdout();
+                        } else {
+                            $this->tpl->show();
+                        }
 						break;
 					case self::CMD_CONFIRM_DELETE_OBJECT:
 						$this->$cmd();
@@ -400,7 +410,11 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI {
 		if (!$ru->showDeleteConfirmation($a_val, false)) {
 			$this->redirectParentGui();
 		}
-		$this->tpl->show();
+        if (self::version()->is6()) {
+            $this->tpl->printToStdout();
+        } else {
+            $this->tpl->show();
+        }
 	}
 
 

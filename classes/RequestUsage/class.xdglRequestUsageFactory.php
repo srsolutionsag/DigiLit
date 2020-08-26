@@ -1,13 +1,12 @@
 <?php
 
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
+use srag\Plugins\DigiLit\Interfaces\RequestUsage\xdglRequestUsageFactoryInterface;
 
 /**
  * Class xdglRequestUsageFactory
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 class xdglRequestUsageFactory implements xdglRequestUsageFactoryInterface {
 
 	/**
