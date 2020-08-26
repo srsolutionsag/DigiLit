@@ -1,12 +1,14 @@
 <?php
+
+use srag\DIC\DigiLit\DICTrait;
+
 /**
  * Class xdglSearchTableGUI
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 class xdglSearchTableGUI extends ilTable2GUI {
-	use \xdgl\DIC;
+	use DICTrait;
 
 	const TBL_ID = 'xdgl_search';
 	/**
@@ -44,16 +46,16 @@ class xdglSearchTableGUI extends ilTable2GUI {
 		$this->setId(self::TBL_ID);
 		$this->setPrefix(self::TBL_ID);
 		$this->setFormName(self::TBL_ID);
-		$this->tpl = $this->tpl();
-		$this->ctrl()->saveParameter($a_parent_obj, $this->getNavParameter());
+		$this->tpl = self::dic()->ui()->mainTemplate();
+        self::dic()->ctrl()->saveParameter($a_parent_obj, $this->getNavParameter());
 
 		parent::__construct($a_parent_obj, $a_parent_cmd, $a_template_context);
 		$this->parent_obj = $a_parent_obj;
 		$this->setRowTemplate("tpl.search_row.html", "Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit");
 
 		//TODO: based on previous cmd change formactionbyclass
-		//$this->setFormAction($this->ctrl()->getFormActionByClass(ilObjDigiLitGUI::class));
-		$this->setFormAction($this->ctrl()->getFormActionByClass(xdglSearchGUI::class));
+		//$this->setFormAction(self::dic()->ctrl()->getFormActionByClass(ilObjDigiLitGUI::class));
+		$this->setFormAction(self::dic()->ctrl()->getFormActionByClass(xdglSearchGUI::class));
 
 		$this->setExternalSorting(true);
 		$this->addCommandButton(xdglSearchGUI::CMD_ADD_LITERATURE, $this->pl->txt('add_literature'));

@@ -6,5 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'SRAG\\Plugins\\eBook\\' => array($baseDir . '/src'),
+    'srag\\Plugins\\DigiLit\\' => array($baseDir . '/src'),
+    'srag\\LibrariesNamespaceChanger\\' => array($vendorDir . '/srag/librariesnamespacechanger/src'),
+    'srag\\DIC\\DigiLit\\' => array($vendorDir . '/srag/dic/src'),
 );

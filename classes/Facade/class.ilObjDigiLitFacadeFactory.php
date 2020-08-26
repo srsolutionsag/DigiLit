@@ -1,12 +1,12 @@
 <?php
 
+use srag\Plugins\DigiLit\Interfaces\Facade\ilObjDigiLitFacadeInterface;
 
 /**
  * Class ilObjDigiLitFacadeFactory
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 class ilObjDigiLitFacadeFactory implements ilObjDigiLitFacadeInterface {
 
 	/**

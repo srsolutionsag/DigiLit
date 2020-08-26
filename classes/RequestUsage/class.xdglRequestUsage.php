@@ -1,11 +1,12 @@
 <?php
 
+use srag\Plugins\DigiLit\Interfaces\RequestUsage\xdglRequestUsageInterface;
+
 /**
  * Class xdglRequestUsage
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 class xdglRequestUsage extends ActiveRecord implements xdglRequestUsageInterface {
 
 	/**
