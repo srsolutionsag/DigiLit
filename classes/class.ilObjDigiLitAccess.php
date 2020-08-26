@@ -207,4 +207,27 @@ class ilObjDigiLitAccess extends ilObjectPluginAccess {
 	static function checkOnline($a_id) {
 		return true;
 	}
+
+
+    /**
+     * @param bool $redirect
+     *
+     * @return bool
+     */
+    public static function hasAccessToMainGUI(bool $redirect = false) : bool
+    {
+        if (self::isAdmin()) {
+            return true;
+        }
+
+        if (self::isManager()) {
+            return true;
+        }
+
+        if ($redirect) {
+            self::redirectNonAccess();
+        }
+
+        return false;
+    }
 }

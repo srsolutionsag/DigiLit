@@ -1,9 +1,15 @@
 <?php
 
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/DigiLit/vendor/autoload.php');
+namespace srag\Plugins\DigiLit\Interfaces\RequestUsage;
+
+use ilObjDigiLit;
+use xdglRequest;
+use xdglRequestUsage;
 
 /**
- * Class xdglRequestUsageFactoryInterface
+ * Interface xdglRequestUsageFactoryInterface
+ *
+ * @package srag\Plugins\DigiLit\Interfaces\RequestUsage
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */

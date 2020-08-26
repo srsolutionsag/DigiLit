@@ -1,5 +1,9 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use srag\DIC\DigiLit\DICTrait;
+
 /**
  * Class xdglMainGUI
  *
@@ -10,7 +14,7 @@
  * @ilCtrl_IsCalledBy xdglMainGUI : ilDigiLitConfigGUI
  */
 class xdglMainGUI {
-
+    use DICTrait;
 	const TAB_SETTINGS = 'settings';
 	const TAB_LIBRARIES = 'libraries';
 	const TAB_REQUESTS = 'requests';
@@ -45,6 +49,7 @@ class xdglMainGUI {
 	 *
 	 */
 	public function executeCommand() {
+	    ilObjDigiLitAccess::hasAccessToMainGUI(true);
 		$xdglRequestGUI = new xdglRequestGUI();
 		$this->tabs->addTab(self::TAB_REQUESTS, $this->pl->txt('tab_' . self::TAB_REQUESTS), $this->ctrl->getLinkTarget($xdglRequestGUI));
 		$xdglLibraryGUI = new xdglLibraryGUI();
@@ -83,7 +88,12 @@ class xdglMainGUI {
 
 				break;
 		}
-		$this->tpl->getStandardTemplate();
-		$this->tpl->show();
+		if (self::version()->is6()) {
+            $this->tpl->loadStandardTemplate();
+            $this->tpl->printToStdout();
+        } else {
+            $this->tpl->getStandardTemplate();
+            $this->tpl->show();
+        }
 	}
 }

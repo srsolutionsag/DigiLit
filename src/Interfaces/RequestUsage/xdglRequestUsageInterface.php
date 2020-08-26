@@ -1,10 +1,14 @@
 <?php
+
+namespace srag\Plugins\DigiLit\Interfaces\RequestUsage;
+
 /**
- * Class xdglRequestUsageInterface
+ * Interface xdglRequestUsageInterface
+ *
+ * @package srag\Plugins\DigiLit\Interfaces\RequestUsage
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 interface xdglRequestUsageInterface {
 
 	const TABLE_NAME = 'xdgl_request_usage';

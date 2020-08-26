@@ -1,5 +1,8 @@
 <?php
 
+use srag\DIC\DigiLit\DICTrait;
+use srag\Plugins\DigiLit\Interfaces\Facade\ilObjDigiLitFacadeInterface;
+
 /**
  * Class xdglSearchGUI
  *
@@ -7,9 +10,8 @@
  *
  * @author: Benjamin Seglias   <bs@studer-raimann.ch>
  */
-
 class xdglSearchGUI {
-	use \xdgl\DIC;
+	use DICTrait;
 
 	const CMD_STANDARD = 'searchForm';
 	const CMD_SEARCH = 'search';
@@ -36,15 +38,15 @@ class xdglSearchGUI {
 	public function __construct() {
 		$this->access = new ilObjDigiLitAccess();
 		$this->pl = ilDigiLitPlugin::getInstance();
-		$this->ctrl = $this->ctrl();
+		$this->ctrl = self::dic()->ctrl();
 		$this->ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
 	}
 
 	public function executeCommand() {
-		$nextClass = $this->ctrl()->getNextClass();
+		$nextClass = self::dic()->ctrl()->getNextClass();
 		switch ($nextClass) {
 			default:
-				$cmd = $this->ctrl()->getCmd(self::CMD_STANDARD);
+				$cmd = self::dic()->ctrl()->getCmd(self::CMD_STANDARD);
 				$this->{$cmd}();
 				break;
 		}
@@ -52,7 +54,7 @@ class xdglSearchGUI {
 
 	protected function searchForm() {
 			$xdglSearchFormGUI = new xdglSearchFormGUI($this);
-			$this->tpl()->setContent($xdglSearchFormGUI->getHTML());
+			self::dic()->ui()->mainTemplate()->setContent($xdglSearchFormGUI->getHTML());
 			$this->ctrl->setParameter($this, 'new_type', ilDigiLitPlugin::PLUGIN_ID);
 			$this->ctrl->setParameterByClass(ilObjDigiLitGUI::class, 'new_type', ilDigiLitPlugin::PLUGIN_ID);
 			$this->ctrl->setParameter($this, 'previous_cmd', self::CMD_STANDARD);
@@ -69,16 +71,14 @@ class xdglSearchGUI {
 		$this->ctrl->setParameter($this, 'previous_cmd', self::CMD_SEARCH);
 		$this->ctrl->saveParameterByClass(ilObjDigiLitGUI::class, 'ref_id');
 		if(!empty($xdglSearchTableGUI->row_data)) {
-			$this->tpl()->setContent($this->getAccordion(array($xdglSearchFormGUI, $ilObjDigiLitGUI->initCreateForm('new')), $xdglSearchTableGUI));
+            self::dic()->ui()->mainTemplate()->setContent($this->getAccordion(array($xdglSearchFormGUI, $ilObjDigiLitGUI->initCreateForm('new')), $xdglSearchTableGUI));
 		} else {
-			$this->tpl()->setContent($this->getAccordion(array($xdglSearchFormGUI, $ilObjDigiLitGUI->initCreateForm('new'))));
+            self::dic()->ui()->mainTemplate()->setContent($this->getAccordion(array($xdglSearchFormGUI, $ilObjDigiLitGUI->initCreateForm('new'))));
 		}
 
 	}
 
 	protected function getAccordion($a_forms, xdglSearchTableGUI $a_search_table = null) {
-		include_once("./Services/Accordion/classes/class.ilAccordionGUI.php");
-
 		$acc = new ilAccordionGUI();
 		$acc->setBehaviour(ilAccordionGUI::FIRST_OPEN);
 		$cnt = 1;
@@ -98,7 +98,7 @@ class xdglSearchGUI {
 			}
 
 			// move title from form to accordion
-			$htpl->setVariable("TITLE", $this->lng()->txt("option")." ".$cnt.": ".
+			$htpl->setVariable("TITLE", self::dic()->language()->txt("option")." ".$cnt.": ".
 				$form_title);
 			$cf->setTitle(null);
 			$cf->setTitleIcon(null);
