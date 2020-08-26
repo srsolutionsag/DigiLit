@@ -5,9 +5,9 @@
   "keywords": [
     "ILIAS",
     "Plugin",
-    "DigLit"
+    "DigiLit"
   ],
-  "homepage": "https://github.com/studer-raimann/DigLit",
+  "homepage": "https://github.com/studer-raimann/DigiLit",
   "license": "GPL-3.0-only",
   "authors": [
     {
