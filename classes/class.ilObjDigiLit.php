@@ -37,15 +37,16 @@ class ilObjDigiLit extends ilObjectPlugin
      * @var bool
      */
     protected $object;
+    /**
+     * @var ilDBInterface
+     */
+    protected $db;
 
     /**
      * @param int $a_ref_id
      */
     public function __construct($a_ref_id = 0, $whatever = true)
     {
-        /**
-         * @var ilDB $ilDB
-         */
         global $ilDB;
 
         parent::__construct($a_ref_id);
@@ -71,17 +72,15 @@ class ilObjDigiLit extends ilObjectPlugin
 
     public function doDelete()
     {
-        $use_search = xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH);
+        $use_search = (bool) xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH);
         $ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
-        $xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
-        if ($use_search) {
-            $xdglRequestUsage->delete();
-        } else {
-            $xdglRequest = xdglRequest::find($xdglRequestUsage->getRequestId());
-            $xdglRequest->deleteFile();
-            $xdglRequest->delete();
-            $xdglRequestUsage->delete();
+        $request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
+        if (!$use_search) {
+            $request = xdglRequest::find($request_usage->getRequestId());
+            $request->deleteFile();
+            $request->delete();
         }
+        $request_usage->delete();
     }
 
     /**
@@ -99,14 +98,6 @@ class ilObjDigiLit extends ilObjectPlugin
         $ilObjDigiLitFacadeFactory->requestUsageFactory()->copyRequestUsage($xdglRequestUsage, $new_obj->getId());
 
         return true;
-
-        /*		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
-                xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
-
-                return true;*/
-        /*
-         *
-         */
     }
 
     /**
