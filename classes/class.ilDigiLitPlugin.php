@@ -16,80 +16,81 @@ use srag\Plugins\DigiLit\Menu\Menu;
  * @version 1.0.00
  *
  */
-class ilDigiLitPlugin extends ilRepositoryObjectPlugin {
+class ilDigiLitPlugin extends ilRepositoryObjectPlugin
+{
     use DICTrait;
-	const PLUGIN_ID = 'xdgl';
-	const PLUGIN_NAME = 'DigiLit';
-	/**
-	 * @var ilDigiLitPlugin
-	 */
-	protected static $cache;
 
+    const PLUGIN_ID = 'xdgl';
+    const PLUGIN_NAME = 'DigiLit';
+    /**
+     * @var ilDigiLitPlugin
+     */
+    protected static $cache;
 
-	/**
-	 * @return ilDigiLitPlugin
-	 */
-	public static function getInstance() {
-		if (!isset(self::$cache)) {
-			self::$cache = new self();
-		}
+    /**
+     * @return ilDigiLitPlugin
+     */
+    public static function getInstance()
+    {
+        if (!isset(self::$cache)) {
+            self::$cache = new self();
+        }
 
-		return self::$cache;
-	}
+        return self::$cache;
+    }
 
+    /**
+     * @var ilDB
+     */
+    protected $db;
 
-	/**
-	 * @var ilDB
-	 */
-	protected $db;
+    /**
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
 
+        global $DIC;
 
-	/**
-	 *
-	 */
-	public function __construct() {
-		parent::__construct();
+        $this->db = $DIC->database();
+    }
 
-		global $DIC;
+    /**
+     * @return string
+     */
+    public function getPluginName()
+    {
+        return self::PLUGIN_NAME;
+    }
 
-		$this->db = $DIC->database();
-	}
+    /**
+     * @return bool
+     */
+    protected function uninstallCustom()
+    {
+        $this->db->dropTable(xdglConfig::TABLE_NAME, false);
+        $this->db->dropTable(xdglLibrarian::TABLE_NAME, false);
+        $this->db->dropTable(xdglLibrary::TABLE_NAME, false);
+        $this->db->dropTable(xdglRequest::TABLE_NAME, false);
+        $this->db->dropTable(xdglRequestUsage::TABLE_NAME, false);
 
+        return true;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getPluginName() {
-		return self::PLUGIN_NAME;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	protected function uninstallCustom() {
-		$this->db->dropTable(xdglConfig::TABLE_NAME, false);
-		$this->db->dropTable(xdglLibrarian::TABLE_NAME, false);
-		$this->db->dropTable(xdglLibrary::TABLE_NAME, false);
-		$this->db->dropTable(xdglRequest::TABLE_NAME, false);
-		$this->db->dropTable(xdglRequestUsage::TABLE_NAME, false);
-
-		return true;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function allowCopy() {
-		return false;
-	}
-
+    /**
+     * @return bool
+     */
+    public function allowCopy()
+    {
+        return false;
+    }
 
     /**
      * @inheritDoc
      */
-    public function promoteGlobalScreenProvider() : AbstractStaticPluginMainMenuProvider {
+    public function promoteGlobalScreenProvider() : AbstractStaticPluginMainMenuProvider
+    {
         return new Menu(self::dic()->dic(), $this);
     }
 }

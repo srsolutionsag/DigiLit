@@ -35,377 +35,385 @@
  *
  * @version       1.0.00
  */
-class ilObjDigiLitListGUI extends ilObjectPluginListGUI {
+class ilObjDigiLitListGUI extends ilObjectPluginListGUI
+{
 
-	/**
-	 * @var ilDigiLitPlugin
-	 */
-	public $plugin;
-	/**
-	 * @var array
-	 */
-	protected $commands;
+    /**
+     * @var ilDigiLitPlugin
+     */
+    public $plugin;
+    /**
+     * @var array
+     */
+    protected $commands;
 
+    public function initType()
+    {
+        $this->setType(ilDigiLitPlugin::PLUGIN_ID);
+    }
 
-	public function initType() {
-		$this->setType(ilDigiLitPlugin::PLUGIN_ID);
-	}
+    /**
+     * @return string
+     */
+    public function getGuiClass()
+    {
+        return ilObjDigiLitGUI::class;
+    }
 
+    /**
+     * @return array
+     */
+    public function getCommands()
+    {
+        $this->commands = $this->initCommands();
 
-	/**
-	 * @return string
-	 */
-	public function getGuiClass() {
-		return ilObjDigiLitGUI::class;
-	}
+        return parent::getCommands();
+    }
 
+    /**
+     * @return array
+     */
+    public function initCommands()
+    {
 
-	/**
-	 * @return array
-	 */
-	public function getCommands() {
-		$this->commands = $this->initCommands();
+        // Always set
+        $this->timings_enabled = false;
+        $this->subscribe_enabled = false;
+        $this->payment_enabled = false;
+        $this->link_enabled = true;
+        $this->info_screen_enabled = true;
+        $this->delete_enabled = false;
 
-		return parent::getCommands();
-	}
+        // Should be overwritten according to status
+        $this->cut_enabled = false;
+        $this->copy_enabled = true;
 
+        $commands = array(
+            array(
+                'permission' => 'read',
+                'cmd' => ilObjDigiLitGUI::CMD_SEND_FILE,
+                'default' => true,
+            ),
+            array(
+                'txt' => $this->plugin->txt('common_cmd_delete'),
+                'permission' => 'delete',
+                'cmd' => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
+                'default' => false,
+            )
+        );
 
-	/**
-	 * @return array
-	 */
-	public function initCommands() {
+        return $commands;
+    }
 
-		// Always set
-		$this->timings_enabled = false;
-		$this->subscribe_enabled = false;
-		$this->payment_enabled = false;
-		$this->link_enabled = true;
-		$this->info_screen_enabled = true;
-		$this->delete_enabled = false;
+    /**
+     * @param string $title
+     *
+     * @return bool|void
+     */
+    public function setTitle($title)
+    {
+        $ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+        $request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
+        $request = xdglRequest::find($request_usage->getRequestId());
+        $this->title = $request->getTitle() . ' / ' . $request->getAuthor();
+        parent::setTitle($this->title);
+        $this->default_command = false;
+    }
 
-		// Should be overwritten according to status
-		$this->cut_enabled = false;
-		$this->copy_enabled = true;
+    /**
+     * Get item properties
+     *
+     * @return array        array of property arrays:
+     *                        "alert" (boolean) => display as an alert property (usually in red)
+     *                        "property" (string) => property name
+     *                        "value" (string) => property value
+     */
+    public function getProperties()
+    {
+        global $lng;
 
-		$commands = array(
-			array(
-				'permission' => 'read',
-				'cmd' => ilObjDigiLitGUI::CMD_SEND_FILE,
-				'default' => true,
-			),
-			array(
-				'txt' => $this->plugin->txt('common_cmd_delete'),
-				'permission' => 'delete',
-				'cmd' => ilObjDigiLitGUI::CMD_CONFIRM_DELETE_OBJECT,
-				'default' => false,
-			)
-		);
+        $ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+        $request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
+        $request = xdglRequest::find($request_usage->getRequestId());
 
-		return $commands;
-	}
+        $info_string = '';
+        $info_string .= $request->getBook() . ' ';
+        $info_string .= '(' . $request->getPublishingYear() . '), ';
+        $info_string .= $request->getPages();
 
+        $props[] = array(
+            'alert' => false,
+            'newline' => true,
+            'property' => 'description',
+            'value' => $info_string,
+            'propertyNameVisible' => false,
+        );
 
-	/**
-	 * @param string $title
-	 *
-	 * @return bool|void
-	 */
-	public function setTitle($title) {
-		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
-		$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
-		$request = xdglRequest::find($request_usage->getRequestId());
-		$this->title = $request->getTitle() . ' / ' . $request->getAuthor();
-		parent::setTitle($this->title);
-		$this->default_command = false;
-	}
+        switch ($request->getStatus()) {
+            case xdglRequest::STATUS_NEW:
+                $props[] = array(
+                    'alert' => true,
+                    'newline' => true,
+                    'property' => $lng->txt('status'),
+                    'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_NEW),
+                    'propertyNameVisible' => true,
+                );
+                $props[] = array(
+                    'alert' => false,
+                    'newline' => true,
+                    'property' => $this->plugin->txt('request_creation_date'),
+                    'value' => self::format_date_time($request->getCreateDate()),
+                    'propertyNameVisible' => true,
+                );
+                break;
+            case xdglRequest::STATUS_IN_PROGRRESS:
+                $props[] = array(
+                    'alert' => true,
+                    'newline' => true,
+                    'property' => $lng->txt('status'),
+                    'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_IN_PROGRRESS),
+                    'propertyNameVisible' => true,
+                );
+                $props[] = array(
+                    'alert' => false,
+                    'newline' => true,
+                    'property' => $this->plugin->txt('request_creation_date'),
+                    'value' => self::format_date_time($request->getCreateDate()),
+                    'propertyNameVisible' => true,
+                );
+                break;
 
+            case xdglRequest::STATUS_REFUSED:
+                $props[] = array(
+                    'alert' => true,
+                    'newline' => true,
+                    'property' => $lng->txt('status'),
+                    'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_REFUSED),
+                    'propertyNameVisible' => true,
+                );
+                $props[] = array(
+                    'alert' => false,
+                    'newline' => true,
+                    'property' => $this->plugin->txt('request_creation_date'),
+                    'value' => self::format_date_time($request->getCreateDate()),
+                    'propertyNameVisible' => true,
+                );
+                $props[] = array(
+                    'alert' => false,
+                    'newline' => true,
+                    'property' => $this->plugin->txt('request_refusing_date'),
+                    'value' => self::format_date_time($request->getDateLastStatusChange()),
+                    'propertyNameVisible' => true,
+                );
+                break;
 
-	/**
-	 * Get item properties
-	 *
-	 * @return array        array of property arrays:
-	 *                        "alert" (boolean) => display as an alert property (usually in red)
-	 *                        "property" (string) => property name
-	 *                        "value" (string) => property value
-	 */
-	public function getProperties() {
-		global $lng;
+            case xdglRequest::STATUS_RELEASED:
+                // Display a warning if a file is not a hidden Unix file, and
+                // the filename extension is missing
+                $file = $request->getAbsoluteFilePath();
 
-		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
-		$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
-		$request = xdglRequest::find($request_usage->getRequestId());
+                if (!preg_match('/^\\.|\\.[a-zA-Z0-9]+$/', $file)) {
+                    $props[] = array(
+                        'alert' => false,
+                        'property' => $lng->txt('filename_interoperability'),
+                        'value' => $lng->txt('filename_extension_missing'),
+                        'propertyNameVisible' => false,
+                    );
+                }
+                if (file_exists($file)) {
+                    $props[] = array(
+                        'alert' => false,
+                        'property' => $lng->txt('size'),
+                        'value' => self::formatSize(filesize($file), 'short'),
+                        'propertyNameVisible' => false,
+                        'newline' => true,
+                    );
+                }
+                $props[] = array(
+                    'alert' => false,
+                    'newline' => true,
+                    'property' => $this->plugin->txt('request_upload_date'),
+                    'value' => self::format_date_time($request->getDateLastStatusChange()),
+                    'propertyNameVisible' => true,
+                );
 
-		$info_string = '';
-		$info_string .= $request->getBook() . ' ';
-		$info_string .= '(' . $request->getPublishingYear() . '), ';
-		$info_string .= $request->getPages();
+                if (!ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
+                    $props[] = array(
+                        'alert' => true,
+                        'newline' => true,
+                        'property' => 'description',
+                        'value' => $this->plugin->txt('status_no_access_to_download'),
+                        'propertyNameVisible' => false,
+                    );
+                }
 
-		$props[] = array(
-			'alert' => false,
-			'newline' => true,
-			'property' => 'description',
-			'value' => $info_string,
-			'propertyNameVisible' => false,
-		);
+                break;
+        }
 
-		switch ($request->getStatus()) {
-			case xdglRequest::STATUS_NEW:
-				$props[] = array(
-					'alert' => true,
-					'newline' => true,
-					'property' => $lng->txt('status'),
-					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_NEW),
-					'propertyNameVisible' => true,
-				);
-				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_creation_date'),
-					'value' => self::format_date_time($request->getCreateDate()),
-					'propertyNameVisible' => true,
-				);
-				break;
-			case xdglRequest::STATUS_IN_PROGRRESS:
-				$props[] = array(
-					'alert' => true,
-					'newline' => true,
-					'property' => $lng->txt('status'),
-					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_IN_PROGRRESS),
-					'propertyNameVisible' => true,
-				);
-				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_creation_date'),
-					'value' => self::format_date_time($request->getCreateDate()),
-					'propertyNameVisible' => true,
-				);
-				break;
+        return $props;
+    }
 
-			case xdglRequest::STATUS_REFUSED:
-				$props[] = array(
-					'alert' => true,
-					'newline' => true,
-					'property' => $lng->txt('status'),
-					'value' => $this->plugin->txt('request_status_' . xdglRequest::STATUS_REFUSED),
-					'propertyNameVisible' => true,
-				);
-				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_creation_date'),
-					'value' => self::format_date_time($request->getCreateDate()),
-					'propertyNameVisible' => true,
-				);
-				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_refusing_date'),
-					'value' => self::format_date_time($request->getDateLastStatusChange()),
-					'propertyNameVisible' => true,
-				);
-				break;
+    /**
+     * insert item title
+     *
+     * @overwritten
+     */
+    public function insertTitle()
+    {
+        /**
+         * @var ilCtrl $ilCtrl
+         */
+        global $ilCtrl;
 
-			case xdglRequest::STATUS_RELEASED:
-				// Display a warning if a file is not a hidden Unix file, and
-				// the filename extension is missing
-				$file = $request->getAbsoluteFilePath();
+        $ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+        $request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
+        $request = xdglRequest::find($request_usage->getRequestId());
 
-				if (!preg_match('/^\\.|\\.[a-zA-Z0-9]+$/', $file)) {
-					$props[] = array(
-						'alert' => false,
-						'property' => $lng->txt('filename_interoperability'),
-						'value' => $lng->txt('filename_extension_missing'),
-						'propertyNameVisible' => false,
-					);
-				}
-				if (file_exists($file)) {
-					$props[] = array(
-						'alert' => false,
-						'property' => $lng->txt('size'),
-						'value' => self::formatSize(filesize($file), 'short'),
-						'propertyNameVisible' => false,
-						'newline' => true,
-					);
-				}
-				$props[] = array(
-					'alert' => false,
-					'newline' => true,
-					'property' => $this->plugin->txt('request_upload_date'),
-					'value' => self::format_date_time($request->getDateLastStatusChange()),
-					'propertyNameVisible' => true,
-				);
+        switch ($request->getStatus()) {
+            case xdglRequest::STATUS_NEW:
+            case xdglRequest::STATUS_IN_PROGRRESS:
+            case xdglRequest::STATUS_REFUSED:
+                $this->default_command = false;
+                break;
+            case xdglRequest::STATUS_RELEASED:
+                $file = $request->getAbsoluteFilePath();
+                if (ilObjDigiLitAccess::hasAccessToDownload($this->ref_id) && file_exists($file)) {
+                    $ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, xdglRequestGUI::XDGL_ID, $request->getId());
+                    $this->default_command = array(
+                        'link' => $ilCtrl->getLinkTargetByClass(ilObjDigiLitGUI::class, ilObjDigiLitGUI::CMD_SEND_FILE),
+                        'frame' => '_top',
+                    );
+                } else {
+                    $this->default_command = false;
+                }
 
-				if (!ilObjDigiLitAccess::hasAccessToDownload($this->ref_id)) {
-					$props[] = array(
-						'alert' => true,
-						'newline' => true,
-						'property' => 'description',
-						'value' => $this->plugin->txt('status_no_access_to_download'),
-						'propertyNameVisible' => false,
-					);
-				}
+                break;
+        }
 
-				break;
-		}
+        parent::insertTitle();
+    }
 
-		return $props;
-	}
+    /**
+     * @param int $unix_timestamp
+     *
+     * @return string formatted date
+     */
 
+    public static function format_date_time($unix_timestamp)
+    {
+        global $lng;
 
-	/**
-	 * insert item title
-	 *
-	 * @overwritten
-	 */
-	public function insertTitle() {
-		/**
-		 * @var ilCtrl $ilCtrl
-		 */
-		global $ilCtrl;
+        $now = time();
+        $today = $now - $now % (60 * 60 * 24);
+        $yesterday = $today - 60 * 60 * 24;
 
-		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
-		$request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->obj_id);
-		$request = xdglRequest::find($request_usage->getRequestId());
+        if ($unix_timestamp < $yesterday) {
+            // given date is older than two days
+            $date = date('d. M Y', $unix_timestamp);
+        } elseif ($unix_timestamp < $today) {
+            // given date yesterday
+            $date = $lng->txt('yesterday');
+        } else {
+            // given date is today
+            $date = $lng->txt('today');
+        }
 
-		switch ($request->getStatus()) {
-			case xdglRequest::STATUS_NEW:
-			case xdglRequest::STATUS_IN_PROGRRESS:
-			case xdglRequest::STATUS_REFUSED:
-				$this->default_command = false;
-				break;
-			case xdglRequest::STATUS_RELEASED:
-				$file = $request->getAbsoluteFilePath();
-				if (ilObjDigiLitAccess::hasAccessToDownload($this->ref_id) && file_exists($file)) {
-					$ilCtrl->setParameterByClass(ilObjDigiLitGUI::class, xdglRequestGUI::XDGL_ID, $request->getId());
-					$this->default_command = array(
-						'link' => $ilCtrl->getLinkTargetByClass(ilObjDigiLitGUI::class, ilObjDigiLitGUI::CMD_SEND_FILE),
-						'frame' => '_top',
-					);
-				} else {
-					$this->default_command = false;
-				}
+        return $date . ', ' . date('H:i', $unix_timestamp);
+    }
 
-				break;
-		}
+    public static function formatSize($size, $a_mode = 'short', $a_lng = null)
+    {
+        global $lng;
 
-		parent::insertTitle();
-	}
+        if ($a_lng == null) {
+            $a_lng = $lng;
+        }
 
+        $mag = 1024;
 
-	/**
-	 * @param int $unix_timestamp
-	 *
-	 * @return string formatted date
-	 */
+        if ($size >= $mag * $mag * $mag) {
+            $scaled_size = $size / $mag / $mag / $mag;
+            $scaled_unit = 'lang_size_gb';
+        } else {
+            if ($size >= $mag * $mag) {
+                $scaled_size = $size / $mag / $mag;
+                $scaled_unit = 'lang_size_mb';
+            } else {
+                if ($size >= $mag) {
+                    $scaled_size = $size / $mag;
+                    $scaled_unit = 'lang_size_kb';
+                } else {
+                    $scaled_size = $size;
+                    $scaled_unit = 'lang_size_bytes';
+                }
+            }
+        }
 
-	public static function format_date_time($unix_timestamp) {
-		global $lng;
+        $result = self::fmtFloat($scaled_size, ($scaled_unit
+                == 'lang_size_bytes') ? 0 : 1, $a_lng->txt('lang_sep_decimal'), $a_lng->txt('lang_sep_thousand'),
+                true) . ' '
+            . $a_lng->txt($scaled_unit);
+        if ($a_mode == 'long' && $size > $mag) {
+            $result .= ' (' . self::fmtFloat($size, 0, $a_lng->txt('lang_sep_decimal'),
+                    $a_lng->txt('lang_sep_thousand')) . ' '
+                . $a_lng->txt('lang_size_bytes') . ')';
+        }
 
-		$now = time();
-		$today = $now - $now % (60 * 60 * 24);
-		$yesterday = $today - 60 * 60 * 24;
+        return $result;
+    }
 
-		if ($unix_timestamp < $yesterday) {
-			// given date is older than two days
-			$date = date('d. M Y', $unix_timestamp);
-		} elseif ($unix_timestamp < $today) {
-			// given date yesterday
-			$date = $lng->txt('yesterday');
-		} else {
-			// given date is today
-			$date = $lng->txt('today');
-		}
+    /**
+     * format a float
+     *
+     * this functions takes php's number_format function and
+     * formats the given value with appropriate thousand and decimal
+     * separator.
+     *
+     * @access    public
+     *
+     * @param float        the float to format
+     * @param integer        count of decimals
+     * @param integer        display thousands separator
+     * @param boolean        whether .0 should be suppressed
+     *
+     * @return string        formatted number
+     */
+    protected static function fmtFloat(
+        $a_float,
+        $a_decimals = 0,
+        $a_dec_point = null,
+        $a_thousands_sep = null,
+        $a_suppress_dot_zero = false
+    ) {
+        global $lng;
 
-		return $date . ', ' . date('H:i', $unix_timestamp);
-	}
+        if ($a_dec_point == null) {
+            {
+                $a_dec_point = ".";
+            }
+        }
+        if ($a_dec_point == '-lang_sep_decimal-') {
+            $a_dec_point = ".";
+        }
 
+        if ($a_thousands_sep == null) {
+            $a_thousands_sep = $lng->txt('lang_sep_thousand');
+        }
+        if ($a_thousands_sep == '-lang_sep_thousand-') {
+            $a_thousands_sep = ",";
+        }
 
-	public static function formatSize($size, $a_mode = 'short', $a_lng = NULL) {
-		global $lng;
+        $txt = number_format($a_float, $a_decimals, $a_dec_point, $a_thousands_sep);
 
-		if ($a_lng == NULL) {
-			$a_lng = $lng;
-		}
+        // remove trailing ".0"
+        if (($a_suppress_dot_zero == 0 || $a_decimals == 0)
+            && substr($txt, -2) == $a_dec_point . '0') {
+            $txt = substr($txt, 0, strlen($txt) - 2);
+        }
+        if ($a_float == 0 and $txt == "") {
+            $txt = "0";
+        }
 
-		$mag = 1024;
-
-		if ($size >= $mag * $mag * $mag) {
-			$scaled_size = $size / $mag / $mag / $mag;
-			$scaled_unit = 'lang_size_gb';
-		} else {
-			if ($size >= $mag * $mag) {
-				$scaled_size = $size / $mag / $mag;
-				$scaled_unit = 'lang_size_mb';
-			} else {
-				if ($size >= $mag) {
-					$scaled_size = $size / $mag;
-					$scaled_unit = 'lang_size_kb';
-				} else {
-					$scaled_size = $size;
-					$scaled_unit = 'lang_size_bytes';
-				}
-			}
-		}
-
-		$result = self::fmtFloat($scaled_size, ($scaled_unit
-				== 'lang_size_bytes') ? 0 : 1, $a_lng->txt('lang_sep_decimal'), $a_lng->txt('lang_sep_thousand'), true) . ' '
-			. $a_lng->txt($scaled_unit);
-		if ($a_mode == 'long' && $size > $mag) {
-			$result .= ' (' . self::fmtFloat($size, 0, $a_lng->txt('lang_sep_decimal'), $a_lng->txt('lang_sep_thousand')) . ' '
-				. $a_lng->txt('lang_size_bytes') . ')';
-		}
-
-		return $result;
-	}
-
-
-	/**
-	 * format a float
-	 *
-	 * this functions takes php's number_format function and
-	 * formats the given value with appropriate thousand and decimal
-	 * separator.
-	 *
-	 * @access    public
-	 *
-	 * @param float        the float to format
-	 * @param integer        count of decimals
-	 * @param integer        display thousands separator
-	 * @param boolean        whether .0 should be suppressed
-	 *
-	 * @return string        formatted number
-	 */
-	protected static function fmtFloat($a_float, $a_decimals = 0, $a_dec_point = NULL, $a_thousands_sep = NULL, $a_suppress_dot_zero = false) {
-		global $lng;
-
-		if ($a_dec_point == NULL) {
-			{
-				$a_dec_point = ".";
-			}
-		}
-		if ($a_dec_point == '-lang_sep_decimal-') {
-			$a_dec_point = ".";
-		}
-
-		if ($a_thousands_sep == NULL) {
-			$a_thousands_sep = $lng->txt('lang_sep_thousand');
-		}
-		if ($a_thousands_sep == '-lang_sep_thousand-') {
-			$a_thousands_sep = ",";
-		}
-
-		$txt = number_format($a_float, $a_decimals, $a_dec_point, $a_thousands_sep);
-
-		// remove trailing ".0"
-		if (($a_suppress_dot_zero == 0 || $a_decimals == 0)
-			&& substr($txt, - 2) == $a_dec_point . '0') {
-			$txt = substr($txt, 0, strlen($txt) - 2);
-		}
-		if ($a_float == 0 and $txt == "") {
-			$txt = "0";
-		}
-
-		return $txt;
-	}
+        return $txt;
+    }
 }

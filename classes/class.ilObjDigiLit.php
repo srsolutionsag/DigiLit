@@ -30,121 +30,122 @@
  *
  * @version 1.0.00
  */
-class ilObjDigiLit extends ilObjectPlugin {
+class ilObjDigiLit extends ilObjectPlugin
+{
 
-	/**
-	 * @var bool
-	 */
-	protected $object;
+    /**
+     * @var bool
+     */
+    protected $object;
 
+    /**
+     * @param int $a_ref_id
+     */
+    public function __construct($a_ref_id = 0, $whatever = true)
+    {
+        /**
+         * @var ilDB $ilDB
+         */
+        global $ilDB;
 
-	/**
-	 * @param int $a_ref_id
-	 */
-	public function __construct($a_ref_id = 0, $whatever = true) {
-		/**
-		 * @var ilDB $ilDB
-		 */
-		global $ilDB;
+        parent::__construct($a_ref_id);
+        $this->db = $ilDB;
+    }
 
-		parent::__construct($a_ref_id);
-		$this->db = $ilDB;
-	}
+    final function initType()
+    {
+        $this->setType(ilDigiLitPlugin::PLUGIN_ID);
+    }
 
+    public function doCreate()
+    {
+    }
 
-	final function initType() {
-		$this->setType(ilDigiLitPlugin::PLUGIN_ID);
-	}
+    public function doRead()
+    {
+    }
 
+    public function doUpdate()
+    {
+    }
 
-	public function doCreate() {
-	}
+    public function doDelete()
+    {
+        $use_search = xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH);
+        $ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+        $xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
+        if ($use_search) {
+            $xdglRequestUsage->delete();
+        } else {
+            $xdglRequest = xdglRequest::find($xdglRequestUsage->getRequestId());
+            $xdglRequest->deleteFile();
+            $xdglRequest->delete();
+            $xdglRequestUsage->delete();
+        }
+    }
 
+    /**
+     * @param object $new_obj
+     * @param int    $a_target_id
+     * @param null   $a_copy_id
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null)
+    {
+        $ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
+        $xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
+        $ilObjDigiLitFacadeFactory->requestUsageFactory()->copyRequestUsage($xdglRequestUsage, $new_obj->getId());
 
-	public function doRead() {
-	}
+        return true;
 
+        /*		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
+                xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
 
-	public function doUpdate() {
-	}
+                return true;*/
+        /*
+         *
+         */
+    }
 
+    /**
+     * @param int $ref_id
+     *
+     * @return int
+     */
+    public static function returnParentCrsRefId($ref_id)
+    {
+        global $tree;
+        /**
+         * @var ilTree $tree
+         */
+        $pl = ilDigiLitPlugin::getInstance();
+        while (ilObject2::_lookupType($ref_id, true) != 'crs') {
+            if ($ref_id == 1) {
+                ilUtil::sendFailure($pl->txt("course_needed"), true);
+                ilUtil::redirect('/');
+            }
+            $ref_id = $tree->getParentId($ref_id);
+        }
 
-	public function doDelete() {
-		$use_search = xdglConfig::getConfigValue(xdglConfig::F_USE_SEARCH);
-		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
-		$xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
-		if ($use_search) {
-			$xdglRequestUsage->delete();
-		} else {
-			$xdglRequest = xdglRequest::find($xdglRequestUsage->getRequestId());
-			$xdglRequest->deleteFile();
-			$xdglRequest->delete();
-			$xdglRequestUsage->delete();
-		}
-	}
+        return $ref_id;
+    }
 
+    public static function getObjectById($obj_id)
+    {
+        global $ilDB;
+        $query = "SELECT * FROM ilias.object_data where obj_id = " . $ilDB->quote($obj_id, "text");
+        $obj_set = $ilDB->query($query);
+        $obj_rec = $ilDB->fetchAssoc($obj_set);
 
-	/**
-	 * @param object $new_obj
-	 * @param int    $a_target_id
-	 * @param null   $a_copy_id
-	 *
-	 * @return bool
-	 * @throws \Exception
-	 */
-	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = NULL) {
-		$ilObjDigiLitFacadeFactory = new ilObjDigiLitFacadeFactory();
-		$xdglRequestUsage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
-		$ilObjDigiLitFacadeFactory->requestUsageFactory()->copyRequestUsage($xdglRequestUsage, $new_obj->getId());
+        return $obj_rec;
+    }
 
-		return true;
-
-		/*		$xdglRequest = xdglRequest::getInstanceForDigiLitObjectId($this->getId());
-				xdglRequest::copyRequest($xdglRequest, $new_obj->getId());
-
-				return true;*/
-		/*
-		 *
-		 */
-	}
-
-
-	/**
-	 * @param int $ref_id
-	 *
-	 * @return int
-	 */
-	public static function returnParentCrsRefId($ref_id) {
-		global $tree;
-		/**
-		 * @var ilTree $tree
-		 */
-		$pl = ilDigiLitPlugin::getInstance();
-		while (ilObject2::_lookupType($ref_id, true) != 'crs') {
-			if ($ref_id == 1) {
-				ilUtil::sendFailure($pl->txt("course_needed"), true);
-				ilUtil::redirect('/');
-			}
-			$ref_id = $tree->getParentId($ref_id);
-		}
-
-		return $ref_id;
-	}
-
-
-	public static function getObjectById($obj_id) {
-		global $ilDB;
-		$query = "SELECT * FROM ilias.object_data where obj_id = " . $ilDB->quote($obj_id, "text");
-		$obj_set = $ilDB->query($query);
-		$obj_rec = $ilDB->fetchAssoc($obj_set);
-
-		return $obj_rec;
-	}
-
-
-	public static function updateObjDigiLitTitle($ilObjDigiLit_rec) {
-		global $ilDB;
-		$ilDB->manipulate("UPDATE object_data SET title = " . $ilDB->quote($ilObjDigiLit_rec['title']) . " WHERE obj_id = "
-			. $ilDB->quote($ilObjDigiLit_rec['obj_id'], "integer"));
-	}
+    public static function updateObjDigiLitTitle($ilObjDigiLit_rec)
+    {
+        global $ilDB;
+        $ilDB->manipulate("UPDATE object_data SET title = " . $ilDB->quote($ilObjDigiLit_rec['title']) . " WHERE obj_id = "
+            . $ilDB->quote($ilObjDigiLit_rec['obj_id'], "integer"));
+    }
 }

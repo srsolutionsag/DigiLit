@@ -7,308 +7,310 @@
  * @version           1.0.00
  *
  */
-class xdglConfigFormGUI extends ilPropertyFormGUI {
+class xdglConfigFormGUI extends ilPropertyFormGUI
+{
 
-	const A_COLS = 60;
-	const A_ROWS = 5;
-	const F_LIMIT = 'limit';
-	/**
-	 * @var xdglConfigGUI
-	 */
-	protected $parent_gui;
-	/**
-	 * @var ilCtrl
-	 */
-	protected $ctrl;
-	/**
-	 * @var ilDigiLitPlugin
-	 */
-	private $pl;
+    const A_COLS = 60;
+    const A_ROWS = 5;
+    const F_LIMIT = 'limit';
+    /**
+     * @var xdglConfigGUI
+     */
+    protected $parent_gui;
+    /**
+     * @var ilCtrl
+     */
+    protected $ctrl;
+    /**
+     * @var ilDigiLitPlugin
+     */
+    private $pl;
 
+    /**
+     * @param xdglConfigGUI $parent_gui
+     */
+    public function __construct(xdglConfigGUI $parent_gui)
+    {
+        parent::__construct();
+        global $ilCtrl;
+        $this->parent_gui = $parent_gui;
+        $this->ctrl = $ilCtrl;
+        $this->pl = ilDigiLitPlugin::getInstance();
+        $this->setFormAction($this->ctrl->getFormAction($this->parent_gui));
+        $this->initForm();
+    }
 
-	/**
-	 * @param xdglConfigGUI $parent_gui
-	 */
-	public function __construct(xdglConfigGUI $parent_gui) {
-		parent::__construct();
-		global $ilCtrl;
-		$this->parent_gui = $parent_gui;
-		$this->ctrl = $ilCtrl;
-		$this->pl = ilDigiLitPlugin::getInstance();
-		$this->setFormAction($this->ctrl->getFormAction($this->parent_gui));
-		$this->initForm();
-	}
+    /**
+     * @param string $field
+     *
+     * @return string
+     */
+    public function txt($field)
+    {
+        return $this->pl->txt('admin_' . $field);
+    }
 
+    protected function initForm()
+    {
+        $this->setTitle($this->txt('form_title'));
+        if (ilObjDigiLitAccess::isGlobalAdmin()) {
+            // Roles Admin
+            $global_roles = self::getRoles(ilRbacReview::FILTER_ALL_GLOBAL);
+            $se = new ilMultiSelectInputGUI($this->txt(xdglConfig::F_ROLES_ADMIN), xdglConfig::F_ROLES_ADMIN);
+            $se->setWidth(400);
+            $se->setOptions($global_roles);
+            $this->addItem($se);
 
-	/**
-	 * @param string $field
-	 *
-	 * @return string
-	 */
-	public function txt($field) {
-		return $this->pl->txt('admin_' . $field);
-	}
+            // Roles Manager
+            $se = new ilMultiSelectInputGUI($this->txt(xdglConfig::F_ROLES_MANAGER), xdglConfig::F_ROLES_MANAGER);
+            $se->setWidth(400);
+            $se->setOptions($global_roles);
+            $this->addItem($se);
 
+            $h = new ilFormSectionHeaderGUI();
+            $h->setTitle($this->txt('common'));
+            $this->addItem($h);
+        }
+        // Mehrere Bibliotheken verwenden
+        $use_regex = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_REGEX), xdglConfig::F_USE_REGEX);
+        $use_regex->setInfo($this->txt(xdglConfig::F_USE_REGEX . '_info'));
+        {
+            $te = new ilTextInputGUI($this->txt(xdglConfig::F_REGEX), xdglConfig::F_REGEX);
+            $te->setInfo($this->txt(xdglConfig::F_REGEX . '_info'));
+            $use_regex->addSubItem($te);
+        }
+        $this->addItem($use_regex);
 
-	protected function initForm() {
-		$this->setTitle($this->txt('form_title'));
-		if (ilObjDigiLitAccess::isGlobalAdmin()) {
-			// Roles Admin
-			$global_roles = self::getRoles(ilRbacReview::FILTER_ALL_GLOBAL);
-			$se = new ilMultiSelectInputGUI($this->txt(xdglConfig::F_ROLES_ADMIN), xdglConfig::F_ROLES_ADMIN);
-			$se->setWidth(400);
-			$se->setOptions($global_roles);
-			$this->addItem($se);
+        $h = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_LIBRARIES), xdglConfig::F_USE_LIBRARIES);
+        {
+            $only_own = new ilCheckboxInputGUI($this->txt(xdglConfig::F_OWN_LIBRARY_ONLY),
+                xdglConfig::F_OWN_LIBRARY_ONLY);
+            $h->addSubItem($only_own);
+        }
+        $this->addItem($h);
 
-			// Roles Manager
-			$se = new ilMultiSelectInputGUI($this->txt(xdglConfig::F_ROLES_MANAGER), xdglConfig::F_ROLES_MANAGER);
-			$se->setWidth(400);
-			$se->setOptions($global_roles);
-			$this->addItem($se);
+        // Anzahl DigiLits pro Kurs
+        //		$h = new ilCheckboxInputGUI($this->txt(self::F_LIMIT), self::F_LIMIT);
+        $te = new ilTextInputGUI($this->txt(xdglConfig::F_MAX_DIGILITS), xdglConfig::F_MAX_DIGILITS);
+        //		$h->addSubItem($te);
 
-			$h = new ilFormSectionHeaderGUI();
-			$h->setTitle($this->txt('common'));
-			$this->addItem($h);
-		}
-		// Mehrere Bibliotheken verwenden
-		$use_regex = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_REGEX), xdglConfig::F_USE_REGEX);
-		$use_regex->setInfo($this->txt(xdglConfig::F_USE_REGEX . '_info'));
-		{
-			$te = new ilTextInputGUI($this->txt(xdglConfig::F_REGEX), xdglConfig::F_REGEX);
-			$te->setInfo($this->txt(xdglConfig::F_REGEX . '_info'));
-			$use_regex->addSubItem($te);
-		}
-		$this->addItem($use_regex);
+        $this->addItem($te);
 
-		$h = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_LIBRARIES), xdglConfig::F_USE_LIBRARIES);
-		{
-			$only_own = new ilCheckboxInputGUI($this->txt(xdglConfig::F_OWN_LIBRARY_ONLY), xdglConfig::F_OWN_LIBRARY_ONLY);
-			$h->addSubItem($only_own);
-		}
-		$this->addItem($h);
+        $h = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_SEARCH), xdglConfig::F_USE_SEARCH);
+        $this->addItem($h);
 
-		// Anzahl DigiLits pro Kurs
-		//		$h = new ilCheckboxInputGUI($this->txt(self::F_LIMIT), self::F_LIMIT);
-		$te = new ilTextInputGUI($this->txt(xdglConfig::F_MAX_DIGILITS), xdglConfig::F_MAX_DIGILITS);
-		//		$h->addSubItem($te);
+        //		// Mailadress
+        //		$te = new ilTextInputGUI($this->txt(xdglConfig::F_MAIL), xdglConfig::F_MAIL);
+        //		$te->setRequired(true);
+        //		$this->addItem($te);
 
-		$this->addItem($te);
+        $h = new ilFormSectionHeaderGUI();
+        $h->setTitle($this->txt('mail_textes'));
+        $this->addItem($h);
 
-		$h = new ilCheckboxInputGUI($this->txt(xdglConfig::F_USE_SEARCH), xdglConfig::F_USE_SEARCH);
-		$this->addItem($h);
+        // Mail new Request
+        $te = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAIL_NEW_REQUEST), xdglConfig::F_MAIL_NEW_REQUEST);
+        $te->setCols(self::A_COLS);
+        $te->setRows(self::A_ROWS);
+        $pl = xdglNotification::getPlaceHoldersForType(xdglNotification::TYPE_NEW_REQUEST);
+        $te->setInfo($this->getPlaceHoldersFormatted($pl));
+        $this->addItem($te);
 
-		//		// Mailadress
-		//		$te = new ilTextInputGUI($this->txt(xdglConfig::F_MAIL), xdglConfig::F_MAIL);
-		//		$te->setRequired(true);
-		//		$this->addItem($te);
+        // Mail Rejected
+        $te = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAIL_REJECTED), xdglConfig::F_MAIL_REJECTED);
+        $te->setCols(self::A_COLS);
+        $te->setRows(self::A_ROWS);
+        $pl = xdglNotification::getPlaceHoldersForType(xdglNotification::TYPE_REJECTED);
+        $te->setInfo($this->getPlaceHoldersFormatted($pl));
+        $this->addItem($te);
 
-		$h = new ilFormSectionHeaderGUI();
-		$h->setTitle($this->txt('mail_textes'));
-		$this->addItem($h);
+        // Mail Uploaded
+        $te = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAIL_UPLOADED), xdglConfig::F_MAIL_UPLOADED);
+        $te->setCols(self::A_COLS);
+        $te->setRows(self::A_ROWS);
+        $pl = xdglNotification::getPlaceHoldersForType(xdglNotification::TYPE_ULOADED);
+        $te->setInfo($this->getPlaceHoldersFormatted($pl));
+        $this->addItem($te);
 
-		// Mail new Request
-		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAIL_NEW_REQUEST), xdglConfig::F_MAIL_NEW_REQUEST);
-		$te->setCols(self::A_COLS);
-		$te->setRows(self::A_ROWS);
-		$pl = xdglNotification::getPlaceHoldersForType(xdglNotification::TYPE_NEW_REQUEST);
-		$te->setInfo($this->getPlaceHoldersFormatted($pl));
-		$this->addItem($te);
+        // Mail Uploaded
+        $te = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAIL_MOVED), xdglConfig::F_MAIL_MOVED);
+        $te->setCols(self::A_COLS);
+        $te->setRows(self::A_ROWS);
+        $pl = xdglNotification::getPlaceHoldersForType(xdglNotification::TYPE_MOVED);
+        $te->setInfo($this->getPlaceHoldersFormatted($pl));
+        $this->addItem($te);
 
-		// Mail Rejected
-		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAIL_REJECTED), xdglConfig::F_MAIL_REJECTED);
-		$te->setCols(self::A_COLS);
-		$te->setRows(self::A_ROWS);
-		$pl = xdglNotification::getPlaceHoldersForType(xdglNotification::TYPE_REJECTED);
-		$te->setInfo($this->getPlaceHoldersFormatted($pl));
-		$this->addItem($te);
+        $h = new ilFormSectionHeaderGUI();
+        $h->setTitle($this->txt('eula'));
+        $this->addItem($h);
 
-		// Mail Uploaded
-		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAIL_UPLOADED), xdglConfig::F_MAIL_UPLOADED);
-		$te->setCols(self::A_COLS);
-		$te->setRows(self::A_ROWS);
-		$pl = xdglNotification::getPlaceHoldersForType(xdglNotification::TYPE_ULOADED);
-		$te->setInfo($this->getPlaceHoldersFormatted($pl));
-		$this->addItem($te);
+        // EULA
+        $te = new ilTextareaInputGUI($this->txt(xdglConfig::F_EULA_TEXT), xdglConfig::F_EULA_TEXT);
+        $te->setUseRte(true);
+        $te->setRteTags(array('a', 'p', 'ul', 'li', 'ol'));
+        $te->setCols(self::A_COLS);
+        $te->setRows(self::A_ROWS);
+        $this->addItem($te);
 
-		// Mail Uploaded
-		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAIL_MOVED), xdglConfig::F_MAIL_MOVED);
-		$te->setCols(self::A_COLS);
-		$te->setRows(self::A_ROWS);
-		$pl = xdglNotification::getPlaceHoldersForType(xdglNotification::TYPE_MOVED);
-		$te->setInfo($this->getPlaceHoldersFormatted($pl));
-		$this->addItem($te);
+        $this->addCommandButtons();
+    }
 
-		$h = new ilFormSectionHeaderGUI();
-		$h->setTitle($this->txt('eula'));
-		$this->addItem($h);
+    public function fillForm()
+    {
+        $array = array();
+        foreach ($this->getItems() as $item) {
+            $this->getValuesForItem($item, $array);
+        }
+        $this->setValuesByArray($array);
+    }
 
-		// EULA
-		$te = new ilTextareaInputGUI($this->txt(xdglConfig::F_EULA_TEXT), xdglConfig::F_EULA_TEXT);
-		$te->setUseRte(true);
-		$te->setRteTags(array( 'a', 'p', 'ul', 'li', 'ol' ));
-		$te->setCols(self::A_COLS);
-		$te->setRows(self::A_ROWS);
-		$this->addItem($te);
+    /**
+     * @param ilFormPropertyGUI $item
+     * @param array             $array
+     *
+     * @internal param $key
+     */
+    private function getValuesForItem($item, array &$array)
+    {
+        if (self::checkItem($item)) {
+            $key = $item->getPostVar();
+            $array[$key] = xdglConfig::getConfigValue($key);
+            //			echo '<pre>' . print_r($array, 1) . '</pre>';
+            if (self::checkForSubItem($item)) {
+                foreach ($item->getSubItems() as $subitem) {
+                    $this->getValuesForItem($subitem, $array);
+                }
+            }
+        }
+    }
 
-		$this->addCommandButtons();
-	}
+    /**
+     * @return bool
+     */
+    public function saveObject()
+    {
+        if (!$this->checkInput()) {
+            return false;
+        }
+        foreach ($this->getItems() as $item) {
+            $this->saveValueForItem($item);
+        }
+        xdglConfig::setConfigValue(xdglConfig::F_CONFIG_VERSION, xdglConfig::CONFIG_VERSION);
 
+        return true;
+    }
 
-	public function fillForm() {
-		$array = array();
-		foreach ($this->getItems() as $item) {
-			$this->getValuesForItem($item, $array);
-		}
-		$this->setValuesByArray($array);
-	}
+    public function checkInput()
+    {
+        /**
+         * @var ilMultiSelectInputGUI $roles_admin
+         * @var ilMultiSelectInputGUI $roles_manager
+         * @var ilTextInputGUI        $regex
+         * @var ilCheckboxInputGUI    $use_regex
+         */
+        $check = true;
+        if (ilObjDigiLitAccess::isGlobalAdmin()) {
+            $roles_admin = $this->getItemByPostVar(xdglConfig::F_ROLES_ADMIN);
+            if (count($roles_admin->getValue()) == 0) {
+                $check = false;
+                $roles_admin->setAlert($this->txt("check_role"));
+            }
 
+            $roles_manager = $this->getItemByPostVar(xdglConfig::F_ROLES_MANAGER);
+            if (count($roles_manager->getValue()) == 0) {
+                $check = false;
+                $roles_manager->setAlert($this->txt("check_role"));
+            }
+        }
+        $use_regex = $this->getItemByPostVar(xdglConfig::F_USE_REGEX);
+        if ($use_regex->getChecked()) {
+            $regex = $this->getItemByPostVar(xdglConfig::F_REGEX);
+            if (!xdglConfig::isRegexValid($regex->getValue())) {
+                $check = false;
+                $regex->setAlert($this->txt("invalid_regexp"));
+            }
+        }
+        if (!$check) {
+            global $lng;
+            ilUtil::sendFailure($lng->txt("form_input_not_valid"));
 
-	/**
-	 * @param ilFormPropertyGUI $item
-	 * @param array             $array
-	 *
-	 * @internal param $key
-	 */
-	private function getValuesForItem($item, array &$array) {
-		if (self::checkItem($item)) {
-			$key = $item->getPostVar();
-			$array[$key] = xdglConfig::getConfigValue($key);
-			//			echo '<pre>' . print_r($array, 1) . '</pre>';
-			if (self::checkForSubItem($item)) {
-				foreach ($item->getSubItems() as $subitem) {
-					$this->getValuesForItem($subitem, $array);
-				}
-			}
-		}
-	}
+            return false;
+        }
 
+        return parent::checkInput();
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function saveObject() {
-		if (!$this->checkInput()) {
-			return false;
-		}
-		foreach ($this->getItems() as $item) {
-			$this->saveValueForItem($item);
-		}
-		xdglConfig::setConfigValue(xdglConfig::F_CONFIG_VERSION, xdglConfig::CONFIG_VERSION);
+    /**
+     * @param ilFormPropertyGUI $item
+     */
+    private function saveValueForItem($item)
+    {
+        if (self::checkItem($item)) {
+            $key = $item->getPostVar();
+            xdglConfig::setConfigValue($key, $this->getInput($key));
+            if (self::checkForSubItem($item)) {
+                foreach ($item->getSubItems() as $subitem) {
+                    $this->saveValueForItem($subitem);
+                }
+            }
+        }
+    }
 
-		return true;
-	}
+    /**
+     * @param ilFormPropertyGUI $item
+     *
+     * @return bool
+     */
+    public static function checkForSubItem($item)
+    {
+        return !$item instanceof ilFormSectionHeaderGUI and !$item instanceof ilMultiSelectInputGUI;
+    }
 
+    /**
+     * @param ilFormPropertyGUI $item
+     *
+     * @return bool
+     */
+    public static function checkItem($item)
+    {
+        return !$item instanceof ilFormSectionHeaderGUI;
+    }
 
-	public function checkInput() {
-		/**
-		 * @var ilMultiSelectInputGUI $roles_admin
-		 * @var ilMultiSelectInputGUI $roles_manager
-		 * @var ilTextInputGUI        $regex
-		 * @var ilCheckboxInputGUI    $use_regex
-		 */
-		$check = true;
-		if (ilObjDigiLitAccess::isGlobalAdmin()) {
-			$roles_admin = $this->getItemByPostVar(xdglConfig::F_ROLES_ADMIN);
-			if (count($roles_admin->getValue()) == 0) {
-				$check = false;
-				$roles_admin->setAlert($this->txt("check_role"));
-			}
+    protected function addCommandButtons()
+    {
+        $this->addCommandButton(xdglConfigGUI::CMD_SAVE, $this->txt('form_button_save'));
+        $this->addCommandButton(xdglConfigGUI::CMD_CANCEL, $this->txt('form_button_cancel'));
+    }
 
-			$roles_manager = $this->getItemByPostVar(xdglConfig::F_ROLES_MANAGER);
-			if (count($roles_manager->getValue()) == 0) {
-				$check = false;
-				$roles_manager->setAlert($this->txt("check_role"));
-			}
-		}
-		$use_regex = $this->getItemByPostVar(xdglConfig::F_USE_REGEX);
-		if ($use_regex->getChecked()) {
-			$regex = $this->getItemByPostVar(xdglConfig::F_REGEX);
-			if (!xdglConfig::isRegexValid($regex->getValue())) {
-				$check = false;
-				$regex->setAlert($this->txt("invalid_regexp"));
-			}
-		}
-		if (!$check) {
-			global $lng;
-			ilUtil::sendFailure($lng->txt("form_input_not_valid"));
+    /**
+     * @param int  $filter
+     * @param bool $with_text
+     *
+     * @return array
+     */
+    public static function getRoles($filter, $with_text = true)
+    {
+        global $rbacreview;
+        $opt = array();
+        $role_ids = array();
+        foreach ($rbacreview->getRolesByFilter($filter) as $role) {
+            $opt[$role['obj_id']] = $role['title'] . ' (' . $role['obj_id'] . ')';
+            $role_ids[] = $role['obj_id'];
+        }
+        if ($with_text) {
+            return $opt;
+        } else {
+            return $role_ids;
+        }
+    }
 
-			return false;
-		}
-
-		return parent::checkInput();
-	}
-
-
-	/**
-	 * @param ilFormPropertyGUI $item
-	 */
-	private function saveValueForItem($item) {
-		if (self::checkItem($item)) {
-			$key = $item->getPostVar();
-			xdglConfig::setConfigValue($key, $this->getInput($key));
-			if (self::checkForSubItem($item)) {
-				foreach ($item->getSubItems() as $subitem) {
-					$this->saveValueForItem($subitem);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * @param ilFormPropertyGUI $item
-	 *
-	 * @return bool
-	 */
-	public static function checkForSubItem($item) {
-		return !$item instanceof ilFormSectionHeaderGUI AND !$item instanceof ilMultiSelectInputGUI;
-	}
-
-
-	/**
-	 * @param ilFormPropertyGUI $item
-	 *
-	 * @return bool
-	 */
-	public static function checkItem($item) {
-		return !$item instanceof ilFormSectionHeaderGUI;
-	}
-
-
-	protected function addCommandButtons() {
-		$this->addCommandButton(xdglConfigGUI::CMD_SAVE, $this->txt('form_button_save'));
-		$this->addCommandButton(xdglConfigGUI::CMD_CANCEL, $this->txt('form_button_cancel'));
-	}
-
-
-	/**
-	 * @param int  $filter
-	 * @param bool $with_text
-	 *
-	 * @return array
-	 */
-	public static function getRoles($filter, $with_text = true) {
-		global $rbacreview;
-		$opt = array();
-		$role_ids = array();
-		foreach ($rbacreview->getRolesByFilter($filter) as $role) {
-			$opt[$role['obj_id']] = $role['title'] . ' (' . $role['obj_id'] . ')';
-			$role_ids[] = $role['obj_id'];
-		}
-		if ($with_text) {
-			return $opt;
-		} else {
-			return $role_ids;
-		}
-	}
-
-
-	/**
-	 * @param array $placeholders
-	 *
-	 * @return string
-	 */
-	public function getPlaceHoldersFormatted(array $placeholders) {
-		return $this->txt('placeholders') . ': [' . implode('] [', $placeholders) . ']';
-	}
+    /**
+     * @param array $placeholders
+     *
+     * @return string
+     */
+    public function getPlaceHoldersFormatted(array $placeholders)
+    {
+        return $this->txt('placeholders') . ': [' . implode('] [', $placeholders) . ']';
+    }
 }
