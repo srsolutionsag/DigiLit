@@ -77,7 +77,10 @@ class ilObjDigiLit extends ilObjectPlugin
         $request_usage = $ilObjDigiLitFacadeFactory->requestUsageFactory()->getInstanceByObjectId($this->getId());
         if (!$use_search) {
             $request = xdglRequest::find($request_usage->getRequestId());
-            $request->deleteFile();
+            try {
+                $request->deleteFile();
+            } catch (Throwable $t) {
+            }
             $request->delete();
         }
         $request_usage->delete();
