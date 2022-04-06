@@ -371,11 +371,14 @@ class xdglRequest extends ActiveRecord
      */
     public function getAmoutOfDigiLitsInCourse()
     {
+        if (isset($this->count_of_existing)) {
+            return $this->count_of_existing;
+        }
         $count = 0;
         if ($this->getCrsRefId()) {
-            $count = $this->getAmoutOfDigiLitsInContainer($count, $this->getCrsRefId());
+            $this->count_of_existing = $count = $this->getAmoutOfDigiLitsInContainer($count, $this->getCrsRefId());
         }
-
+    
         return $count;
     }
 

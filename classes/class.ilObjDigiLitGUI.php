@@ -97,16 +97,31 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI
      * @var ilObjDigiLitFacadeFactory
      */
     protected $ilObjDigiLitFacadeFactory;
-
+    /**
+     * @var \ILIAS\UI\Factory
+     */
+    protected $ui_factory;
+    /**
+     * @var \ILIAS\UI\Renderer
+     */
+    protected $ui_renderer;
+    /**
+     * @var \ILIAS\GlobalScreen\Scope\Layout\MetaContent\MetaContent
+     */
+    protected $meta;
+    
     protected function afterConstructor()
     {
-        global $tpl, $ilCtrl, $ilAccess, $ilNavigationHistory, $ilTabs, $ilLocator;
+        global $tpl, $ilCtrl, $ilAccess, $ilNavigationHistory, $ilTabs, $ilLocator, $DIC;
         /**
          * @var ilTemplate          $tpl
          * @var ilCtrl              $ilCtrl
          * @var ilAccessHandler     $ilAccess
          * @var ilNavigationHistory $ilNavigationHistory
          */
+        $this->ui_factory = $DIC->ui()->factory();
+        $this->ui_renderer = $DIC->ui()->renderer();
+        $this->meta = $DIC->globalScreen()->layout()->meta();
         $this->tpl = $tpl;
         $this->history = $ilNavigationHistory;
         $this->access = $ilAccess;
@@ -157,7 +172,6 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI
 
     public function executeCommand()
     {
-
         $this->locator->addRepositoryItems();
         $this->tpl->setLocator();
 
@@ -330,7 +344,32 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI
      */
     public function initCreateForm($type)
     {
-        $creation_form = new xdglRequestFormGUI($this, new xdglRequest());
+        $xdglRequest = new xdglRequest();
+        $amount = $xdglRequest->getAmoutOfDigiLitsInCourse();
+        if (1 == 1 || (int) $amount >= (int) xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS)) {
+            $no_more_possible = new ilPropertyFormGUI();
+            $modal = $this->ui_factory->modal()->interruptive('ACHTUNG', 'INFOTEXT', '#');
+            $render = $this->ui_renderer->render($modal);
+            $show_signal = $modal->getShowSignal()->getId();
+            $this->meta->addOnLoadCode("
+            $(document).trigger('$show_signal');
+            console.log('$show_signal');
+            ");
+    
+            $container = new ilNonEditableValueGUI(
+                'Information',
+                '',
+                true
+            );
+            
+            $container->setValue($render);
+            $no_more_possible->addItem(
+                $container
+            );
+            return $no_more_possible;
+        }
+        
+        $creation_form = new xdglRequestFormGUI($this, $xdglRequest);
         $creation_form->fillForm(ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));
         global $ilUser;
         /**

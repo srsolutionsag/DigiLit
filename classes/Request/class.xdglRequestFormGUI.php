@@ -310,7 +310,8 @@ class xdglRequestFormGUI extends ilPropertyFormGUI
             self::F_COURSE_NAME => $this->request->getCourseTitle(),
         );
         if ($this->is_new) {
-            $array[self::F_COUNT] = $this->request->getAmoutOfDigiLitsInCourse() + 1 . '/' . xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS);
+            $amount_of_existing_digi_lits = $this->request->getAmoutOfDigiLitsInCourse();
+            $array[self::F_COUNT] = $amount_of_existing_digi_lits + 1 . '/' . xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS);
         }
         if ($this->view) {
             $array[self::F_EDITION_RELEVANT] = xdglRequest::boolTextRepresentation($this->request->getEditionRelevant());
