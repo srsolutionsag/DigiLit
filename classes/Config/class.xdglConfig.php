@@ -25,6 +25,7 @@ class xdglConfig extends ActiveRecord
     const F_USE_SEARCH = 'use_search';
     const F_OWN_LIBRARY_ONLY = 'own_library_only';
     const F_USE_REGEX = 'use_regex';
+    const F_MAX_REQ_TEXT = 'max_requests_text';
     const F_REGEX = 'regex';
     /**
      * @var array

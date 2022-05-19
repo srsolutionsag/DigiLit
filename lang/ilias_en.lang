@@ -174,3 +174,7 @@ admin_invalid_regexp#:#Regular Expression not valid
 rbac_create_xdgl#:#Create DigiLit
 obj_xdgl_duplicate#:#Copy DigiLit
 objs_xdgl_duplicate#:#Copy DigiLits
+max_requests_text#:#Max-Requests reached text
+max_requests_text_default#:#You have reached the maximal amount of DigiLit objects you can request for this object.
+max_requests_text_back#:#Back to course
+max_requests_text_title#:#Max. Amount Reached!

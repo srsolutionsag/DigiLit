@@ -104,6 +104,14 @@ class xdglConfigFormGUI extends ilPropertyFormGUI
         //		$te->setRequired(true);
         //		$this->addItem($te);
 
+        // Max Requests reached info
+        $info = new ilTextareaInputGUI($this->txt(xdglConfig::F_MAX_REQ_TEXT), xdglConfig::F_MAX_REQ_TEXT);
+        $info->setUseRte(true);
+        $info->setRteTags(array('a', 'p', 'ul', 'li', 'ol'));
+        $info->setCols(self::A_COLS);
+        $info->setRows(self::A_ROWS);
+        $this->addItem($info);
+
         $h = new ilFormSectionHeaderGUI();
         $h->setTitle($this->txt('mail_textes'));
         $this->addItem($h);
