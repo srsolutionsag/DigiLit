@@ -356,30 +356,6 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI
     public function initCreateForm($type)
     {
         $xdglRequest = new xdglRequest();
-        $amount = (int)  $xdglRequest->getAmoutOfDigiLitsInCourse();
-        if ($amount >= (int) xdglConfig::getConfigValue(xdglConfig::F_MAX_DIGILITS)) {
-            $no_more_possible = new ilPropertyFormGUI();
-            $modal = $this->ui_factory->modal()->interruptive('ACHTUNG', 'INFOTEXT', '#');
-            $render = $this->ui_renderer->render($modal);
-            $show_signal = $modal->getShowSignal()->getId();
-            $this->meta->addOnLoadCode("
-            $(document).trigger('$show_signal');
-            console.log('$show_signal');
-            ");
-    
-            $container = new ilNonEditableValueGUI(
-                'Information',
-                '',
-                true
-            );
-            
-            $container->setValue($render);
-            $no_more_possible->addItem(
-                $container
-            );
-            return $no_more_possible;
-        }
-        
         $creation_form = new xdglRequestFormGUI($this, $xdglRequest);
         $creation_form->fillForm(ilObjDigiLit::returnParentCrsRefId($_GET['ref_id']));
         global $ilUser;
