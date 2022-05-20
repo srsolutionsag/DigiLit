@@ -174,7 +174,7 @@ admin_invalid_regexp#:#Regulärer Ausdruck ist nicht gültig
 rbac_create_xdgl#:#DigiLit anlegen
 obj_xdgl_duplicate#:#DigiLit kopieren
 objs_xdgl_duplicate#:#DigiLits kopieren
-max_requests_text#:#Text Maximale Anfragen erreicht
+admin_max_requests_text#:#Text Maximale Anfragen erreicht
 max_requests_text_default#:#Sie haben die maximale Anzahl DigiLit's erreicht, die Sie für das aktuelle Objekt anfragen können.
 max_requests_text_back#:#Zurück zum Kurs
 max_requests_text_title#:#Max. Anzahl erreicht!
