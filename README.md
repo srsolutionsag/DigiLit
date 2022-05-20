@@ -14,7 +14,7 @@ Start at your ILIAS root directory
 ```bash
 mkdir -p Customizing/global/plugins/Services/Repository/RepositoryObject  
 cd Customizing/global/plugins/Services/Repository/RepositoryObject
-git clone https://github.com/studer-raimann/DigiLit.git  
+git clone https://github.com/srsolutionsag/DigiLit.git  
 ```
   
 As ILIAS administrator go to "Administration->Plugins" and install/activate the plugin.  
@@ -24,16 +24,15 @@ As ILIAS administrator go to "Administration->Plugins" and install/activate the 
 * PHP >=7.0
 
 ## Adjustment suggestions
-* External users can report suggestions and bugs at https://plugins.studer-raimann.ch/goto.php?target=uihk_srsu_PLDIGILIT
+* External users can report suggestions and bugs at https://plugins.sr.solutions/goto.php?target=uihk_srsu_PLDIGILIT
 * Adjustment suggestions by pull requests via github
-* Customer of studer + raimann ag: 
-	* Adjustment suggestions which are not yet worked out in detail by Jira tasks under https://jira.studer-raimann.ch/projects/PLDIGILIT
-	* Bug reports under https://jira.studer-raimann.ch/projects/PLDIGILIT
+* Customer of sr solutions ag: 
+	* Adjustment suggestions which are not yet worked out in detail by Jira tasks under https://jira.sr.solutions/projects/PLDIGILIT
+	* Bug reports under https://jira.sr.solutions/projects/PLDIGILIT
 
-## ILIAS Plugin SLA
+# ILIAS Plugin SLA
+We love and live the philosophy of Open Source Software! Most of our developments, which we develop on behalf of customers or in our own work, we make publicly available to all interested parties free of charge at https://github.com/srsolutionsag.
 
-Wir lieben und leben die Philosophie von Open Source Software! Die meisten unserer Entwicklungen, welche wir im Kundenauftrag oder in Eigenleistung entwickeln, stellen wir öffentlich allen Interessierten kostenlos unter https://github.com/studer-raimann zur Verfügung.
+Do you use one of our plugins professionally? Secure the timely availability of this plugin also for future ILIAS versions by signing an SLA. Find out more about this at https://sr.solutions/plugins.
 
-Setzen Sie eines unserer Plugins professionell ein? Sichern Sie sich mittels SLA die termingerechte Verfügbarkeit dieses Plugins auch für die kommenden ILIAS Versionen. Informieren Sie sich hierzu unter https://studer-raimann.ch/produkte/ilias-plugins/plugin-sla.
-
-Bitte beachten Sie, dass wir nur Institutionen, welche ein SLA abschliessen Unterstützung und Release-Pflege garantieren.
+Please note that we only guarantee support and release maintenance for institutions that sign an SLA.

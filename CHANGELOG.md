@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.0.0]
+- Support for ILIAS 7 and ILIAS 6
+- Show a Message (configurable) if the limit per course is reached
+
 ## [3.0.0]
 - First release
 - ILIAS 5.4 support
