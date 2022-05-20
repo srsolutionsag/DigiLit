@@ -510,7 +510,7 @@ class ilObjDigiLitGUI extends ilObjectPluginGUI
             $max_amount_text,
             $back_to_link
         )->withActionButtonLabel(
-            $this->plugin->txt('max_requests_text_back')
+            'rep_robj_xdgl_max_requests_text_back'
         );
 
         $show_signal = $modal->getShowSignal()->getId();
